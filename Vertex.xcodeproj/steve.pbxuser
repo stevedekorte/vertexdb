@@ -1,0 +1,630 @@
+// !$*UTF8*$!
+{
+	08FB7793FE84155DC02AAC07 /* Project object */ = {
+		activeBuildConfigurationName = Debug;
+		activeExecutable = AAD977620F515E7600FA8E04 /* Vertex */;
+		activeTarget = 8DD76FA90486AB0100D96B5E /* Vertex */;
+		addToTargets = (
+			8DD76FA90486AB0100D96B5E /* Vertex */,
+		);
+		breakpoints = (
+			AA622D800FF830B000FBCA1A /* VertexServer.c:859 */,
+			AA622D8A0FF8310500FBCA1A /* VertexServer.c:891 */,
+			AA622D8E0FF8333A00FBCA1A /* VertexServer.c:208 */,
+			AA622D940FF8337200FBCA1A /* VertexServer.c:201 */,
+			AA622DAB0FF836A900FBCA1A /* VertexServer.c:213 */,
+			AA622DEE0FF8439E00FBCA1A /* PQuery.c:70 */,
+			AA622DF40FF843DB00FBCA1A /* PNode.c:56 */,
+			AA622E0E0FF8458800FBCA1A /* PNode.c:862 */,
+			AACDFC060FF9AAD20056205A /* VertexServer.c:347 */,
+			AACDFC180FF9ADA30056205A /* VertexServer.c:368 */,
+			AACDFC230FF9AEA60056205A /* PNode.c:836 */,
+		);
+		codeSenseManager = AAD9776D0F515E8300FA8E04 /* Code sense */;
+		executables = (
+			AAD977620F515E7600FA8E04 /* Vertex */,
+		);
+		perUserDictionary = {
+			"PBXConfiguration.PBXBreakpointsDataSource.v1:1CA1AED706398EBD00589147" = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXBreakpointsDataSource_BreakpointID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					20,
+					198,
+					20,
+					99,
+					99,
+					29,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXBreakpointsDataSource_ActionID,
+					PBXBreakpointsDataSource_TypeID,
+					PBXBreakpointsDataSource_BreakpointID,
+					PBXBreakpointsDataSource_UseID,
+					PBXBreakpointsDataSource_LocationID,
+					PBXBreakpointsDataSource_ConditionID,
+					PBXBreakpointsDataSource_IgnoreCountID,
+					PBXBreakpointsDataSource_ContinueID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					315,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 268263502;
+			PBXWorkspaceStateSaveDate = 268263502;
+		};
+		perUserProjectItems = {
+			AAF3472F0FFD606A0070C69F /* PBXTextBookmark */ = AAF3472F0FFD606A0070C69F /* PBXTextBookmark */;
+			AAFFE19A0FFAC06D00901117 /* PBXTextBookmark */ = AAFFE19A0FFAC06D00901117 /* PBXTextBookmark */;
+		};
+		sourceControlManager = AAD9776C0F515E8300FA8E04 /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	08FB7796FE84155DC02AAC07 /* main.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {771, 736}}";
+			sepNavSelRange = "{0, 20}";
+			sepNavVisRange = "{0, 705}";
+			sepNavWindowFrame = "{{153, 78}, {820, 669}}";
+		};
+	};
+	8DD76FA90486AB0100D96B5E /* Vertex */ = {
+		activeExec = 0;
+		executables = (
+			AAD977620F515E7600FA8E04 /* Vertex */,
+		);
+	};
+	AA29D66E0F60C99C00773394 /* File.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1051, 2356}}";
+			sepNavSelRange = "{112, 0}";
+			sepNavVisRange = "{0, 650}";
+			sepNavWindowFrame = "{{92, 171}, {1100, 678}}";
+		};
+	};
+	AA29D66F0F60C99C00773394 /* File.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {890, 720}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 865}";
+			sepNavWindowFrame = "{{130, 36}, {939, 732}}";
+		};
+	};
+	AA2DE0C10EBD9469007A0749 /* Datum.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {771, 5664}}";
+			sepNavSelRange = "{5530, 0}";
+			sepNavVisRange = "{5083, 690}";
+			sepNavWindowFrame = "{{501, 69}, {820, 669}}";
+		};
+	};
+	AA2DE0C20EBD9469007A0749 /* Datum.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1124, 1360}}";
+			sepNavSelRange = "{265, 0}";
+			sepNavVisRange = "{0, 1190}";
+			sepNavWindowFrame = "{{377, 139}, {923, 726}}";
+		};
+	};
+	AA2DE0C30EBD9469007A0749 /* PNode.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {759, 16860}}";
+			sepNavSelRange = "{7269, 0}";
+			sepNavVisRange = "{7186, 508}";
+			sepNavWindowFrame = "{{225, 21}, {1040, 792}}";
+		};
+	};
+	AA2DE0C40EBD9469007A0749 /* PNode.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {774, 2112}}";
+			sepNavSelRange = "{3364, 72}";
+			sepNavVisRange = "{2216, 1257}";
+			sepNavWindowFrame = "{{422, 116}, {823, 675}}";
+		};
+	};
+	AA2DE0C50EBD9469007A0749 /* PDB.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {862, 9696}}";
+			sepNavSelRange = "{1420, 0}";
+			sepNavVisRange = "{897, 860}";
+			sepNavWindowFrame = "{{315, 73}, {911, 689}}";
+		};
+	};
+	AA2DE0C60EBD9469007A0749 /* PDB.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {774, 1398}}";
+			sepNavSelRange = "{1685, 0}";
+			sepNavVisRange = "{712, 1203}";
+			sepNavWindowFrame = "{{417, 196}, {823, 675}}";
+		};
+	};
+	AA5F9FB20F0097D4006313F4 /* Common.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1691, 3142}}";
+			sepNavSelRange = "{373, 0}";
+			sepNavVisRange = "{1, 1011}";
+			sepNavWindowFrame = "{{443, 202}, {732, 622}}";
+		};
+	};
+	AA5F9FB30F0097D4006313F4 /* Common_inline.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {685, 1068}}";
+			sepNavSelRange = "{684, 0}";
+			sepNavVisRange = "{381, 554}";
+			sepNavWindowFrame = "{{550, 44}, {732, 622}}";
+		};
+	};
+	AA5F9FBA0F0097D4006313F4 /* List.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {695, 3862}}";
+			sepNavSelRange = "{1060, 6}";
+			sepNavVisRange = "{357, 858}";
+			sepNavWindowFrame = "{{61, 22}, {744, 809}}";
+		};
+	};
+	AA5F9FBB0F0097D4006313F4 /* List.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {695, 1696}}";
+			sepNavSelRange = "{832, 0}";
+			sepNavVisRange = "{462, 1372}";
+			sepNavWindowFrame = "{{38, 43}, {744, 809}}";
+		};
+	};
+	AA5F9FBC0F0097D4006313F4 /* List_inline.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {822, 6190}}";
+			sepNavSelRange = "{2461, 0}";
+			sepNavVisRange = "{2168, 685}";
+			sepNavWindowFrame = "{{84, 1}, {744, 809}}";
+		};
+	};
+	AA5F9FE60F0097D4006313F4 /* UArray.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {828, 21640}}";
+			sepNavSelRange = "{6899, 38}";
+			sepNavVisRange = "{6820, 502}";
+		};
+	};
+	AA5F9FE70F0097D4006313F4 /* UArray.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1380, 7858}}";
+			sepNavSelRange = "{2775, 38}";
+			sepNavVisRange = "{2297, 1446}";
+		};
+	};
+	AA5F9FEC0F0097D4006313F4 /* UArray_math.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {791, 11838}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{397, 981}";
+			sepNavWindowFrame = "{{107, 107}, {840, 682}}";
+		};
+	};
+	AA5F9FED0F0097D4006313F4 /* UArray_math.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {791, 1944}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{775, 1566}";
+			sepNavWindowFrame = "{{84, 128}, {840, 682}}";
+		};
+	};
+	AA5F9FEE0F0097D4006313F4 /* UArray_path.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {759, 2168}}";
+			sepNavSelRange = "{272, 31}";
+			sepNavVisRange = "{0, 751}";
+		};
+	};
+	AA622A840FF318F600FBCA1A /* PQuery.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {900, 2484}}";
+			sepNavSelRange = "{1229, 0}";
+			sepNavVisRange = "{937, 555}";
+			sepNavWindowFrame = "{{313, 21}, {939, 732}}";
+		};
+	};
+	AA622A850FF318F600FBCA1A /* PQuery.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {853, 868}}";
+			sepNavSelRange = "{311, 0}";
+			sepNavVisRange = "{69, 956}";
+			sepNavWindowFrame = "{{497, 50}, {902, 751}}";
+		};
+	};
+	AA622B850FF445BF00FBCA1A /* Pool.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {822, 656}}";
+			sepNavSelRange = "{686, 0}";
+			sepNavVisRange = "{108, 671}";
+			sepNavWindowFrame = "{{107, 63}, {923, 726}}";
+		};
+	};
+	AA622B860FF445BF00FBCA1A /* Pool.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {956, 689}}";
+			sepNavSelRange = "{139, 0}";
+			sepNavVisRange = "{0, 586}";
+			sepNavWindowFrame = "{{64, 45}, {923, 726}}";
+		};
+	};
+	AA622D800FF830B000FBCA1A /* VertexServer.c:859 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = AA9C0F760EB1448900F997D7 /* VertexServer.c */;
+		functionName = "VertexServer_requestHandler()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 859;
+		location = Vertex;
+		modificationTime = 268263522.793953;
+		state = 2;
+	};
+	AA622D8A0FF8310500FBCA1A /* VertexServer.c:891 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = AA9C0F760EB1448900F997D7 /* VertexServer.c */;
+		functionName = "VertexServer_requestHandler()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 891;
+		location = Vertex;
+		modificationTime = 268263522.794115;
+		state = 2;
+	};
+	AA622D8E0FF8333A00FBCA1A /* VertexServer.c:208 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = AA9C0F760EB1448900F997D7 /* VertexServer.c */;
+		functionName = "VertexServer_parseUri_()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 208;
+		location = Vertex;
+		modificationTime = 268263522.794199;
+		state = 2;
+	};
+	AA622D940FF8337200FBCA1A /* VertexServer.c:201 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = AA9C0F760EB1448900F997D7 /* VertexServer.c */;
+		functionName = "VertexServer_parseUri_()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 201;
+		location = Vertex;
+		modificationTime = 268263522.794279;
+		state = 2;
+	};
+	AA622DAB0FF836A900FBCA1A /* VertexServer.c:213 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = AA9C0F760EB1448900F997D7 /* VertexServer.c */;
+		functionName = "VertexServer_parseUri_()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 213;
+		location = Vertex;
+		modificationTime = 268263522.794358;
+		state = 2;
+	};
+	AA622DEE0FF8439E00FBCA1A /* PQuery.c:70 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = AA622A840FF318F600FBCA1A /* PQuery.c */;
+		functionName = "PQuery_setup()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 70;
+		location = Vertex;
+		modificationTime = 268263522.794437;
+		state = 2;
+	};
+	AA622DF40FF843DB00FBCA1A /* PNode.c:56 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = AA2DE0C30EBD9469007A0749 /* PNode.c */;
+		functionName = "PNode_query()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 56;
+		location = Vertex;
+		modificationTime = 268263522.794463;
+		state = 2;
+	};
+	AA622E0E0FF8458800FBCA1A /* PNode.c:862 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = AA2DE0C30EBD9469007A0749 /* PNode.c */;
+		functionName = "PNode_op_list()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 862;
+		location = Vertex;
+		modificationTime = 268263522.794476;
+		state = 2;
+	};
+	AA97F9D80F0AFA9C00B9F3B0 /* Log.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1292, 656}}";
+			sepNavSelRange = "{188, 0}";
+			sepNavVisRange = "{0, 225}";
+			sepNavWindowFrame = "{{519, -56}, {841, 707}}";
+		};
+	};
+	AA9C0F760EB1448900F997D7 /* VertexServer.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {756, 17330}}";
+			sepNavSelRange = "{6790, 13}";
+			sepNavVisRange = "{6555, 879}";
+			sepNavWindowFrame = "{{582, 73}, {752, 657}}";
+		};
+	};
+	AA9C0F770EB1448900F997D7 /* VertexServer.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {838, 1200}}";
+			sepNavSelRange = "{832, 44}";
+			sepNavVisRange = "{464, 867}";
+			sepNavWindowFrame = "{{162, 48}, {887, 659}}";
+		};
+	};
+	AACDFC060FF9AAD20056205A /* VertexServer.c:347 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = AA9C0F760EB1448900F997D7 /* VertexServer.c */;
+		functionName = "VertexServer_api_read()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 347;
+		location = Vertex;
+		modificationTime = 268263522.794484;
+		state = 2;
+	};
+	AACDFC180FF9ADA30056205A /* VertexServer.c:368 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = AA9C0F760EB1448900F997D7 /* VertexServer.c */;
+		functionName = "VertexServer_api_write()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 368;
+		location = Vertex;
+		modificationTime = 268263522.794563;
+		state = 2;
+	};
+	AACDFC230FF9AEA60056205A /* PNode.c:836 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = AA2DE0C30EBD9469007A0749 /* PNode.c */;
+		functionName = "PNode_op_items()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 836;
+		location = Vertex;
+		modificationTime = 268263522.794642;
+		state = 1;
+	};
+	AACE0C980F292D3D00D6CA7A /* RunningStat.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {936, 1360}}";
+			sepNavSelRange = "{509, 0}";
+			sepNavVisRange = "{60, 916}";
+			sepNavWindowFrame = "{{38, 78}, {985, 774}}";
+		};
+	};
+	AACE0C990F292D3D00D6CA7A /* RunningStat.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {792, 670}}";
+			sepNavSelRange = "{99, 0}";
+			sepNavVisRange = "{0, 696}";
+			sepNavWindowFrame = "{{84, 103}, {841, 707}}";
+		};
+	};
+	AAD977620F515E7600FA8E04 /* Vertex */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 1;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = Vertex;
+		savedGlobals = {
+		};
+		sourceDirectories = (
+		);
+		variableFormatDictionary = {
+		};
+	};
+	AAD9776C0F515E8300FA8E04 /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+		};
+	};
+	AAD9776D0F515E8300FA8E04 /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	AAF3472F0FFD606A0070C69F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = AA9C0F760EB1448900F997D7 /* VertexServer.c */;
+		name = "VertexServer.c: 255";
+		rLen = 13;
+		rLoc = 6790;
+		rType = 0;
+		vrLen = 879;
+		vrLoc = 6555;
+	};
+	AAF4A3060FE738FA005C27D1 /* CHash.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {791, 3682}}";
+			sepNavSelRange = "{4091, 11}";
+			sepNavVisRange = "{3716, 673}";
+			sepNavWindowFrame = "{{287, 45}, {840, 682}}";
+		};
+	};
+	AAF4A3070FE738FA005C27D1 /* CHash.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {759, 1144}}";
+			sepNavSelRange = "{1184, 0}";
+			sepNavVisRange = "{739, 974}";
+			sepNavWindowFrame = "{{284, 40}, {928, 835}}";
+		};
+	};
+	AAF4A3080FE738FA005C27D1 /* CHash_inline.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {772, 2244}}";
+			sepNavSelRange = "{958, 0}";
+			sepNavVisRange = "{240, 555}";
+			sepNavWindowFrame = "{{38, 17}, {928, 835}}";
+		};
+	};
+	AAF4A30D0FE738FA005C27D1 /* Hash_murmur.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {879, 1020}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1099}";
+			sepNavWindowFrame = "{{15, 38}, {928, 835}}";
+		};
+	};
+	AAF4A30E0FE738FA005C27D1 /* Hash_murmur.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {879, 798}}";
+			sepNavSelRange = "{71, 0}";
+			sepNavVisRange = "{0, 71}";
+			sepNavWindowFrame = "{{38, 17}, {928, 835}}";
+		};
+	};
+	AAF4A3100FE738FA005C27D1 /* Hash_superfast.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {741, 161}}";
+			sepNavSelRange = "{0, 52}";
+			sepNavVisRange = "{0, 52}";
+			sepNavWindowFrame = "{{38, 17}, {928, 835}}";
+		};
+	};
+	AAF4A3110FE738FA005C27D1 /* PointerHash.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {879, 2646}}";
+			sepNavSelRange = "{1883, 7}";
+			sepNavVisRange = "{0, 1332}";
+			sepNavWindowFrame = "{{15, 38}, {928, 835}}";
+		};
+	};
+	AAF4A3120FE738FA005C27D1 /* PointerHash.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {879, 916}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{147, 1494}";
+			sepNavWindowFrame = "{{38, 17}, {928, 835}}";
+		};
+	};
+	AAF4A3130FE738FA005C27D1 /* PointerHash_inline.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {948, 2334}}";
+			sepNavSelRange = "{518, 0}";
+			sepNavVisRange = "{239, 1306}";
+			sepNavWindowFrame = "{{408, 14}, {928, 835}}";
+		};
+	};
+	AAFFE19A0FFAC06D00901117 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = AA9C0F760EB1448900F997D7 /* VertexServer.c */;
+		name = "VertexServer.c: 255";
+		rLen = 13;
+		rLoc = 6790;
+		rType = 0;
+		vrLen = 947;
+		vrLoc = 6555;
+	};
+}

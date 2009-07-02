@@ -1,0 +1,1 @@
+cc -lm -O0 -g -I/usr/local/include -I basekit/source -I basekit/source/simd_cph/include -I PDB -L/usr/local/lib basekit/source/*.c PDB/*.c *.c  -levent -ltokyocabinet -lbz2 -lzip -lz  -o ShopServer && chmod 755 ShopServer
