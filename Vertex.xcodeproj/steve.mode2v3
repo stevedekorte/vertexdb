@@ -246,48 +246,7 @@
 		</dict>
 	</array>
 	<key>OpenEditors</key>
-	<array>
-		<dict>
-			<key>Content</key>
-			<dict>
-				<key>PBXProjectModuleGUID</key>
-				<string>AAFFE1980FFAC06D00901117</string>
-				<key>PBXProjectModuleLabel</key>
-				<string>VertexServer.c</string>
-				<key>PBXSplitModuleInNavigatorKey</key>
-				<dict>
-					<key>Split0</key>
-					<dict>
-						<key>PBXProjectModuleGUID</key>
-						<string>AAFFE1990FFAC06D00901117</string>
-						<key>PBXProjectModuleLabel</key>
-						<string>VertexServer.c</string>
-						<key>_historyCapacity</key>
-						<integer>0</integer>
-						<key>bookmark</key>
-						<string>AAF3472F0FFD606A0070C69F</string>
-						<key>history</key>
-						<array>
-							<string>AAFFE19A0FFAC06D00901117</string>
-						</array>
-					</dict>
-					<key>SplitCount</key>
-					<string>1</string>
-				</dict>
-				<key>StatusBarVisibility</key>
-				<false/>
-			</dict>
-			<key>Geometry</key>
-			<dict>
-				<key>Frame</key>
-				<string>{{0, -1}, {752, 637}}</string>
-				<key>PBXModuleWindowStatusBarHidden2</key>
-				<true/>
-				<key>RubberWindowFrame</key>
-				<string>582 73 752 657 0 0 1440 878 </string>
-			</dict>
-		</dict>
-	</array>
+	<array/>
 	<key>PerspectiveWidths</key>
 	<array>
 		<integer>-1</integer>
@@ -393,7 +352,7 @@
 									<real>43</real>
 								</array>
 								<key>RubberWindowFrame</key>
-								<string>186 236 617 615 0 0 1440 878 </string>
+								<string>281 243 617 615 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXSmartGroupTreeModule</string>
@@ -534,8 +493,8 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>AAF347210FFD60530070C69F</string>
-				<string>AAF347220FFD60530070C69F</string>
+				<string>AAF347440FFD649B0070C69F</string>
+				<string>AAF347450FFD649B0070C69F</string>
 				<string>1C9437FD063B20B00039CFAC</string>
 				<string>1C9437FE063B20B00039CFAC</string>
 				<string>1C9437FF063B20B00039CFAC</string>
@@ -553,7 +512,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>268263530.046415</real>
+	<real>268264583.720727</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -568,16 +527,10 @@
 	<integer>0</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>AAF347300FFD606A0070C69F</string>
-		<string>AAF347310FFD606A0070C69F</string>
-		<string>1C530D5B069F1CE1000CFCEE</string>
-		<string>1C530D54069F1CE1000CFCEE</string>
-		<string>1C530D52069F1CE1000CFCEE</string>
-		<string>AAFFE1980FFAC06D00901117</string>
-		<string>/Users/steve/Sites/stylous/server/src/Vertex.xcodeproj</string>
+		<string>/Users/steve/Sites/stylous/server/vertexdb/Vertex.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>186 236 617 615 0 0 1440 878 </string>
+	<string>281 243 617 615 0 0 1440 878 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
