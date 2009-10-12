@@ -111,6 +111,13 @@ void Datum_append_(Datum *self, Datum *other)
 	memcpy(self->data + oldSize, other->data, other->size);
 }
 
+void Datum_appendBytes_size_(Datum *self, const unsigned char *bytes, size_t size)
+{
+	size_t oldSize = self->size;
+	Datum_setSize_(self, self->size + size);
+	memcpy(self->data + oldSize, bytes, size);
+}
+
 void Datum_appendQuoted_(Datum *self, Datum *other)
 {
 	Datum_appendCString_(self, "\""); 

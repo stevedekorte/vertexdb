@@ -37,6 +37,7 @@ void Datum_selectPathComponent(Datum *self);
 void Datum_selectLastComponent(Datum *self);
 
 void Datum_append_(Datum *self, Datum *other);
+void Datum_appendBytes_size_(Datum *self, const unsigned char *bytes, size_t size);
 void Datum_appendQuoted_(Datum *self, Datum *other);
 void Datum_appendCString_(Datum *self, const char *s);
 void Datum_appendLong_(Datum *self, long n);

@@ -158,7 +158,7 @@ int PDB_open(PDB *self)
 	
 	if (Datum_isEmpty(File_path(self->dbFile)))
 	{
-		PDB_setPathCString_(self, "/Users/steve/Sites/stylous/server/db/db.tc");
+		PDB_setPathCString_(self, "db.tc");
 	}
 	
 	if (self->useBackups)

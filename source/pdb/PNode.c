@@ -25,6 +25,10 @@ PNode *PNode_new(void)
 	self->value         = Datum_new();
 	self->sizePath      = Datum_new();
 	self->parentPid     = Datum_new();
+	
+	yajl_gen_config config = { 0, "" };
+	self->jsonGenerator = yajl_gen_alloc(&config, NULL);
+	
 	return self;
 }
 
@@ -44,6 +48,7 @@ void PNode_free(PNode *self)
 		PQuery_free(self->query);
 		self->query = 0x0;
 	}
+	yajl_gen_free(self->jsonGenerator);
 	
 	free(self);
 }
@@ -763,20 +768,28 @@ int PNode_withId_hasKey_andValue_(PNode *self, Datum *pid, Datum *wk, Datum *wv)
 int PNode_op_json(PNode *self, Datum *d)
 {
 	PQuery *q = PNode_startQuery(self);
+	const unsigned char *jsonBuffer;
+	unsigned int jsonBufferLength;
 
-	Datum_appendCString_(d, "{");
+	yajl_gen_map_open(self->jsonGenerator);
+	//Datum_appendCString_(d, "{");
 	
 	while (PNode_key(self))
 	{
-		Datum_appendQuoted_(d, PNode_key(self));
-		Datum_appendCString_(d, ":"); 
-		Datum_appendQuoted_(d, PNode_value(self));
+		yajl_gen_string(self->jsonGenerator, (const unsigned char *)Datum_data(PNode_key(self)), Datum_size(PNode_key(self)));
+		//Datum_appendQuoted_(d, PNode_key(self));
+		//Datum_appendCString_(d, ":"); 
+		yajl_gen_string(self->jsonGenerator, (const unsigned char *)Datum_data(PNode_value(self)), Datum_size(PNode_value(self)));
+		//Datum_appendQuoted_(d, PNode_value(self));
 		
 		PQuery_enumerate(q);
-		if (PNode_key(self)) Datum_appendCString_(d, ",");
+		//if (PNode_key(self)) Datum_appendCString_(d, ",");
 	}
 	
-	Datum_appendCString_(d, "}");
+	yajl_gen_map_close(self->jsonGenerator);
+	yajl_gen_get_buf(self->jsonGenerator, &jsonBuffer, &jsonBufferLength);
+	Datum_appendBytes_size_(d, jsonBuffer, (size_t)jsonBufferLength);
+	//Datum_appendCString_(d, "}");
 	return 0;
 }
 
