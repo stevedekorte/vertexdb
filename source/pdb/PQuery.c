@@ -71,7 +71,7 @@ int PQuery_setup(PQuery *self)
 	self->tmpNode = PDB_allocNode(pdb);
 	
 	self->hasFilter = self->whereKey && self->whereValue && 
-		Datum_isEmpty(self->whereKey) && Datum_isEmpty(self->whereValue);
+		(!Datum_isEmpty(self->whereKey)) && (!Datum_isEmpty(self->whereValue));
 	
 	if (self->selectCountMax == 0) self->selectCountMax = 100000;
 		
