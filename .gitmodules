@@ -1,0 +1,3 @@
+[submodule "source/basekit"]
+	path = source/basekit
+	url = git://github.com/stevedekorte/basekit.git
