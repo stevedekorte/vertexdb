@@ -54,7 +54,7 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					315,
+					238,
 					20,
 					48,
 					43,
@@ -128,15 +128,13 @@
 			AAD977620F515E7600FA8E04 /* Vertex */,
 		);
 	};
-	AA29D66E0F60C99C00773394 /* File.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {776, 2548}}";
-			sepNavSelRange = "{1337, 0}";
-			sepNavVisRange = "{1147, 342}";
-			sepNavWindowFrame = "{{92, 171}, {1100, 678}}";
-		};
-	};
 	AA29D66F0F60C99C00773394 /* File.h */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.h;
+		name = File.h;
+		path = /Users/steve/Developer/opensource/vertexdb/PDB/File.h;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {688, 720}}";
 			sepNavSelRange = "{124, 0}";
@@ -144,23 +142,13 @@
 			sepNavWindowFrame = "{{130, 36}, {939, 732}}";
 		};
 	};
-	AA2DE0C10EBD9469007A0749 /* Datum.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {771, 5664}}";
-			sepNavSelRange = "{5530, 0}";
-			sepNavVisRange = "{5083, 690}";
-			sepNavWindowFrame = "{{501, 69}, {820, 669}}";
-		};
-	};
-	AA2DE0C20EBD9469007A0749 /* Datum.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1124, 1360}}";
-			sepNavSelRange = "{265, 0}";
-			sepNavVisRange = "{0, 1190}";
-			sepNavWindowFrame = "{{377, 139}, {923, 726}}";
-		};
-	};
 	AA2DE0C30EBD9469007A0749 /* PNode.c */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.c;
+		name = PNode.c;
+		path = /Users/steve/Developer/opensource/vertexdb/PDB/PNode.c;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {759, 16860}}";
 			sepNavSelRange = "{7269, 0}";
@@ -168,28 +156,18 @@
 			sepNavWindowFrame = "{{225, 21}, {1040, 792}}";
 		};
 	};
-	AA2DE0C40EBD9469007A0749 /* PNode.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {774, 2112}}";
-			sepNavSelRange = "{3364, 72}";
-			sepNavVisRange = "{2216, 1257}";
-			sepNavWindowFrame = "{{422, 116}, {823, 675}}";
-		};
-	};
 	AA2DE0C50EBD9469007A0749 /* PDB.c */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.c;
+		name = PDB.c;
+		path = /Users/steve/Developer/opensource/vertexdb/PDB/PDB.c;
+		sourceTree = "<absolute>";
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {862, 9700}}";
-			sepNavSelRange = "{10600, 0}";
-			sepNavVisRange = "{10170, 768}";
-			sepNavWindowFrame = "{{341, 71}, {911, 689}}";
-		};
-	};
-	AA2DE0C60EBD9469007A0749 /* PDB.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {774, 1398}}";
-			sepNavSelRange = "{1685, 0}";
-			sepNavVisRange = "{712, 1203}";
-			sepNavWindowFrame = "{{417, 196}, {823, 675}}";
+			sepNavIntBoundsRect = "{{0, 0}, {862, 9668}}";
+			sepNavSelRange = "{10770, 0}";
+			sepNavVisRange = "{10500, 1049}";
+			sepNavWindowFrame = "{{462, 67}, {911, 689}}";
 		};
 	};
 	AA3305091082A691007AD6CA /* PBXTextBookmark */ = {
@@ -210,63 +188,13 @@
 		vrLen = 748;
 		vrLoc = 0;
 	};
-	AA5F9FB20F0097D4006313F4 /* Common.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1691, 3142}}";
-			sepNavSelRange = "{373, 0}";
-			sepNavVisRange = "{1, 1011}";
-			sepNavWindowFrame = "{{443, 202}, {732, 622}}";
-		};
-	};
-	AA5F9FB30F0097D4006313F4 /* Common_inline.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {685, 1068}}";
-			sepNavSelRange = "{684, 0}";
-			sepNavVisRange = "{381, 554}";
-			sepNavWindowFrame = "{{550, 44}, {732, 622}}";
-		};
-	};
-	AA5F9FBA0F0097D4006313F4 /* List.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {695, 3862}}";
-			sepNavSelRange = "{1060, 6}";
-			sepNavVisRange = "{357, 858}";
-			sepNavWindowFrame = "{{61, 22}, {744, 809}}";
-		};
-	};
-	AA5F9FBB0F0097D4006313F4 /* List.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {695, 1696}}";
-			sepNavSelRange = "{832, 0}";
-			sepNavVisRange = "{462, 1372}";
-			sepNavWindowFrame = "{{38, 43}, {744, 809}}";
-		};
-	};
-	AA5F9FBC0F0097D4006313F4 /* List_inline.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {822, 6190}}";
-			sepNavSelRange = "{2461, 0}";
-			sepNavVisRange = "{2168, 685}";
-			sepNavWindowFrame = "{{84, 1}, {744, 809}}";
-		};
-	};
-	AA5F9FDB0F0097D4006313F4 /* simd_cp_emu.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1354, 5766}}";
-			sepNavSelRange = "{2650, 1}";
-			sepNavVisRange = "{0, 1124}";
-			sepNavWindowFrame = "{{15, 269}, {1403, 604}}";
-		};
-	};
-	AA5F9FE60F0097D4006313F4 /* UArray.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1024, 21008}}";
-			sepNavSelRange = "{20065, 0}";
-			sepNavVisRange = "{19156, 1396}";
-			sepNavWindowFrame = "{{107, 135}, {1073, 654}}";
-		};
-	};
 	AA5F9FE70F0097D4006313F4 /* UArray.h */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.h;
+		name = UArray.h;
+		path = /Users/steve/Developer/opensource/vertexdb/basekit/source/UArray.h;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {759, 8030}}";
 			sepNavSelRange = "{13601, 17}";
@@ -274,15 +202,13 @@
 			sepNavWindowFrame = "{{14, 245}, {981, 574}}";
 		};
 	};
-	AA5F9FE80F0097D4006313F4 /* UArray_character.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1024, 666}}";
-			sepNavSelRange = "{149, 0}";
-			sepNavVisRange = "{0, 784}";
-			sepNavWindowFrame = "{{130, 114}, {1073, 654}}";
-		};
-	};
 	AA5F9FEC0F0097D4006313F4 /* UArray_math.c */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.c;
+		name = UArray_math.c;
+		path = /Users/steve/Developer/opensource/vertexdb/basekit/source/UArray_math.c;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {688, 11844}}";
 			sepNavSelRange = "{500, 0}";
@@ -290,30 +216,13 @@
 			sepNavWindowFrame = "{{241, -190}, {840, 682}}";
 		};
 	};
-	AA5F9FED0F0097D4006313F4 /* UArray_math.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {791, 1944}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{775, 1566}";
-			sepNavWindowFrame = "{{84, 128}, {840, 682}}";
-		};
-	};
-	AA5F9FEE0F0097D4006313F4 /* UArray_path.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {759, 2168}}";
-			sepNavSelRange = "{272, 31}";
-			sepNavVisRange = "{0, 751}";
-		};
-	};
-	AA5F9FF20F0097D4006313F4 /* UArray_string.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {776, 9522}}";
-			sepNavSelRange = "{8953, 0}";
-			sepNavVisRange = "{8812, 255}";
-			sepNavWindowFrame = "{{176, 129}, {974, 597}}";
-		};
-	};
 	AA5F9FF40F0097D4006313F4 /* UArray_utf.c */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.c;
+		name = UArray_utf.c;
+		path = /Users/steve/Developer/opensource/vertexdb/basekit/source/UArray_utf.c;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {688, 5124}}";
 			sepNavSelRange = "{2022, 0}";
@@ -322,19 +231,17 @@
 		};
 	};
 	AA622A840FF318F600FBCA1A /* PQuery.c */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.c;
+		name = PQuery.c;
+		path = /Users/steve/Developer/opensource/vertexdb/PDB/PQuery.c;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {900, 2484}}";
 			sepNavSelRange = "{1229, 0}";
 			sepNavVisRange = "{937, 555}";
 			sepNavWindowFrame = "{{313, 21}, {939, 732}}";
-		};
-	};
-	AA622A850FF318F600FBCA1A /* PQuery.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {853, 868}}";
-			sepNavSelRange = "{311, 0}";
-			sepNavVisRange = "{69, 956}";
-			sepNavWindowFrame = "{{497, 50}, {902, 751}}";
 		};
 	};
 	AA622D800FF830B000FBCA1A /* VertexServer.c:861 */ = {
@@ -482,6 +389,12 @@
 		state = 2;
 	};
 	AA9559061082A7290044CD9F /* Log.h */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.h;
+		name = Log.h;
+		path = /Users/steve/Developer/opensource/vertexdb/PDB/Log.h;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1420, 592}}";
 			sepNavSelRange = "{915, 0}";
@@ -982,77 +895,5 @@
 	AAD9776D0F515E8300FA8E04 /* Code sense */ = {
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
-	};
-	AAF4A3060FE738FA005C27D1 /* CHash.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {791, 3726}}";
-			sepNavSelRange = "{4059, 30}";
-			sepNavVisRange = "{3643, 681}";
-			sepNavWindowFrame = "{{287, 45}, {840, 682}}";
-		};
-	};
-	AAF4A3070FE738FA005C27D1 /* CHash.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {879, 1080}}";
-			sepNavSelRange = "{1060, 0}";
-			sepNavVisRange = "{217, 1439}";
-			sepNavWindowFrame = "{{284, 40}, {928, 835}}";
-		};
-	};
-	AAF4A3080FE738FA005C27D1 /* CHash_inline.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {772, 2244}}";
-			sepNavSelRange = "{958, 0}";
-			sepNavVisRange = "{240, 555}";
-			sepNavWindowFrame = "{{38, 17}, {928, 835}}";
-		};
-	};
-	AAF4A30D0FE738FA005C27D1 /* Hash_murmur.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {879, 1020}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{0, 1099}";
-			sepNavWindowFrame = "{{15, 38}, {928, 835}}";
-		};
-	};
-	AAF4A30E0FE738FA005C27D1 /* Hash_murmur.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {879, 798}}";
-			sepNavSelRange = "{71, 0}";
-			sepNavVisRange = "{0, 71}";
-			sepNavWindowFrame = "{{38, 17}, {928, 835}}";
-		};
-	};
-	AAF4A3100FE738FA005C27D1 /* Hash_superfast.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {741, 161}}";
-			sepNavSelRange = "{0, 52}";
-			sepNavVisRange = "{0, 52}";
-			sepNavWindowFrame = "{{38, 17}, {928, 835}}";
-		};
-	};
-	AAF4A3110FE738FA005C27D1 /* PointerHash.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {776, 2614}}";
-			sepNavSelRange = "{1576, 0}";
-			sepNavVisRange = "{1376, 401}";
-			sepNavWindowFrame = "{{15, 38}, {928, 835}}";
-		};
-	};
-	AAF4A3120FE738FA005C27D1 /* PointerHash.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {879, 916}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{147, 1494}";
-			sepNavWindowFrame = "{{38, 17}, {928, 835}}";
-		};
-	};
-	AAF4A3130FE738FA005C27D1 /* PointerHash_inline.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {948, 2334}}";
-			sepNavSelRange = "{518, 0}";
-			sepNavVisRange = "{239, 1306}";
-			sepNavWindowFrame = "{{408, 14}, {928, 835}}";
-		};
 	};
 }
