@@ -115,6 +115,15 @@ int PQuery_run(PQuery *self)
 	return -1;
 }
 */
+int PQuery_stepDirection(PQuery *self)
+{
+	if(self->before && !Datum_isEmpty(self->before))
+	{
+		return -1;
+	}
+
+	return 1;
+}
 
 void PQuery_step(PQuery *self)
 {

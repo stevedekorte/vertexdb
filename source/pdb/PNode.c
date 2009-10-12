@@ -922,21 +922,60 @@ int PNode_op_values(PNode *self, Datum *d)
 	return 0; 
 }
 
+/*
+int PNode_op_rm(PNode *self, Datum *d)
+{	
+	Datum *k;
+	long size = PNode_size(self);
+	long removeCount = 0;
+	
+	while ((k = PNode_key(self)))
+	{
+		PDB_willWrite(self->pdb);
+		if(!tcbdbcurout(self->cursor)) break;
+		removeCount ++;
+		if (Datum_equals_(k, endKey)) break;
+	}
+	
+	PNode_setSize_(self, size - removeCount);
+	
+	Datum_appendLong_(d, count);
+	return 0;
+}
+*/
+
 int PNode_op_rm(PNode *self, Datum *d)
 {
 	PQuery *q = PNode_startQuery(self);
 	Datum *k;
-	int count = 0;
+	long size = PNode_size(self);
+	long removeCount = 0;
 	
 	if(!q) PNode_first(self);
 	
 	while (k = PNode_key(self))
 	{
-		count += PNode_removeAt_(self, k);
+		PDB_willWrite(self->pdb);
+		if(!tcbdbcurout(self->cursor)) break;
+		
+		// hack to avoid skipping a step by backing up before calling PQuery_enumerate
+		if(PQuery_stepDirection(q) == 1)
+		{
+			tcbdbcurprev(self->cursor);
+		}
+		else 
+		{
+			tcbdbcurnext(self->cursor);
+		}
+
+		removeCount ++;
+		//count += PNode_removeAt_(self, k);
 		PQuery_enumerate(q);
 	}
+
+	PNode_setSize_(self, size - removeCount);
 	
-	Datum_appendLong_(d, count);
+	Datum_appendLong_(d, removeCount);
 	return 0;  
 }
 

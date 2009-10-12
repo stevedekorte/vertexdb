@@ -45,6 +45,7 @@ void PQuery_setSelectCountMax_(PQuery *self, unsigned int n);
 
 int PQuery_setup(PQuery *self);
 void PQuery_enumerate(PQuery *self);
+int PQuery_stepDirection(PQuery *self);
 
 unsigned int PQuery_selectCount(PQuery *self);
 
