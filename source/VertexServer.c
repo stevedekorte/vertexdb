@@ -661,7 +661,7 @@ int VertexServer_backup(VertexServer *self)
 	time_t now = time(NULL);
 	int result;
 	
-	Log_Printf_("backup at %i bytes written... ", PDB_bytesWaitingToCommit(self->pdb));
+	Log_Printf_("backup at %i bytes written... ", (int)PDB_bytesWaitingToCommit(self->pdb));
 	
 	PDB_commit(self->pdb);
 	
@@ -699,7 +699,8 @@ void VertexServer_commitIfNeeded(VertexServer *self)
 	if (writeByteCount > 1024*1024*10)
 	{
 		PDB_commit(self->pdb);
-		Log_Printf_("commit at %i bytes written\n", writeByteCount);
+		Log_Printf_("commit at %i bytes written\n", 
+			(int)writeByteCount);
 	}
 }
 
@@ -734,7 +735,8 @@ int VertexServer_api_collectGarbage(VertexServer *self)
 	Datum_appendCString_(self->result, " in ");
 	Datum_appendLong_(self->result, (long)dt);
 	Datum_appendCString_(self->result, " seconds");
-	Log_Printf__("collected %i slots in %f seconds\n", collectedCount, (float)dt);
+	Log_Printf__("collected %i slots in %f seconds\n", 
+		(int)collectedCount, (float)dt);
 	return 0;
 }
 
@@ -893,7 +895,7 @@ void VertexServer_requestHandler(struct evhttp_request *req, void *arg)
 		Datum_clear(self->result);
 		result = VertexServer_process(self);
 		Datum_nullTerminate(self->result);
-		evbuffer_add_printf(buf, Datum_data(self->result)); 
+		evbuffer_add_printf(buf, "%s", Datum_data(self->result)); 
 		
 		if (result == 0)
 		{
@@ -905,7 +907,7 @@ void VertexServer_requestHandler(struct evhttp_request *req, void *arg)
 			{
 				evbuffer_add_printf(buf, "ERROR: ");
 				Datum_nullTerminate(self->error); 
-				evbuffer_add_printf(buf, Datum_data(self->error)); 
+				evbuffer_add_printf(buf, "%s", Datum_data(self->error)); 
 				Datum_setSize_(self->error, 0);
 			}
 			else
@@ -924,7 +926,8 @@ void VertexServer_requestHandler(struct evhttp_request *req, void *arg)
 
 	if(self->requestCount % self->requestsPerSample == 0)
 	{
-		Log_Printf__("STATS: %i requests, %i bytes to write\n", self->requestCount, PDB_bytesWaitingToCommit(self->pdb));
+		Log_Printf__("STATS: %i requests, %i bytes to write\n", 
+			(int)self->requestCount, (int)PDB_bytesWaitingToCommit(self->pdb));
 	}
 
 	self->requestCount ++;

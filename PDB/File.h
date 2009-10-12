@@ -8,7 +8,7 @@ extern "C" {
 
 #include <stdio.h>
 #include "Datum.h"
-#include "../Log.h"
+#include "Log.h"
 
 typedef struct
 {

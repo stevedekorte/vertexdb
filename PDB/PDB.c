@@ -5,7 +5,7 @@ Notes:
 
 #include "PDB.h"
 #include "PQuery.h"
-#include "../Log.h"
+#include "Log.h"
 #include "Datum.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -478,7 +478,9 @@ long PDB_saveMarkedNodes(PDB *self)
 	
 	outNode = PDB_newNode(out);
 	
-	Log_Printf_("  PDB copying %i marked nodes to new db...\n", CHash_count(self->markedPids));
+	Log_Printf_("  PDB copying %i marked nodes to new db...\n", 
+		(int)CHash_count(self->markedPids));
+
 	
 	CHASH_FOREACH(self->markedPids, k, v, 
 		PNode_setPidLong_(inNode, (long)k);
@@ -495,7 +497,7 @@ long PDB_saveMarkedNodes(PDB *self)
 		
 		if(savedCount % 10000 == 0) 
 		{
-			Log_Printf_("    %i\n", savedCount);
+			Log_Printf_("    %i\n", (int)savedCount);
 		}
 	);
 	
@@ -529,7 +531,7 @@ void PDB_markReachableNodes(PDB *self)
 		PNode_setPidLong_(aNode, pid);
 		PNode_mark(aNode);
 		i++;
-		if (i % 10000 == 0) { Log_Printf_("    %i\n", i); }
+		if (i % 10000 == 0) { Log_Printf_("    %i\n", (int)i); }
 	}
 	
 	PNode_free(aNode);
@@ -545,8 +547,8 @@ long PDB_sizeInMB(PDB *self)
 
 int Pointer_equals_(void *p1, void *p2)
 {
-	unsigned int i1 = (unsigned int)p1;
-	unsigned int i2 = (unsigned int)p2;
+	uintptr_t i1 = (uintptr_t)p1;
+	uintptr_t i2 = (uintptr_t)p2;
 	if(i1 == i2) return 0;
 	if(i1 < i2) return 1;
 	return -1;

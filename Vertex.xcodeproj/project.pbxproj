@@ -7,12 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8DD76FAC0486AB0100D96B5E /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* main.c */; settings = {ATTRIBUTES = (); }; };
 		8DD76FB00486AB0100D96B5E /* Vertex.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6A0FF2C0290799A04C91782 /* Vertex.1 */; };
 		AA29D6700F60C99C00773394 /* File.c in Sources */ = {isa = PBXBuildFile; fileRef = AA29D66E0F60C99C00773394 /* File.c */; };
 		AA2DE0C70EBD9469007A0749 /* Datum.c in Sources */ = {isa = PBXBuildFile; fileRef = AA2DE0C10EBD9469007A0749 /* Datum.c */; };
 		AA2DE0C80EBD9469007A0749 /* PNode.c in Sources */ = {isa = PBXBuildFile; fileRef = AA2DE0C30EBD9469007A0749 /* PNode.c */; };
 		AA2DE0C90EBD9469007A0749 /* PDB.c in Sources */ = {isa = PBXBuildFile; fileRef = AA2DE0C50EBD9469007A0749 /* PDB.c */; };
+		AA33042C10829584007AD6CA /* libevent_extra.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA33042A10829584007AD6CA /* libevent_extra.a */; };
+		AA33042D10829584007AD6CA /* libevent.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA33042B10829584007AD6CA /* libevent.a */; };
 		AA5FA0220F0097D4006313F4 /* BStream.c in Sources */ = {isa = PBXBuildFile; fileRef = AA5F9FA90F0097D4006313F4 /* BStream.c */; };
 		AA5FA0230F0097D4006313F4 /* BStreamTag.c in Sources */ = {isa = PBXBuildFile; fileRef = AA5F9FAB0F0097D4006313F4 /* BStreamTag.c */; };
 		AA5FA0240F0097D4006313F4 /* cdecode.c in Sources */ = {isa = PBXBuildFile; fileRef = AA5F9FAD0F0097D4006313F4 /* cdecode.c */; };
@@ -43,16 +44,16 @@
 		AA5FA0420F0097D4006313F4 /* ucs4.c in Sources */ = {isa = PBXBuildFile; fileRef = AA5F9FF70F0097D4006313F4 /* ucs4.c */; };
 		AA5FA0430F0097D4006313F4 /* utf8.c in Sources */ = {isa = PBXBuildFile; fileRef = AA5F9FF80F0097D4006313F4 /* utf8.c */; };
 		AA5FA0440F0097D4006313F4 /* utf_convert.c in Sources */ = {isa = PBXBuildFile; fileRef = AA5F9FFB0F0097D4006313F4 /* utf_convert.c */; };
-		AA622A180FF2F0D200FBCA1A /* Socket.c in Sources */ = {isa = PBXBuildFile; fileRef = AA622A160FF2F0D200FBCA1A /* Socket.c */; };
 		AA622A860FF318F600FBCA1A /* PQuery.c in Sources */ = {isa = PBXBuildFile; fileRef = AA622A840FF318F600FBCA1A /* PQuery.c */; };
-		AA622B870FF445BF00FBCA1A /* Pool.c in Sources */ = {isa = PBXBuildFile; fileRef = AA622B850FF445BF00FBCA1A /* Pool.c */; };
-		AA97F9D90F0AFA9C00B9F3B0 /* Log.c in Sources */ = {isa = PBXBuildFile; fileRef = AA97F9D70F0AFA9C00B9F3B0 /* Log.c */; };
+		AA9559091082A7290044CD9F /* Log.c in Sources */ = {isa = PBXBuildFile; fileRef = AA9559051082A7290044CD9F /* Log.c */; };
+		AA95590A1082A7290044CD9F /* Pool.c in Sources */ = {isa = PBXBuildFile; fileRef = AA9559071082A7290044CD9F /* Pool.c */; };
+		AA9559491082A9130044CD9F /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = AA9559411082A9130044CD9F /* main.c */; };
+		AA95594A1082A9130044CD9F /* RunningStat.c in Sources */ = {isa = PBXBuildFile; fileRef = AA9559421082A9130044CD9F /* RunningStat.c */; };
+		AA95594B1082A9130044CD9F /* Socket.c in Sources */ = {isa = PBXBuildFile; fileRef = AA9559441082A9130044CD9F /* Socket.c */; };
+		AA95594C1082A9130044CD9F /* VertexServer.c in Sources */ = {isa = PBXBuildFile; fileRef = AA9559461082A9130044CD9F /* VertexServer.c */; };
+		AA95594D1082A9130044CD9F /* VertexServer_extra.c in Sources */ = {isa = PBXBuildFile; fileRef = AA9559481082A9130044CD9F /* VertexServer_extra.c */; };
 		AA9C0F6C0EB1387F00F997D7 /* libtokyocabinet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9C0F6B0EB1387F00F997D7 /* libtokyocabinet.a */; };
-		AA9C0F6F0EB1389200F997D7 /* libevent_extra.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9C0F6D0EB1389200F997D7 /* libevent_extra.a */; };
-		AA9C0F700EB1389200F997D7 /* libevent_core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9C0F6E0EB1389200F997D7 /* libevent_core.a */; };
 		AA9C0F720EB138C100F997D7 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9C0F710EB138C100F997D7 /* libz.a */; };
-		AA9C0F780EB1448900F997D7 /* VertexServer.c in Sources */ = {isa = PBXBuildFile; fileRef = AA9C0F760EB1448900F997D7 /* VertexServer.c */; };
-		AACE0C9A0F292D3D00D6CA7A /* RunningStat.c in Sources */ = {isa = PBXBuildFile; fileRef = AACE0C980F292D3D00D6CA7A /* RunningStat.c */; };
 		AAF4A3150FE738FA005C27D1 /* CHash.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF4A3060FE738FA005C27D1 /* CHash.c */; };
 		AAF4A3160FE738FA005C27D1 /* DynLib.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF4A3090FE738FA005C27D1 /* DynLib.c */; };
 		AAF4A3170FE738FA005C27D1 /* Hash_fnv.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF4A30B0FE738FA005C27D1 /* Hash_fnv.c */; };
@@ -75,7 +76,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		08FB7796FE84155DC02AAC07 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		8DD76FB20486AB0100D96B5E /* Vertex */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Vertex; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA29D66E0F60C99C00773394 /* File.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = File.c; path = PDB/File.c; sourceTree = SOURCE_ROOT; };
 		AA29D66F0F60C99C00773394 /* File.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = File.h; path = PDB/File.h; sourceTree = SOURCE_ROOT; };
@@ -85,6 +85,8 @@
 		AA2DE0C40EBD9469007A0749 /* PNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNode.h; sourceTree = "<group>"; };
 		AA2DE0C50EBD9469007A0749 /* PDB.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = PDB.c; path = PDB/PDB.c; sourceTree = SOURCE_ROOT; };
 		AA2DE0C60EBD9469007A0749 /* PDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDB.h; path = PDB/PDB.h; sourceTree = SOURCE_ROOT; };
+		AA33042A10829584007AD6CA /* libevent_extra.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libevent_extra.a; path = /opt/local/lib/libevent_extra.a; sourceTree = "<absolute>"; };
+		AA33042B10829584007AD6CA /* libevent.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libevent.a; path = /opt/local/lib/libevent.a; sourceTree = "<absolute>"; };
 		AA5F9FA80F0097D4006313F4 /* Base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Base.h; path = basekit/source/Base.h; sourceTree = SOURCE_ROOT; };
 		AA5F9FA90F0097D4006313F4 /* BStream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = BStream.c; path = basekit/source/BStream.c; sourceTree = SOURCE_ROOT; };
 		AA5F9FAA0F0097D4006313F4 /* BStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BStream.h; path = basekit/source/BStream.h; sourceTree = SOURCE_ROOT; };
@@ -152,22 +154,22 @@
 		AA5F9FFA0F0097D4006313F4 /* utf8internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = utf8internal.h; path = basekit/source/utf8internal.h; sourceTree = SOURCE_ROOT; };
 		AA5F9FFB0F0097D4006313F4 /* utf_convert.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = utf_convert.c; path = basekit/source/utf_convert.c; sourceTree = SOURCE_ROOT; };
 		AA5F9FFC0F0097D4006313F4 /* utf_convert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = utf_convert.h; path = basekit/source/utf_convert.h; sourceTree = SOURCE_ROOT; };
-		AA622A160FF2F0D200FBCA1A /* Socket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Socket.c; sourceTree = SOURCE_ROOT; };
-		AA622A170FF2F0D200FBCA1A /* Socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Socket.h; sourceTree = SOURCE_ROOT; };
 		AA622A840FF318F600FBCA1A /* PQuery.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = PQuery.c; path = PDB/PQuery.c; sourceTree = SOURCE_ROOT; };
 		AA622A850FF318F600FBCA1A /* PQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PQuery.h; path = PDB/PQuery.h; sourceTree = SOURCE_ROOT; };
-		AA622B850FF445BF00FBCA1A /* Pool.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Pool.c; sourceTree = SOURCE_ROOT; };
-		AA622B860FF445BF00FBCA1A /* Pool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Pool.h; sourceTree = SOURCE_ROOT; };
-		AA97F9D70F0AFA9C00B9F3B0 /* Log.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Log.c; sourceTree = SOURCE_ROOT; };
-		AA97F9D80F0AFA9C00B9F3B0 /* Log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Log.h; sourceTree = SOURCE_ROOT; };
-		AA9C0F6B0EB1387F00F997D7 /* libtokyocabinet.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtokyocabinet.a; path = /usr/local/lib/libtokyocabinet.a; sourceTree = "<absolute>"; };
-		AA9C0F6D0EB1389200F997D7 /* libevent_extra.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libevent_extra.a; path = /usr/local/lib/libevent_extra.a; sourceTree = "<absolute>"; };
-		AA9C0F6E0EB1389200F997D7 /* libevent_core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libevent_core.a; path = /usr/local/lib/libevent_core.a; sourceTree = "<absolute>"; };
+		AA9559051082A7290044CD9F /* Log.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Log.c; path = PDB/Log.c; sourceTree = SOURCE_ROOT; };
+		AA9559061082A7290044CD9F /* Log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Log.h; path = PDB/Log.h; sourceTree = SOURCE_ROOT; };
+		AA9559071082A7290044CD9F /* Pool.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Pool.c; path = PDB/Pool.c; sourceTree = SOURCE_ROOT; };
+		AA9559081082A7290044CD9F /* Pool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pool.h; path = PDB/Pool.h; sourceTree = SOURCE_ROOT; };
+		AA9559411082A9130044CD9F /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = source/main.c; sourceTree = SOURCE_ROOT; };
+		AA9559421082A9130044CD9F /* RunningStat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = RunningStat.c; path = source/RunningStat.c; sourceTree = SOURCE_ROOT; };
+		AA9559431082A9130044CD9F /* RunningStat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RunningStat.h; path = source/RunningStat.h; sourceTree = SOURCE_ROOT; };
+		AA9559441082A9130044CD9F /* Socket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Socket.c; path = source/Socket.c; sourceTree = SOURCE_ROOT; };
+		AA9559451082A9130044CD9F /* Socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Socket.h; path = source/Socket.h; sourceTree = SOURCE_ROOT; };
+		AA9559461082A9130044CD9F /* VertexServer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = VertexServer.c; path = source/VertexServer.c; sourceTree = SOURCE_ROOT; };
+		AA9559471082A9130044CD9F /* VertexServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VertexServer.h; path = source/VertexServer.h; sourceTree = SOURCE_ROOT; };
+		AA9559481082A9130044CD9F /* VertexServer_extra.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = VertexServer_extra.c; path = source/VertexServer_extra.c; sourceTree = SOURCE_ROOT; };
+		AA9C0F6B0EB1387F00F997D7 /* libtokyocabinet.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtokyocabinet.a; path = /opt/local/lib/libtokyocabinet.a; sourceTree = "<absolute>"; };
 		AA9C0F710EB138C100F997D7 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = /opt/local/lib/libz.a; sourceTree = "<absolute>"; };
-		AA9C0F760EB1448900F997D7 /* VertexServer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = VertexServer.c; sourceTree = "<group>"; };
-		AA9C0F770EB1448900F997D7 /* VertexServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VertexServer.h; sourceTree = "<group>"; };
-		AACE0C980F292D3D00D6CA7A /* RunningStat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = RunningStat.c; sourceTree = SOURCE_ROOT; };
-		AACE0C990F292D3D00D6CA7A /* RunningStat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RunningStat.h; sourceTree = SOURCE_ROOT; };
 		AAF4A3060FE738FA005C27D1 /* CHash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = CHash.c; path = basekit/source/CHash.c; sourceTree = SOURCE_ROOT; };
 		AAF4A3070FE738FA005C27D1 /* CHash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CHash.h; path = basekit/source/CHash.h; sourceTree = SOURCE_ROOT; };
 		AAF4A3080FE738FA005C27D1 /* CHash_inline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CHash_inline.h; path = basekit/source/CHash_inline.h; sourceTree = SOURCE_ROOT; };
@@ -192,9 +194,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA9C0F6C0EB1387F00F997D7 /* libtokyocabinet.a in Frameworks */,
-				AA9C0F6F0EB1389200F997D7 /* libevent_extra.a in Frameworks */,
-				AA9C0F700EB1389200F997D7 /* libevent_core.a in Frameworks */,
 				AA9C0F720EB138C100F997D7 /* libz.a in Frameworks */,
+				AA33042C10829584007AD6CA /* libevent_extra.a in Frameworks */,
+				AA33042D10829584007AD6CA /* libevent.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -214,22 +216,12 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				AA622B850FF445BF00FBCA1A /* Pool.c */,
-				AA622B860FF445BF00FBCA1A /* Pool.h */,
-				AA97F9D80F0AFA9C00B9F3B0 /* Log.h */,
-				AA97F9D70F0AFA9C00B9F3B0 /* Log.c */,
-				AA5F9F520F0097D4006313F4 /* basekit */,
+				AA9559401082A9130044CD9F /* source */,
 				AA2DE0C00EBD9469007A0749 /* PDB */,
-				AACE0C990F292D3D00D6CA7A /* RunningStat.h */,
-				AACE0C980F292D3D00D6CA7A /* RunningStat.c */,
-				AA622A160FF2F0D200FBCA1A /* Socket.c */,
-				AA622A170FF2F0D200FBCA1A /* Socket.h */,
-				AA9C0F770EB1448900F997D7 /* VertexServer.h */,
-				AA9C0F760EB1448900F997D7 /* VertexServer.c */,
-				08FB7796FE84155DC02AAC07 /* main.c */,
+				AA5F9F520F0097D4006313F4 /* basekit */,
 				AA9C0F6B0EB1387F00F997D7 /* libtokyocabinet.a */,
-				AA9C0F6D0EB1389200F997D7 /* libevent_extra.a */,
-				AA9C0F6E0EB1389200F997D7 /* libevent_core.a */,
+				AA33042A10829584007AD6CA /* libevent_extra.a */,
+				AA33042B10829584007AD6CA /* libevent.a */,
 				AA9C0F710EB138C100F997D7 /* libz.a */,
 			);
 			name = Source;
@@ -246,6 +238,10 @@
 		AA2DE0C00EBD9469007A0749 /* PDB */ = {
 			isa = PBXGroup;
 			children = (
+				AA9559051082A7290044CD9F /* Log.c */,
+				AA9559061082A7290044CD9F /* Log.h */,
+				AA9559071082A7290044CD9F /* Pool.c */,
+				AA9559081082A7290044CD9F /* Pool.h */,
 				AA622A840FF318F600FBCA1A /* PQuery.c */,
 				AA622A850FF318F600FBCA1A /* PQuery.h */,
 				AA29D66E0F60C99C00773394 /* File.c */,
@@ -376,6 +372,21 @@
 			path = basekit/source/simd_cph/include;
 			sourceTree = SOURCE_ROOT;
 		};
+		AA9559401082A9130044CD9F /* source */ = {
+			isa = PBXGroup;
+			children = (
+				AA9559411082A9130044CD9F /* main.c */,
+				AA9559421082A9130044CD9F /* RunningStat.c */,
+				AA9559431082A9130044CD9F /* RunningStat.h */,
+				AA9559441082A9130044CD9F /* Socket.c */,
+				AA9559451082A9130044CD9F /* Socket.h */,
+				AA9559461082A9130044CD9F /* VertexServer.c */,
+				AA9559471082A9130044CD9F /* VertexServer.h */,
+				AA9559481082A9130044CD9F /* VertexServer_extra.c */,
+			);
+			path = source;
+			sourceTree = SOURCE_ROOT;
+		};
 		C6A0FF2B0290797F04C91782 /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
@@ -427,8 +438,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8DD76FAC0486AB0100D96B5E /* main.c in Sources */,
-				AA9C0F780EB1448900F997D7 /* VertexServer.c in Sources */,
 				AA2DE0C70EBD9469007A0749 /* Datum.c in Sources */,
 				AA2DE0C80EBD9469007A0749 /* PNode.c in Sources */,
 				AA2DE0C90EBD9469007A0749 /* PDB.c in Sources */,
@@ -462,8 +471,6 @@
 				AA5FA0420F0097D4006313F4 /* ucs4.c in Sources */,
 				AA5FA0430F0097D4006313F4 /* utf8.c in Sources */,
 				AA5FA0440F0097D4006313F4 /* utf_convert.c in Sources */,
-				AA97F9D90F0AFA9C00B9F3B0 /* Log.c in Sources */,
-				AACE0C9A0F292D3D00D6CA7A /* RunningStat.c in Sources */,
 				AA29D6700F60C99C00773394 /* File.c in Sources */,
 				AAF4A3150FE738FA005C27D1 /* CHash.c in Sources */,
 				AAF4A3160FE738FA005C27D1 /* DynLib.c in Sources */,
@@ -471,9 +478,14 @@
 				AAF4A3180FE738FA005C27D1 /* Hash_murmur.c in Sources */,
 				AAF4A3190FE738FA005C27D1 /* Hash_superfast.c in Sources */,
 				AAF4A31A0FE738FA005C27D1 /* PointerHash.c in Sources */,
-				AA622A180FF2F0D200FBCA1A /* Socket.c in Sources */,
 				AA622A860FF318F600FBCA1A /* PQuery.c in Sources */,
-				AA622B870FF445BF00FBCA1A /* Pool.c in Sources */,
+				AA9559091082A7290044CD9F /* Log.c in Sources */,
+				AA95590A1082A7290044CD9F /* Pool.c in Sources */,
+				AA9559491082A9130044CD9F /* main.c in Sources */,
+				AA95594A1082A9130044CD9F /* RunningStat.c in Sources */,
+				AA95594B1082A9130044CD9F /* Socket.c in Sources */,
+				AA95594C1082A9130044CD9F /* VertexServer.c in Sources */,
+				AA95594D1082A9130044CD9F /* VertexServer_extra.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -484,6 +496,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -497,6 +510,7 @@
 					"\"$(SRCROOT)/basekit/_build/lib\"",
 				);
 				PRODUCT_NAME = Vertex;
+				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
 		};
