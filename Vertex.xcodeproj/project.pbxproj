@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8DD76FB00486AB0100D96B5E /* Vertex.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6A0FF2C0290799A04C91782 /* Vertex.1 */; };
+		9F087BBA1083105900211163 /* libyajl_s.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F087BB91083105900211163 /* libyajl_s.a */; };
 		AA33042C10829584007AD6CA /* libevent_extra.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA33042A10829584007AD6CA /* libevent_extra.a */; };
 		AA33042D10829584007AD6CA /* libevent.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA33042B10829584007AD6CA /* libevent.a */; };
 		AA9559491082A9130044CD9F /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = AA9559411082A9130044CD9F /* main.c */; };
@@ -77,6 +78,7 @@
 
 /* Begin PBXFileReference section */
 		8DD76FB20486AB0100D96B5E /* Vertex */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Vertex; sourceTree = BUILT_PRODUCTS_DIR; };
+		9F087BB91083105900211163 /* libyajl_s.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libyajl_s.a; path = /usr/local/lib/libyajl_s.a; sourceTree = "<absolute>"; };
 		AA33042A10829584007AD6CA /* libevent_extra.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libevent_extra.a; path = /opt/local/lib/libevent_extra.a; sourceTree = "<absolute>"; };
 		AA33042B10829584007AD6CA /* libevent.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libevent.a; path = /opt/local/lib/libevent.a; sourceTree = "<absolute>"; };
 		AA9559411082A9130044CD9F /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = source/main.c; sourceTree = SOURCE_ROOT; };
@@ -183,7 +185,7 @@
 		AA955C051082CE100044CD9F /* Pool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pool.h; path = source/pdb/Pool.h; sourceTree = SOURCE_ROOT; };
 		AA955C061082CE100044CD9F /* PQuery.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = PQuery.c; path = source/pdb/PQuery.c; sourceTree = SOURCE_ROOT; };
 		AA955C071082CE100044CD9F /* PQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PQuery.h; path = source/pdb/PQuery.h; sourceTree = SOURCE_ROOT; };
-		AA9C0F6B0EB1387F00F997D7 /* libtokyocabinet.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtokyocabinet.a; path = /opt/local/lib/libtokyocabinet.a; sourceTree = "<absolute>"; };
+		AA9C0F6B0EB1387F00F997D7 /* libtokyocabinet.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtokyocabinet.a; path = /usr/local/lib/libtokyocabinet.a; sourceTree = "<absolute>"; };
 		AA9C0F710EB138C100F997D7 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = /opt/local/lib/libz.a; sourceTree = "<absolute>"; };
 		C6A0FF2C0290799A04C91782 /* Vertex.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Vertex.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -197,6 +199,7 @@
 				AA9C0F720EB138C100F997D7 /* libz.a in Frameworks */,
 				AA33042C10829584007AD6CA /* libevent_extra.a in Frameworks */,
 				AA33042D10829584007AD6CA /* libevent.a in Frameworks */,
+				9F087BBA1083105900211163 /* libyajl_s.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,6 +224,7 @@
 				AA33042A10829584007AD6CA /* libevent_extra.a */,
 				AA33042B10829584007AD6CA /* libevent.a */,
 				AA9C0F710EB138C100F997D7 /* libz.a */,
+				9F087BB91083105900211163 /* libyajl_s.a */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -498,7 +502,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				ARCHS = "$(NATIVE_ARCH)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -514,7 +518,7 @@
 					"\"$(SRCROOT)/source/basekit/_build/lib\"",
 				);
 				PRODUCT_NAME = Vertex;
-				VALID_ARCHS = x86_64;
+				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Debug;
 		};
