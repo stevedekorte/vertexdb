@@ -26,21 +26,20 @@ URL with("http://localhost:8080/test?method=write&key=_a") post("1")
 URL with("http://localhost:8080/test?method=write&key=_b") post("2")
 URL with("http://localhost:8080/test?method=write&key=_c") post("3")
 
-assertEquals(URL with("http://localhost:8080/test?method=read&key=a") fetch, "\"1\"")
-assertEquals(URL with("http://localhost:8080/test?method=read&key=b") fetch, "\"2\"")
-assertEquals(URL with("http://localhost:8080/test?method=read&key=c") fetch, "\"3\"")
+assertEquals(URL with("http://localhost:8080/test?method=read&key=_a") fetch, "\"1\"")
+assertEquals(URL with("http://localhost:8080/test?method=read&key=_b") fetch, "\"2\"")
+assertEquals(URL with("http://localhost:8080/test?method=read&key=_c") fetch, "\"3\"")
 
+assertEquals(URL with("http://localhost:8080/test?method=select&op=pairs") fetch, """[["_a","1"],["_b","2"],["_c","3"]]""")
+assertEquals(URL with("http://localhost:8080/test?method=select&op=pairs&after=_a") fetch,  """[["_b","2"],["_c","3"]]""")
+assertEquals(URL with("http://localhost:8080/test?method=select&op=pairs&before=_c") fetch, """[["_b","2"],["_a","1"]]""")
+assertEquals(URL with("http://localhost:8080/test?method=size") fetch, "3")
+
+URL with("http://localhost:8080/test?method=rm&key=_a") fetch
+//assertEquals(URL with("http://localhost:8080/test?method=read&key=_a") fetch, null)
+assertEquals(URL with("http://localhost:8080/test?method=size") fetch, "2")
 
 /*
-assertEquals(URL with("http://localhost:8080/test?after") fetch, """[["a",1],["b",2],["c",3]]""")
-assertEquals(URL with("http://localhost:8080/test?after=b") fetch, """[["b",2],["c",3]]""")
-assertEquals(URL with("http://localhost:8080/test?before=c") fetch, """[["b",2],["a",1]]""")
-assertEquals(URL with("http://localhost:8080/test?count") fetch, "3")
-
-URL with("http://localhost:8080/test?out=a") fetch
-assertEquals(URL with("http://localhost:8080/test?get=a") fetch, "")
-assertEquals(URL with("http://localhost:8080/test?count") fetch, "2")
-
 URL with("http://localhost:8080/test?put=a") post("1")
 URL with("http://localhost:8080/test?removeTo=b") fetch
 assertEquals(URL with("http://localhost:8080/test?count") fetch, "1")

@@ -811,7 +811,7 @@ int PNode_op_keys(PNode *self, Datum *d)
 	PQuery *q = PNode_startQuery(self);
 	Datum *k;
 	
-	Datum_appendCString_(d, "{");
+	Datum_appendCString_(d, "[");
 	
 	while (k = PNode_key(self))
 	{
@@ -821,11 +821,45 @@ int PNode_op_keys(PNode *self, Datum *d)
 		if (PNode_key(self)) Datum_appendCString_(d, ",");
 	}
 
-	Datum_appendCString_(d, "}");
-	return 0;  
+	Datum_appendCString_(d, "]");
+	return 0;
 }
 
-int PNode_op_items(PNode *self, Datum *d)
+int PNode_op_pairs(PNode *self, Datum *d)
+{	
+	PQuery *q = PNode_startQuery(self);
+	PNode *tmpNode = PDB_allocNode(self->pdb);
+	Datum *k;
+	
+	Datum_appendCString_(d, "[");
+	
+	while (k = PNode_key(self))
+	{		
+		Datum_appendCString_(d, "[");
+		Datum_appendQuoted_(d, k);
+		Datum_appendCString_(d, ",");
+					
+		if(!Datum_beginsWithCString_(k, "_"))
+		{
+			PNode_setPid_(tmpNode, PNode_value(self));
+			PNode_op_json(tmpNode, d);
+		}
+		else
+		{
+			Datum_appendQuoted_(d, PNode_value(self));
+		}
+				
+		PQuery_enumerate(q);
+		Datum_appendCString_(d, "]");
+		if (PNode_key(self)) Datum_appendCString_(d, ",");
+	}
+	
+	Datum_appendCString_(d, "]");
+	return 0; 
+}
+
+/*
+int PNode_op_pairs(PNode *self, Datum *d)
 {	
 	PQuery *q = PNode_startQuery(self);
 	PNode *tmpNode = PDB_allocNode(self->pdb);
@@ -855,14 +889,15 @@ int PNode_op_items(PNode *self, Datum *d)
 	Datum_appendCString_(d, "}");
 	return 0; 
 }
+*/
 
-int PNode_op_list(PNode *self, Datum *d)
+int PNode_op_values(PNode *self, Datum *d)
 {	
 	PQuery *q = PNode_startQuery(self);
 	PNode *tmpNode = PDB_allocNode(self->pdb);
 	Datum *k;
 	
-	Datum_appendCString_(d, "{");
+	Datum_appendCString_(d, "[");
 	
 	while (k = PNode_key(self))
 	{		
@@ -883,7 +918,7 @@ int PNode_op_list(PNode *self, Datum *d)
 		if (PNode_key(self)) Datum_appendCString_(d, ",");
 	}
 	
-	Datum_appendCString_(d, "}");
+	Datum_appendCString_(d, "]");
 	return 0; 
 }
 

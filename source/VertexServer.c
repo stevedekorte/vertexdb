@@ -113,7 +113,6 @@ VertexServer *VertexServer_new(void)
 	CHash_setHash1Func_(self->ops, (CHashHashFunc *)Datum_hash1);
 	CHash_setHash2Func_(self->ops, (CHashHashFunc *)Datum_hash2);
 
-
 	self->emptyDatum = Datum_new();
 	self->uriPath    = Datum_new(); 
 	self->staticPath = Datum_new(); 
@@ -767,16 +766,18 @@ void VertexServer_setupMethods(VertexServer *self)
 {	
 /*
 	select 
+		op: keys / values | pairs / rm | counts | json
 		before:id
 		after:id
 		count:max
 		whereKey:k, whereValue:v
-		op: keys / items / list / rm
+	rm
 	mkdir
 	link
 	chmod
 	chown
 	stat
+	size
 
 	read
 	write mode: set / append
@@ -832,8 +833,8 @@ void VertexServer_setupMethods(VertexServer *self)
 	VERTEXTSERVER_ADDOP(json);
 	VERTEXTSERVER_ADDOP(counts);
 	VERTEXTSERVER_ADDOP(keys);
-	VERTEXTSERVER_ADDOP(items);
-	VERTEXTSERVER_ADDOP(list);
+	VERTEXTSERVER_ADDOP(values);
+	VERTEXTSERVER_ADDOP(pairs);
 	VERTEXTSERVER_ADDOP(rm);
 }  
 
