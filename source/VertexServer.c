@@ -2,17 +2,13 @@
 	Notes:
 	See http://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html 
 	for valid response headers
-*/
 
-/*
 bool tcbdbput(TCBDB *bdb, const void *kbuf, int ksiz, const void *vbuf, int vsiz);
 bool tcbdbputcat(TCBDB *bdb, const void *kbuf, int ksiz, const void *vbuf, int vsiz);
 bool tcbdbout(TCBDB *bdb, const void *kbuf, int ksiz);
 void *tcbdbget(TCBDB *bdb, const void *kbuf, int ksiz, int *sp);
 int tcbdbvsiz(TCBDB *bdb, const void *kbuf, int ksiz);
-*/
 
-/*
 struct fuse_operations {
     int (*mkdir) (const char *, mode_t);
     int (*rmdir) (const char *);
@@ -103,10 +99,10 @@ VertexServer *VertexServer_new(void)
 	CHash_setHash1Func_(self->query, (CHashHashFunc *)Datum_hash1);
 	CHash_setHash2Func_(self->query, (CHashHashFunc *)Datum_hash2);
 
-	self->methods = CHash_new();
-	CHash_setEqualFunc_(self->methods, (CHashEqualFunc *)Datum_equals_);
-	CHash_setHash1Func_(self->methods, (CHashHashFunc *)Datum_hash1);
-	CHash_setHash2Func_(self->methods, (CHashHashFunc *)Datum_hash2);
+	self->actions = CHash_new();
+	CHash_setEqualFunc_(self->actions, (CHashEqualFunc *)Datum_equals_);
+	CHash_setHash1Func_(self->actions, (CHashHashFunc *)Datum_hash1);
+	CHash_setHash2Func_(self->actions, (CHashHashFunc *)Datum_hash2);
 	
 	self->ops = CHash_new();
 	CHash_setEqualFunc_(self->ops, (CHashEqualFunc *)Datum_equals_);
@@ -123,7 +119,7 @@ VertexServer *VertexServer_new(void)
 	
 	self->post       = Datum_new(); 
 		
-	self->writesPerCommit = 1000;
+	self->writesPerCommit   = 1000;
 	self->requestsPerSample = 10000;
 	self->rstat = RunningStat_new();
 	self->lastBackupTime = time(NULL);
@@ -139,7 +135,7 @@ void VertexServer_free(VertexServer *self)
 	PDB_free(self->pdb);
 	Pool_free(self->pool);
 	
-	CHash_free(self->methods);
+	CHash_free(self->actions);
 	CHash_free(self->ops);
 	CHash_free(self->query);
 	Datum_free(self->emptyDatum);
@@ -759,10 +755,10 @@ int VertexServer_api_syncSizes(VertexServer *self)
 
 // ---------------------------------------------------------------------
 
-#define VERTEXTSERVER_ADDMETHOD(name) CHash_at_put_(self->methods, Datum_newWithCString_(#name ""), (void *)VertexServer_api_##name);
-#define VERTEXTSERVER_ADDOP(name) CHash_at_put_(self->ops, Datum_newWithCString_(#name ""), (void *)PNode_op_##name);
+#define VERTEX_SERVER_ADD_ACTION(name) CHash_at_put_(self->actions, Datum_newWithCString_(#name ""), (void *)VertexServer_api_##name);
+#define VERTEX_SERVER_ADD_OP(name) CHash_at_put_(self->ops, Datum_newWithCString_(#name ""), (void *)PNode_op_##name);
 
-void VertexServer_setupMethods(VertexServer *self)
+void VertexServer_setupActions(VertexServer *self)
 {	
 /*
 	select 
@@ -796,63 +792,63 @@ void VertexServer_setupMethods(VertexServer *self)
 */
 	
 	// read
-	VERTEXTSERVER_ADDMETHOD(select);
-	VERTEXTSERVER_ADDMETHOD(read);
-	VERTEXTSERVER_ADDMETHOD(size);
+	VERTEX_SERVER_ADD_ACTION(select);
+	VERTEX_SERVER_ADD_ACTION(read);
+	VERTEX_SERVER_ADD_ACTION(size);
 
 	// remove
-	VERTEXTSERVER_ADDMETHOD(rm);
+	VERTEX_SERVER_ADD_ACTION(rm);
 			
 	// insert
-	VERTEXTSERVER_ADDMETHOD(write);
-	VERTEXTSERVER_ADDMETHOD(mkdir);
-	VERTEXTSERVER_ADDMETHOD(link);
+	VERTEX_SERVER_ADD_ACTION(write);
+	VERTEX_SERVER_ADD_ACTION(mkdir);
+	VERTEX_SERVER_ADD_ACTION(link);
 	// rename
 	
 	// queues
-	VERTEXTSERVER_ADDMETHOD(queuePopTo);
-	VERTEXTSERVER_ADDMETHOD(queueExpireTo);
+	VERTEX_SERVER_ADD_ACTION(queuePopTo);
+	VERTEX_SERVER_ADD_ACTION(queueExpireTo);
 
 	// transaction
-	VERTEXTSERVER_ADDMETHOD(transaction);
+	VERTEX_SERVER_ADD_ACTION(transaction);
 	
 	// users / permissions
-	VERTEXTSERVER_ADDMETHOD(login);
-	VERTEXTSERVER_ADDMETHOD(newUser);
+	VERTEX_SERVER_ADD_ACTION(login);
+	VERTEX_SERVER_ADD_ACTION(newUser);
 	
-	VERTEXTSERVER_ADDMETHOD(chmod);
-	VERTEXTSERVER_ADDMETHOD(chown);
+	VERTEX_SERVER_ADD_ACTION(chmod);
+	VERTEX_SERVER_ADD_ACTION(chown);
 	
 	// management
-	VERTEXTSERVER_ADDMETHOD(shutdown);
-	VERTEXTSERVER_ADDMETHOD(backup);
-	VERTEXTSERVER_ADDMETHOD(collectGarbage);
-	VERTEXTSERVER_ADDMETHOD(showStats);
-	//VERTEXTSERVER_ADDMETHOD(syncSizes);
+	VERTEX_SERVER_ADD_ACTION(shutdown);
+	VERTEX_SERVER_ADD_ACTION(backup);
+	VERTEX_SERVER_ADD_ACTION(collectGarbage);
+	VERTEX_SERVER_ADD_ACTION(showStats);
+	//VERTEX_SERVER_ADD_ACTION(syncSizes);
 	
-	VERTEXTSERVER_ADDOP(json);
-	VERTEXTSERVER_ADDOP(counts);
-	VERTEXTSERVER_ADDOP(keys);
-	VERTEXTSERVER_ADDOP(values);
-	VERTEXTSERVER_ADDOP(pairs);
-	VERTEXTSERVER_ADDOP(rm);
+	VERTEX_SERVER_ADD_OP(json);
+	VERTEX_SERVER_ADD_OP(counts);
+	VERTEX_SERVER_ADD_OP(keys);
+	VERTEX_SERVER_ADD_OP(values);
+	VERTEX_SERVER_ADD_OP(pairs);
+	VERTEX_SERVER_ADD_OP(rm);
 }  
 
 int VertexServer_process(VertexServer *self)
 {	
-	Datum *methodName = (Datum *)CHash_atString_(self->query, "method");
+	Datum *actionName = (Datum *)CHash_atString_(self->query, "action");
 
-	if (methodName)
+	if (actionName)
 	{ 
-		VertexMethod *method = (VertexMethod *)CHash_at_(self->methods, methodName);
+		VertexAction *action = (VertexAction *)CHash_at_(self->actions, actionName);
 		
-		if (method)
+		if (action)
 		{
-			return method(self);
+			return action(self);
 		}
 	}
 	
-	Datum_appendCString_(self->error, "invalid method");
+	Datum_appendCString_(self->error, "invalid action");
 
 	return -1;
 }
@@ -1014,7 +1010,7 @@ int VertexServer_run(VertexServer *self)
 	tv.tv_sec = 1;
 	
 	Socket_SetDescriptorLimitToMax();
-	VertexServer_setupMethods(self);
+	VertexServer_setupActions(self);
 	
 	Log_init();
 	
@@ -1073,7 +1069,7 @@ int VertexServer_run(VertexServer *self)
 	
 	evhttp_set_timeout(self->httpd, 60);
 	evhttp_set_gencb(self->httpd, VertexServer_requestHandler, self);  
-	//printf("libevent using: %s\n", event_get_method());
+	//printf("libevent using: %s\n", event_get_action());
 	
 	while (!self->shutdown)
 	{

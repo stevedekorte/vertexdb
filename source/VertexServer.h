@@ -26,7 +26,7 @@ typedef struct
 	
 	Datum *staticPath;
 	
-	CHash *methods;
+	CHash *actions;
 	CHash *query;
 	CHash *ops;
 	
@@ -52,7 +52,7 @@ typedef struct
 	size_t requestsPerSample;
 } VertexServer;
 
-typedef int (VertexMethod)(VertexServer *);
+typedef int (VertexAction)(VertexServer *);
 
 VertexServer *VertexServer_new(void);
 void VertexServer_free(VertexServer *self);
