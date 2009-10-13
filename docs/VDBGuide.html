@@ -1,0 +1,126 @@
+<html>
+<head>
+<title>Vertex Database Guide</title>
+<style>
+td { font-size: .9em; font-family: sans; }
+h1 { font-size: 1.2em; font-weight: bold; font-family: sans; }
+h2 { font-size: 1em; font-weight: bold; font-family: sans;  }
+h3 { font-size: .7em; font-weight: normal; font-family: serif; }
+hr { height: 1px;  background: black; border: 0; margin: 0em 0em 0em 0em; }
+</style>
+</head>
+<body>
+
+<center>
+<br><br>
+<table border=0 style="width:40em">
+<tr><td>
+
+<h3>&copy Steve Dekorte 2009 <br> 
+	Creative Commons Attribution License 3.0
+	<!-- License: http://creativecommons.org/licenses/by/3.0/ -->
+	</h3>
+
+<hr style="background:#aaa;">
+<hr>
+
+<p style="height:1.25em">
+
+<h1>VertexDB</h1> 
+<h2 style="color: #888;">Steve Dekorte <br> Rich Collins</h2>
+<p style="height:2em">
+
+<h2>Abstract</h2>
+
+VertexDB is a high performance graph database server that supports automatic garbage collection. It uses the HTTP protocol for requests and JSON for it's response data format.
+<br>
+<br>
+
+<b style="font-family:sans; font-size:1em;">Keywords</b> &nbsp; database &middot; garbage collection &middot; key/value &middot; dbm &middot; graph
+
+<br>
+<br>
+<br>
+
+<h2>Introduction</h2>
+
+VertexDB is a high performance (20,000+ requests per second) graph database server that supports automatic garbage collection. It uses the HTTP protocol for requests and JSON for it's response data format. 
+<p>
+
+It's API is inspired by the FUSE filesystem API (with an extra 'select' API for queries) and was designed with the intention of offering a FUSE interface in the future.
+
+<br>
+<br>
+
+<h2>Data Integrity</h2>
+
+On startup, VertexDB makes a backup of the database (if it exists). When shut down properly, it creates a file that marks the database as being safely. When started, if this file is not found, the database file is replaced by it's old copy.
+<p>
+VDB caches all writes until a given number of bytes worth of writes is accumulated, then it transactionally writes all queued writes to disk.
+
+<br>
+<br>
+
+<h2>Implementation</h2>
+
+It's implementation is currently based on the TokyoCabinet, libevent and Yajl libraries. VertexDB uses a single OS thread and handles all requests serially, but uses async sockets so no request is blocked on socket i/o though it can still block on disk i/o. 
+<p>
+Requests should be generally designed such that responses don't spend too much time blocking on disk i/o or using too much memory in queued response buffers. Generally, this shouldn't be a problem.
+ 
+<br>
+<br>
+
+<h2>API</h2>
+
+<pre>
+	select 
+		op: keys / values | pairs / rm | counts | json
+		before:id
+		after:id
+		count:max
+		whereKey:k, whereValue:v
+	rm
+	mkdir
+	link
+	chmod
+	chown
+	stat
+	size
+
+	read
+	write mode: set / append
+
+	queuePopTo
+	queueExpireTo
+
+	transaction
+	login
+	newUser
+
+	shutdown
+	backup
+	collectGarbage
+	stats
+
+</pre>
+
+
+<br>
+<br>
+
+<hr style="background:#aaa; width:20em;">
+<hr style="background:#888; width:20em;">
+
+<h3>
+1. ... <br>
+</h3>
+
+
+<hr style="background:#aaa; width:20em;">
+<hr style="background:#888; width:20em;">
+
+<br><br><br>
+</td>
+</tr>
+</table>
+</center>
