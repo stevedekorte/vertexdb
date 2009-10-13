@@ -360,10 +360,15 @@ int VertexServer_api_write(VertexServer *self)
 	Datum *key   = VertexServer_queryValue_(self, "key");
 	Datum *value = self->post; //VertexServer_queryValue_(self, "value");
 	
+	if(Datum_size(self) == 0)
+	{
+		VertexServer_setError_(self, "empty keys not accepted");
+		return -1;
+	}
+	
 	if(Datum_size(value) == 0)
 	{
-		//value = self->post;
-		VertexServer_setError_(self, "set values must use http post");
+		VertexServer_setError_(self, "empty values not accepted");
 		return -1;
 	}
 
