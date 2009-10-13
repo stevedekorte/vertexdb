@@ -358,11 +358,13 @@ int VertexServer_api_write(VertexServer *self)
 	PNode *node = PDB_allocNode(self->pdb);
 	Datum *mode  = VertexServer_queryValue_(self, "mode");
 	Datum *key   = VertexServer_queryValue_(self, "key");
-	Datum *value = VertexServer_queryValue_(self, "value");
+	Datum *value = self->post; //VertexServer_queryValue_(self, "value");
 	
 	if(Datum_size(value) == 0)
 	{
-		value = self->post;
+		//value = self->post;
+		VertexServer_setError_(self, "set values must use http post");
+		return -1;
 	}
 
 	if (PNode_moveToPathIfExists_(node, self->uriPath) != 0) 
@@ -462,7 +464,7 @@ int VertexServer_api_mkdir(VertexServer *self)
 
 int VertexServer_api_queuePopTo(VertexServer *self)
 {
-	// example: http:localhost:8080/sites/amazon/crawl/waiting/?q=/sites/amazon/crawl/active
+	// example: http:localhost:8080/sites/amazon/crawl/waiting/?action=link&toPath=/sites/amazon/crawl/active
 	PNode *fromNode = PDB_allocNode(self->pdb);
 	PNode *toNode   = PDB_allocNode(self->pdb);
 	Datum *toPath   = VertexServer_queryValue_(self, "toPath");
@@ -891,25 +893,32 @@ void VertexServer_requestHandler(struct evhttp_request *req, void *arg)
 		
 		Datum_clear(self->result);
 		result = VertexServer_process(self);
-		Datum_nullTerminate(self->result);
-		evbuffer_add_printf(buf, "%s", Datum_data(self->result)); 
 		
 		if (result == 0)
 		{
+			if (Datum_size(self->result))
+			{
+				Datum_nullTerminate(self->result);
+				evbuffer_add_printf(buf, "{ \"data\" : %s }", Datum_data(self->result)); 
+			}
+			else 
+			{
+				evbuffer_add_printf(buf, "{}"); 
+			}
+
 			evhttp_send_reply(self->request, HTTP_OK, HTTP_OK_MESSAGE, buf);
 		}
 		else
 		{
-			if(Datum_size(self->error))
+			if (Datum_size(self->error))
 			{
-				evbuffer_add_printf(buf, "ERROR: ");
 				Datum_nullTerminate(self->error); 
-				evbuffer_add_printf(buf, "%s", Datum_data(self->error)); 
+				evbuffer_add_printf(buf, "{ \"error\" : \"%s\" }", Datum_data(self->error)); 
 				Datum_setSize_(self->error, 0);
 			}
 			else
 			{
-				evbuffer_add_printf(buf, "ERROR: unknown error");
+				evbuffer_add_printf(buf, "{ \"error\" : \"unknown error\" }");
 			}
 			
 			evhttp_send_reply(self->request, HTTP_SERVERERROR, HTTP_SERVERERROR_MESSAGE, buf);		

@@ -4,9 +4,12 @@
 <style>
 td { font-size: .9em; font-family: sans; }
 h1 { font-size: 1.2em; font-weight: bold; font-family: sans; }
-h2 { font-size: 1em; font-weight: bold; font-family: sans;  }
+h2 { font-size: 1em; font-weight: bold; font-family: sans; line-height: 1.4em; }
 h3 { font-size: .7em; font-weight: normal; font-family: serif; }
 hr { height: 1px;  background: black; border: 0; margin: 0em 0em 0em 0em; }
+.api1 { font-size: 1em; font-weight: bold; font-family: sans; line-height: 1.4em; }
+.api2 { font-size: 1em; font-weight: bold; font-family: sans; line-height: 1.4em; color: #666666;}
+
 </style>
 </head>
 <body>
@@ -26,7 +29,7 @@ hr { height: 1px;  background: black; border: 0; margin: 0em 0em 0em 0em; }
 
 <p style="height:1.25em">
 
-<h1>VertexDB</h1> 
+<h1>Vertex Database Guide</h1> 
 <h2 style="color: #888;">Steve Dekorte <br> Rich Collins</h2>
 <p style="height:2em">
 
@@ -36,7 +39,7 @@ VertexDB is a high performance graph database server that supports automatic gar
 <br>
 <br>
 
-<b style="font-family:sans; font-size:1em;">Keywords</b> &nbsp; database &middot; garbage collection &middot; key/value &middot; dbm &middot; graph
+<font style="color: #888;"><b style="font-family:sans; font-size:1em;">Keywords</b> &nbsp; database &middot; garbage collection &middot; key/value &middot; dbm &middot; graph</font>
 
 <br>
 <br>
@@ -61,63 +64,181 @@ VDB caches all writes until a given number of bytes worth of writes is accumulat
 <br>
 <br>
 
+<h2>Security</h2>
+
+Cookies, newUser, login...
+
+<br>
+<br>
+
 <h2>Implementation</h2>
 
-It's implementation is currently based on the TokyoCabinet, libevent and Yajl libraries. VertexDB uses a single OS thread and handles all requests serially, but uses async sockets so no request is blocked on socket i/o though it can still block on disk i/o. 
+It's implemented in C and is currently based on the TokyoCabinet, libevent and Yajl libraries. VertexDB uses a single OS thread and handles all requests serially, but uses async sockets so no request is blocked on socket i/o though it can still block on disk i/o. 
 <p>
 Requests should be generally designed such that responses don't spend too much time blocking on disk i/o or using too much memory in queued response buffers. Generally, this shouldn't be a problem.
  
 <br>
 <br>
 
-<h2>API</h2>
+<h2>APIs</h2>
+
+<p class=api1>mkdir</p>
+http://localhost:8080/path?action=mkdir
+
+<p class=api1>rm</p>
+http://localhost:8080/path?action=rm
+
+<p class=api1>read</p>
+http://localhost:8080/path?action=read 
+<p>
+{ "data" : "foo" }
+
+<p class=api1>write</p> 
+
+<ul>
+<p class=api2>set</p>
+request: http://localhost:8080/path?key=k&action=write&mode=set<br>
+post: foo
+
+<p class=api2>append</p>
+request: http://localhost:8080/path?action=write&mode=append <br> 
+post: bar
+</ul>
+
+<p class=api1>size</p>
+http://localhost:8080/path?action=size
+<p>
+{ "data" : 423 }
+
+<p class=api1>link</p>
+
+
+<p class=api1>select</p>
 
 <pre>
 	select 
-		op: keys / values | pairs / rm | counts | json
-		before:id
-		after:id
+		keys / values | pairs / rm | counts | json
+		before:key
+		after:key
 		count:max
 		whereKey:k, whereValue:v
-	rm
-	mkdir
-	link
-	chmod
-	chown
-	stat
-	size
-
-	read
-	write mode: set / append
-
-	queuePopTo
-	queueExpireTo
-
-	transaction
-	login
-	newUser
-
-	shutdown
-	backup
-	collectGarbage
-	stats
-
 </pre>
 
 
+<ul>
+
+<p class=api2>pairs</p>
+http://localhost:8080?action=select&op=pairs
+<p>
+{ "data" : [["a","1"], ["b","2"], ["c","3"]] }
+<br>
+<br>
+
+<p class=api2>keys</p>
+http://localhost:8080?action=select&op=keys
+<p>
+{ "data" : ["a", "b", "c"] }
+<br>
+<br>
+
+<p class=api2>values</p>
+http://localhost:8080?action=select&op=values
+<p>
+{ "data" : ["1", "2", "3"] }
+<br>
+<br>
+
+<p class=api2>json</p>
+http://localhost:8080?action=select&op=json
+<p>
+{ "data" : {"a":"1"; "b":"2"; "c":"3" } } ????????????????
+<br>
+<br>
+	
+<p class=api2>counts</p>
+http://localhost:8080?action=select&op=counts
+<p>
+{ "data" : ??? }
+<br>
+<br>
+
+</ul>
+
+<p class=api1>count</p>
+http://localhost:8080?action=select&op=pairs&count=1
+<p>
+{ "data" : [["a","1"]] }
+
+
+<!--
+<p class=api1>permissions</p>
+<ul>
+<p class=api1>chmod</p>
+<p class=api1>chown</p>
+<p class=api1>stat</p>
+</ul>
+-->
+
+<p class=api1>queues</p>
+<ul>
+<p class=api1>queuePopTo</p>
+http:localhost:8080/frompath/?action=queuePopTo&toPath=/topath
+<p>
+optional parameters: 
+<p>
+	<ul>
+	whereKey=k whereValue=v <br>
+	ttl=numberOfSeconds
+	</ul>
+<p>
+<p class=api1>queueExpireTo</p>
+http:localhost:8080/frompath/?action=queueExpireTo&toPath=/topath
+</ul>
+
+<p class=api1>transaction</p>
+
+request: http:localhost:8080/frompath/?action=transaction<br>
+post: list of request urls 
+
+<p class=api1>users</p>
+<ul>
+	<p class=api1>newUser</p>
+	http:localhost:8080/frompath/?action=newUser<br>
+	<p>
+
+	returns new user id and vends cookie for user
+
+
+<p class=api1>login</p>
+http://localhost:8080/?action=login&email=e&password=p
+<p>
+	looks in /users/e path and vends user key cookie if password matches
+	
+
+</ul>
+
+<p class=api1>admin</p>
+<ul>
+<p class=api1>shutdown</p>
+http://localhost:8080/path?action=shutdown
+
+<p class=api1>backup</p>
+http://localhost:8080/path?action=backup
+
+<p class=api1>collectGarbage</p>
+http://localhost:8080/path?action=collectGarbage
+
+<p class=api1>stats</p>
+http://localhost:8080/path?action=stats
+</ul>
+
+
 <br>
 <br>
 
 <hr style="background:#aaa; width:20em;">
 <hr style="background:#888; width:20em;">
 
-<h3>
-1. ... <br>
-</h3>
-
-
-<hr style="background:#aaa; width:20em;">
-<hr style="background:#888; width:20em;">
 
 <br><br><br>
 </td>
