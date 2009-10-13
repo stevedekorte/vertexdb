@@ -270,88 +270,7 @@
 		</dict>
 	</array>
 	<key>OpenEditors</key>
-	<array>
-		<dict>
-			<key>Content</key>
-			<dict>
-				<key>PBXProjectModuleGUID</key>
-				<string>AA955DC5108404100044CD9F</string>
-				<key>PBXProjectModuleLabel</key>
-				<string>VertexServer.c</string>
-				<key>PBXSplitModuleInNavigatorKey</key>
-				<dict>
-					<key>Split0</key>
-					<dict>
-						<key>PBXProjectModuleGUID</key>
-						<string>AA955DC6108404100044CD9F</string>
-						<key>PBXProjectModuleLabel</key>
-						<string>VertexServer.c</string>
-						<key>_historyCapacity</key>
-						<integer>0</integer>
-						<key>bookmark</key>
-						<string>AA955DDA108416F30044CD9F</string>
-						<key>history</key>
-						<array>
-							<string>AA955DC2108402FB0044CD9F</string>
-						</array>
-					</dict>
-					<key>SplitCount</key>
-					<string>1</string>
-				</dict>
-				<key>StatusBarVisibility</key>
-				<false/>
-			</dict>
-			<key>Geometry</key>
-			<dict>
-				<key>Frame</key>
-				<string>{{0, -1}, {828, 840}}</string>
-				<key>PBXModuleWindowStatusBarHidden2</key>
-				<true/>
-				<key>RubberWindowFrame</key>
-				<string>571 18 828 860 0 0 1440 878 </string>
-			</dict>
-		</dict>
-		<dict>
-			<key>Content</key>
-			<dict>
-				<key>PBXProjectModuleGUID</key>
-				<string>AA955DC8108404100044CD9F</string>
-				<key>PBXProjectModuleLabel</key>
-				<string>PNode.c</string>
-				<key>PBXSplitModuleInNavigatorKey</key>
-				<dict>
-					<key>Split0</key>
-					<dict>
-						<key>PBXProjectModuleGUID</key>
-						<string>AA955DC9108404100044CD9F</string>
-						<key>PBXProjectModuleLabel</key>
-						<string>PNode.c</string>
-						<key>_historyCapacity</key>
-						<integer>0</integer>
-						<key>bookmark</key>
-						<string>AA955DDB108416F30044CD9F</string>
-						<key>history</key>
-						<array>
-							<string>AA955DC01083FD290044CD9F</string>
-						</array>
-					</dict>
-					<key>SplitCount</key>
-					<string>1</string>
-				</dict>
-				<key>StatusBarVisibility</key>
-				<false/>
-			</dict>
-			<key>Geometry</key>
-			<dict>
-				<key>Frame</key>
-				<string>{{0, -1}, {765, 755}}</string>
-				<key>PBXModuleWindowStatusBarHidden2</key>
-				<true/>
-				<key>RubberWindowFrame</key>
-				<string>284 66 765 775 0 0 1440 878 </string>
-			</dict>
-		</dict>
-	</array>
+	<array/>
 	<key>PerspectiveWidths</key>
 	<array>
 		<integer>-1</integer>
@@ -619,7 +538,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>277092083.23434901</real>
+	<real>277111191.64213699</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -635,6 +554,8 @@
 	<key>WindowOrderList</key>
 	<array>
 		<string>AA955DD01084056D0044CD9F</string>
+		<string>AA955DC5108404100044CD9F</string>
+		<string>AA955DC8108404100044CD9F</string>
 		<string>AA955DBC1083F8030044CD9F</string>
 		<string>AA955DBD1083F8030044CD9F</string>
 		<string>1C530D5B069F1CE1000CFCEE</string>
@@ -642,8 +563,6 @@
 		<string>1C530D52069F1CE1000CFCEE</string>
 		<string>1C530D54069F1CE1000CFCEE</string>
 		<string>/Users/steve/Developer/opensource/vertexdb/Vertex.xcodeproj</string>
-		<string>AA955DC8108404100044CD9F</string>
-		<string>AA955DC5108404100044CD9F</string>
 	</array>
 	<key>WindowString</key>
 	<string>100 533 354 336 0 0 1440 878 </string>

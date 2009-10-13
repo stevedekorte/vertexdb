@@ -535,10 +535,10 @@
 	};
 	AA9559461082A9130044CD9F /* VertexServer.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {779, 18060}}";
-			sepNavSelRange = "{11763, 93}";
-			sepNavVisRange = "{11553, 1254}";
-			sepNavWindowFrame = "{{571, 10}, {675, 868}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1084, 18094}}";
+			sepNavSelRange = "{13815, 0}";
+			sepNavVisRange = "{13457, 1323}";
+			sepNavWindowFrame = "{{571, 18}, {828, 860}}";
 		};
 	};
 	AA9559471082A9130044CD9F /* VertexServer.h */ = {
@@ -864,10 +864,10 @@
 	};
 	AA955C021082CE100044CD9F /* PNode.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1052, 18234}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1052, 18250}}";
 			sepNavSelRange = "{14255, 0}";
 			sepNavVisRange = "{16088, 816}";
-			sepNavWindowFrame = "{{544, 28}, {806, 805}}";
+			sepNavWindowFrame = "{{284, 66}, {765, 775}}";
 		};
 	};
 	AA955C061082CE100044CD9F /* PQuery.c */ = {
