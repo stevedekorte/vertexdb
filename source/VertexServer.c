@@ -891,25 +891,32 @@ void VertexServer_requestHandler(struct evhttp_request *req, void *arg)
 		
 		Datum_clear(self->result);
 		result = VertexServer_process(self);
-		Datum_nullTerminate(self->result);
-		evbuffer_add_printf(buf, "%s", Datum_data(self->result)); 
 		
 		if (result == 0)
 		{
+			if (Datum_size(self->result))
+			{
+				Datum_nullTerminate(self->result);
+				evbuffer_add_printf(buf, "{ \"data\" : %s }", Datum_data(self->result)); 
+			}
+			else 
+			{
+				evbuffer_add_printf(buf, "{}"); 
+			}
+
 			evhttp_send_reply(self->request, HTTP_OK, HTTP_OK_MESSAGE, buf);
 		}
 		else
 		{
 			if(Datum_size(self->error))
 			{
-				evbuffer_add_printf(buf, "ERROR: ");
 				Datum_nullTerminate(self->error); 
-				evbuffer_add_printf(buf, "%s", Datum_data(self->error)); 
+				evbuffer_add_printf(buf, "{ \"error\" : \"%s\" }", Datum_data(self->error)); 
 				Datum_setSize_(self->error, 0);
 			}
 			else
 			{
-				evbuffer_add_printf(buf, "ERROR: unknown error");
+				evbuffer_add_printf(buf, "{ \"error\" : \"unknown error\" }");
 			}
 			
 			evhttp_send_reply(self->request, HTTP_SERVERERROR, HTTP_SERVERERROR_MESSAGE, buf);		
