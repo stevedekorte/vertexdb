@@ -11,3 +11,6 @@ Future
 
 FUSE interface and may add support for more complex queries and dynamic/ automatic index creation based on observed queries.
 
+More 
+
+<a href=docs/guide.html>

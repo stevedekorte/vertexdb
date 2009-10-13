@@ -33,6 +33,7 @@ hr { height: 1px;  background: black; border: 0; margin: 0em 0em 0em 0em; }
 <h2 style="color: #888;">Steve Dekorte <br> Rich Collins</h2>
 <p style="height:2em">
 
+<!--
 <h2>Abstract</h2>
 
 VertexDB is a high performance graph database server that supports automatic garbage collection. It uses the HTTP protocol for requests and JSON for it's response data format.
@@ -40,6 +41,7 @@ VertexDB is a high performance graph database server that supports automatic gar
 <br>
 
 <font style="color: #888;"><b style="font-family:sans; font-size:1em;">Keywords</b> &nbsp; database &middot; garbage collection &middot; key/value &middot; dbm &middot; graph</font>
+-->
 
 <br>
 <br>
@@ -91,7 +93,7 @@ http://localhost:8080/path?action=rm
 <p class=api1>read</p>
 http://localhost:8080/path?action=read 
 <p>
-{ "data" : "foo" }
+"foo"
 
 <p class=api1>write</p> 
 
@@ -108,7 +110,7 @@ post: bar
 <p class=api1>size</p>
 http://localhost:8080/path?action=size
 <p>
-{ "data" : 423 }
+423
 
 <p class=api1>link</p>
 
@@ -130,35 +132,35 @@ http://localhost:8080/path?action=size
 <p class=api2>pairs</p>
 http://localhost:8080?action=select&op=pairs
 <p>
-{ "data" : [["a","1"], ["b","2"], ["c","3"]] }
+[["a","1"], ["b","2"], ["c","3"]]
 <br>
 <br>
 
 <p class=api2>keys</p>
 http://localhost:8080?action=select&op=keys
 <p>
-{ "data" : ["a", "b", "c"] }
+["a", "b", "c"]
 <br>
 <br>
 
 <p class=api2>values</p>
 http://localhost:8080?action=select&op=values
 <p>
-{ "data" : ["1", "2", "3"] }
+["1", "2", "3"]
 <br>
 <br>
 
 <p class=api2>json</p>
 http://localhost:8080?action=select&op=json
 <p>
-{ "data" : {"a":"1"; "b":"2"; "c":"3" } } ????????????????
+{"a":"1"; "b":"2"; "c":"3" } ????????????????
 <br>
 <br>
 	
 <p class=api2>counts</p>
 http://localhost:8080?action=select&op=counts
 <p>
-{ "data" : ??? }
+???
 <br>
 <br>
 
@@ -167,7 +169,7 @@ http://localhost:8080?action=select&op=counts
 <p class=api1>count</p>
 http://localhost:8080?action=select&op=pairs&count=1
 <p>
-{ "data" : [["a","1"]] }
+[["a","1"]]
 
 
 <!--
