@@ -86,7 +86,7 @@ sample response: 423
 <ul>
 	Links a node at a source path to a key on a node at the destination path. Returns an error if the path doesn't exist.
 <pre>
-sample request: /sourcePath?action=link&toPath=destinationPath
+sample request: /sourcePath/?action=link&key=k&toPath=destinationPath
 sample response: 423
 </pre>
 </ul>
@@ -174,7 +174,7 @@ sample response: ["1", "2", "3"]
 <ul>
 <pre>
 sample request: /path?action=select&op=object
-sample response: {"a":"1"; "b":"2"; "c":"3" } ????????????????
+sample response: {"a":"1"; "b":"2"; "c":"3" } ???
 </pre>
 </ul>
 	
@@ -204,7 +204,7 @@ sample response: ???
 
 <p class=api1>queuePopTo</p>
 <ul>
-
+Returns the key.
 <p>
 optional parameters: 
 <p>
@@ -217,16 +217,18 @@ ttl=numberOfSeconds
 
 <pre>
 sample request: /sourcePath/?action=queuePopTo&toPath=/destinationPath
-sample response: null
+sample response: akey123
 </pre>
 </ul>
 <br>
 	
 <p class=api1>queueExpireTo</p>
+
+Returns the number of items expired.
 <ul>
 <pre>
 sample request: /sourcePath/?action=queueExpireTo&toPath=/destinationPath
-sample response: null
+sample response: 42345
 </pre>
 </ul>
 

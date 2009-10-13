@@ -398,8 +398,9 @@ int VertexServer_api_link(VertexServer *self)
 	PNode *fromNode = PDB_allocNode(self->pdb);
 	
 	Datum *key      = VertexServer_queryValue_(self, "key");
+	Daturm *fromPath = self->uriPath;
+	//Datum *fromPath = VertexServer_queryValue_(self, "fromPath");
 	Datum *toPath   = VertexServer_queryValue_(self, "toPath");
-	Datum *fromPath = VertexServer_queryValue_(self, "fromPath");
 
 	if (PNode_moveToPathIfExists_(toNode, toPath) != 0) 
 	{
