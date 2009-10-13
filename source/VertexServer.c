@@ -358,12 +358,13 @@ int VertexServer_api_write(VertexServer *self)
 	PNode *node = PDB_allocNode(self->pdb);
 	Datum *mode  = VertexServer_queryValue_(self, "mode");
 	Datum *key   = VertexServer_queryValue_(self, "key");
-	Datum *value = self->post; //VertexServer_queryValue_(self, "value");
+	Datum *value = VertexServer_queryValue_(self, "value");
 	
-	if(Datum_size(self) == 0)
+	if(Datum_size(value) == 0)
 	{
-		VertexServer_setError_(self, "empty keys not accepted");
-		return -1;
+		value = self->post;
+		//VertexServer_setError_(self, "empty keys not accepted");
+		//return -1;
 	}
 	
 	if(Datum_size(value) == 0)
@@ -903,7 +904,7 @@ void VertexServer_requestHandler(struct evhttp_request *req, void *arg)
 			if (Datum_size(self->result))
 			{
 				Datum_nullTerminate(self->result);
-				evbuffer_add_printf(buf, Datum_data(self->result));
+				evbuffer_add_printf(buf, "%s", Datum_data(self->result));
 			}
 			else
 			{
