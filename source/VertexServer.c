@@ -764,7 +764,7 @@ void VertexServer_setupActions(VertexServer *self)
 {	
 /*
 	select 
-		op: keys / values | pairs / rm | counts | json
+		op: keys / values | pairs / rm | counts | object
 		before:id
 		after:id
 		count:max
@@ -828,7 +828,7 @@ void VertexServer_setupActions(VertexServer *self)
 	VERTEX_SERVER_ADD_ACTION(showStats);
 	//VERTEX_SERVER_ADD_ACTION(syncSizes);
 	
-	VERTEX_SERVER_ADD_OP(json);
+	VERTEX_SERVER_ADD_OP(object);
 	VERTEX_SERVER_ADD_OP(counts);
 	VERTEX_SERVER_ADD_OP(keys);
 	VERTEX_SERVER_ADD_OP(values);
@@ -899,11 +899,11 @@ void VertexServer_requestHandler(struct evhttp_request *req, void *arg)
 			if (Datum_size(self->result))
 			{
 				Datum_nullTerminate(self->result);
-				evbuffer_add_printf(buf, "{ \"data\" : %s }", Datum_data(self->result)); 
+				evbuffer_add_printf(buf, Datum_data(self->result));
 			}
-			else 
+			else
 			{
-				evbuffer_add_printf(buf, "{}"); 
+				evbuffer_add_printf(buf, "null");
 			}
 
 			evhttp_send_reply(self->request, HTTP_OK, HTTP_OK_MESSAGE, buf);
@@ -913,12 +913,12 @@ void VertexServer_requestHandler(struct evhttp_request *req, void *arg)
 			if (Datum_size(self->error))
 			{
 				Datum_nullTerminate(self->error); 
-				evbuffer_add_printf(buf, "{ \"error\" : \"%s\" }", Datum_data(self->error)); 
+				evbuffer_add_printf(buf, "\"%s\"", Datum_data(self->error)); 
 				Datum_setSize_(self->error, 0);
 			}
 			else
 			{
-				evbuffer_add_printf(buf, "{ \"error\" : \"unknown error\" }");
+				evbuffer_add_printf(buf, "\"unknown error\"");
 			}
 			
 			evhttp_send_reply(self->request, HTTP_SERVERERROR, HTTP_SERVERERROR_MESSAGE, buf);		

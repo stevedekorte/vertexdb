@@ -765,7 +765,7 @@ int PNode_withId_hasKey_andValue_(PNode *self, Datum *pid, Datum *wk, Datum *wv)
 
 // ---------------------
 
-int PNode_op_json(PNode *self, Datum *d)
+int PNode_op_object(PNode *self, Datum *d)
 {
 	PQuery *q = PNode_startQuery(self);
 	const unsigned char *jsonBuffer;
@@ -855,7 +855,7 @@ int PNode_op_pairs(PNode *self, Datum *d)
 		if(!Datum_beginsWithCString_(k, "_"))
 		{
 			PNode_setPid_(tmpNode, PNode_value(self));
-			PNode_op_json(tmpNode, d);
+			PNode_op_object(tmpNode, d);
 		}
 		else
 		{
@@ -920,7 +920,7 @@ int PNode_op_values(PNode *self, Datum *d)
 		if(!Datum_beginsWithCString_(k, "_"))
 		{
 			PNode_setPid_(tmpNode, PNode_value(self));
-			PNode_op_json(tmpNode, d);
+			PNode_op_object(tmpNode, d);
 		}
 		else
 		{

@@ -117,7 +117,7 @@ int PNode_withId_hasKey_andValue_(PNode *self, Datum *pid, Datum *wk, Datum *wv)
 
 // ------------------
 
-int PNode_op_json(PNode *self, Datum *d);
+int PNode_op_object(PNode *self, Datum *d);
 int PNode_op_counts(PNode *self, Datum *d);
 int PNode_op_keys(PNode *self, Datum *d);
 int PNode_op_pairs(PNode *self, Datum *d);
