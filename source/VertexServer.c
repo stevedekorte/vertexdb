@@ -400,7 +400,6 @@ int VertexServer_api_link(VertexServer *self)
 	Datum *toPath   = VertexServer_queryValue_(self, "toPath");
 	Datum *fromPath = VertexServer_queryValue_(self, "fromPath");
 
-	
 	if (PNode_moveToPathIfExists_(toNode, toPath) != 0) 
 	{
 		VertexServer_setError_(self, "to path does not exist: ");
@@ -904,11 +903,11 @@ void VertexServer_requestHandler(struct evhttp_request *req, void *arg)
 			if (Datum_size(self->result))
 			{
 				Datum_nullTerminate(self->result);
-				evbuffer_add_printf(buf, "{ \"data\" : %s }", Datum_data(self->result)); 
+				evbuffer_add_printf(buf, "%s", Datum_data(self->result)); 
 			}
 			else 
 			{
-				evbuffer_add_printf(buf, "{}"); 
+				evbuffer_add_printf(buf, "null"); 
 			}
 
 			evhttp_send_reply(self->request, HTTP_OK, HTTP_OK_MESSAGE, buf);
@@ -918,12 +917,12 @@ void VertexServer_requestHandler(struct evhttp_request *req, void *arg)
 			if (Datum_size(self->error))
 			{
 				Datum_nullTerminate(self->error); 
-				evbuffer_add_printf(buf, "{ \"error\" : \"%s\" }", Datum_data(self->error)); 
+				evbuffer_add_printf(buf, "%s", Datum_data(self->error)); 
 				Datum_setSize_(self->error, 0);
 			}
 			else
 			{
-				evbuffer_add_printf(buf, "{ \"error\" : \"unknown error\" }");
+				evbuffer_add_printf(buf, "%s", "\"unknown error\"");
 			}
 			
 			evhttp_send_reply(self->request, HTTP_SERVERERROR, HTTP_SERVERERROR_MESSAGE, buf);		
