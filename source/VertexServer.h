@@ -51,7 +51,7 @@ typedef struct
 	
 	RunningStat *rstat;
 	size_t requestsPerSample;
-	yajl_gen jsonGenerator;
+	yajl_gen yajl;
 } VertexServer;
 
 typedef int (VertexAction)(VertexServer *);

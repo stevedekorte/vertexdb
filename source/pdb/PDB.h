@@ -36,11 +36,11 @@ typedef struct
 	Datum *currentUser;
 		
 	Pool *pool;
-	yajl_gen jsonGenerator;
+	yajl_gen yajl;
 } PDB;
 
 PDB *PDB_new(void);
-void PDB_setYajl_(PDB *self, yajl_gen jsonGenerator);
+void PDB_setYajl_(PDB *self, yajl_gen yajl);
 void PDB_free(PDB *self);
 
 // node caching -------------

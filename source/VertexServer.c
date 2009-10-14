@@ -93,8 +93,8 @@ VertexServer *VertexServer_new(void)
 	
 	self->pdb   = PDB_new();
 	yajl_gen_config config = { 0, "" };
-	self->jsonGenerator = yajl_gen_alloc(&config, NULL);
-	PDB_setYajl_(self->pdb, self->jsonGenerator);
+	self->yajl = yajl_gen_alloc(&config, NULL);
+	PDB_setYajl_(self->pdb, self->yajl);
 	
 	self->pool  = Pool_new();
 	
@@ -157,7 +157,7 @@ void VertexServer_free(VertexServer *self)
 	Datum_free(self->result);
 	RunningStat_free(self->rstat);
 
-	yajl_gen_free(self->jsonGenerator);
+	yajl_gen_free(self->yajl);
 
 	free(self);
 }

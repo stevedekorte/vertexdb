@@ -15,6 +15,24 @@
 
 #define PNODE_ID_LENGTH 9
 
+void yajl_gen_datum(yajl_gen self, Datum *d)
+{
+	yajl_gen_string(self, (const unsigned char *)Datum_data(d), Datum_size(d));
+}
+
+void Datum_appendYajl_(Datum *self, yajl_gen y)
+{
+	const unsigned char *jsonBuffer;
+	unsigned int jsonBufferLength;
+		
+	yajl_gen_get_buf(y, &jsonBuffer, &jsonBufferLength);
+	
+	Datum_appendBytes_size_(self, jsonBuffer, (size_t)jsonBufferLength);
+	yajl_gen_clear(y);
+}
+
+// -------------------------------------------
+
 PNode *PNode_new(void)
 {
 	PNode *self = calloc(1, sizeof(PNode));
@@ -31,7 +49,7 @@ PNode *PNode_new(void)
 
 void PNode_setYajl_(PNode *self, yajl_gen y)
 {
-	self->jsonGenerator = y;
+	self->yajl = y;
 }
 
 void PNode_free(PNode *self)
@@ -51,7 +69,7 @@ void PNode_free(PNode *self)
 		self->query = 0x0;
 	}
 	
-	self->jsonGenerator = 0x0;
+	self->yajl = 0x0;
 	
 	free(self);
 }
@@ -771,29 +789,18 @@ int PNode_withId_hasKey_andValue_(PNode *self, Datum *pid, Datum *wk, Datum *wv)
 int PNode_op_object(PNode *self, Datum *d)
 {
 	PQuery *q = PNode_startQuery(self);
-	const unsigned char *jsonBuffer;
-	unsigned int jsonBufferLength;
 
-	yajl_gen_map_open(self->jsonGenerator);
-	//Datum_appendCString_(d, "{");
+	yajl_gen_map_open(self->yajl);
 	
 	while (PNode_key(self))
 	{
-		yajl_gen_string(self->jsonGenerator, (const unsigned char *)Datum_data(PNode_key(self)), Datum_size(PNode_key(self)));
-		//Datum_appendQuoted_(d, PNode_key(self));
-		//Datum_appendCString_(d, ":"); 
-		yajl_gen_string(self->jsonGenerator, (const unsigned char *)Datum_data(PNode_value(self)), Datum_size(PNode_value(self)));
-		//Datum_appendQuoted_(d, PNode_value(self));
-		
+		yajl_gen_datum(self->yajl, PNode_key(self));
+		yajl_gen_datum(self->yajl, PNode_value(self));
 		PQuery_enumerate(q);
-		//if (PNode_key(self)) Datum_appendCString_(d, ",");
 	}
 	
-	yajl_gen_map_close(self->jsonGenerator);
-	yajl_gen_get_buf(self->jsonGenerator, &jsonBuffer, &jsonBufferLength);
-	Datum_appendBytes_size_(d, jsonBuffer, (size_t)jsonBufferLength);
-	yajl_gen_clear(self->jsonGenerator);
-	//Datum_appendCString_(d, "}");
+	yajl_gen_map_close(self->yajl);
+	Datum_appendYajl_(d, self->yajl);
 	return 0;
 }
 
@@ -803,23 +810,29 @@ int PNode_op_counts(PNode *self, Datum *d)
 	Datum *k;
 	PQuery *q = PNode_startQuery(self);
 	
-	Datum_appendCString_(d, "{");
+	//Datum_appendCString_(d, "{");
+	yajl_gen_map_open(self->yajl);
 	
 	while (k = PNode_key(self))
 	{
 		if(!Datum_beginsWithCString_(k, "_"))
 		{			
-			Datum_appendQuoted_(d, k);
-			Datum_appendCString_(d, ":"); 
+			yajl_gen_datum(self->yajl, PNode_key(self));
+		
+			//Datum_appendQuoted_(d, k);
+			//Datum_appendCString_(d, ":"); 
 			PNode_setPid_(tmpNode, PNode_value(self));
-			Datum_appendLong_(d, PNode_size(tmpNode));
+			//Datum_appendLong_(d, PNode_size(tmpNode));
+			yajl_gen_integer(self->yajl, PNode_size(tmpNode));
 		}
 		
 		if (q) { PQuery_enumerate(q); } else { PNode_next(self); }
-		if (PNode_key(self)) Datum_appendCString_(d, ",");
+		//if (PNode_key(self)) Datum_appendCString_(d, ",");
 	}
 	
-	Datum_appendCString_(d, "}");
+	//Datum_appendCString_(d, "}");
+	yajl_gen_map_close(self->yajl);
+	Datum_appendYajl_(d, self->yajl);
 	return 0;  
 }
 
@@ -828,17 +841,21 @@ int PNode_op_keys(PNode *self, Datum *d)
 	PQuery *q = PNode_startQuery(self);
 	Datum *k;
 	
-	Datum_appendCString_(d, "[");
+	//Datum_appendCString_(d, "[");
+	yajl_gen_array_open(self->yajl);
 	
 	while (k = PNode_key(self))
 	{
-		Datum_appendQuoted_(d, k);
+		//Datum_appendQuoted_(d, k);
+		yajl_gen_datum(self->yajl, k);
 
 		PQuery_enumerate(q);
-		if (PNode_key(self)) Datum_appendCString_(d, ",");
+		//if (PNode_key(self)) Datum_appendCString_(d, ",");
 	}
 
-	Datum_appendCString_(d, "]");
+	yajl_gen_array_close(self->yajl);
+	Datum_appendYajl_(d, self->yajl);
+	//Datum_appendCString_(d, "]");
 	return 0;
 }
 
@@ -848,13 +865,16 @@ int PNode_op_pairs(PNode *self, Datum *d)
 	PNode *tmpNode = PDB_allocNode(self->pdb);
 	Datum *k;
 	
-	Datum_appendCString_(d, "[");
+	//Datum_appendCString_(d, "[");
+	yajl_gen_array_open(self->yajl);
 	
 	while (k = PNode_key(self))
 	{		
-		Datum_appendCString_(d, "[");
-		Datum_appendQuoted_(d, k);
-		Datum_appendCString_(d, ",");
+		yajl_gen_array_open(self->yajl);
+		//Datum_appendCString_(d, "[");
+		//Datum_appendQuoted_(d, k);
+		//Datum_appendCString_(d, ",");
+		yajl_gen_datum(self->yajl, k);
 					
 		if(!Datum_beginsWithCString_(k, "_"))
 		{
@@ -863,15 +883,19 @@ int PNode_op_pairs(PNode *self, Datum *d)
 		}
 		else
 		{
-			Datum_appendQuoted_(d, PNode_value(self));
+			//Datum_appendQuoted_(d, PNode_value(self));
+			yajl_gen_datum(self->yajl, PNode_value(self));
 		}
 				
 		PQuery_enumerate(q);
-		Datum_appendCString_(d, "]");
-		if (PNode_key(self)) Datum_appendCString_(d, ",");
+		//Datum_appendCString_(d, "]");
+		//if (PNode_key(self)) Datum_appendCString_(d, ",");
+		yajl_gen_array_close(self->yajl);
 	}
 	
-	Datum_appendCString_(d, "]");
+	//Datum_appendCString_(d, "]");
+	yajl_gen_array_close(self->yajl);
+	Datum_appendYajl_(d, self->yajl);
 	return 0; 
 }
 
@@ -914,7 +938,8 @@ int PNode_op_values(PNode *self, Datum *d)
 	PNode *tmpNode = PDB_allocNode(self->pdb);
 	Datum *k;
 	
-	Datum_appendCString_(d, "[");
+	//Datum_appendCString_(d, "[");
+	yajl_gen_array_open(self->yajl);
 	
 	while (k = PNode_key(self))
 	{		
@@ -928,14 +953,16 @@ int PNode_op_values(PNode *self, Datum *d)
 		}
 		else
 		{
-			Datum_appendQuoted_(d, PNode_value(self));
+			//Datum_appendQuoted_(d, PNode_value(self));
+			yajl_gen_datum(self->yajl, PNode_value(self));
 		}
 				
 		PQuery_enumerate(q);
-		if (PNode_key(self)) Datum_appendCString_(d, ",");
+		//if (PNode_key(self)) Datum_appendCString_(d, ",");
 	}
 	
-	Datum_appendCString_(d, "]");
+	//Datum_appendCString_(d, "]");
+	yajl_gen_array_close(self->yajl);
 	return 0; 
 }
 
@@ -992,7 +1019,10 @@ int PNode_op_rm(PNode *self, Datum *d)
 
 	PNode_setSize_(self, size - removeCount);
 	
-	Datum_appendLong_(d, removeCount);
+	
+	yajl_gen_integer(self->yajl, removeCount);
+	Datum_appendYajl_(d, self->yajl);
+	//Datum_appendLong_(d, removeCount);
 	return 0;  
 }
 

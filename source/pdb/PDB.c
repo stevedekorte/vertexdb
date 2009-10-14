@@ -75,7 +75,7 @@ PDB *PDB_new(void)
 
 void PDB_setYajl_(PDB *self, yajl_gen y)
 {
-	self->jsonGenerator = y;
+	self->yajl = y;
 }
 
 void PDB_free(PDB *self)
@@ -90,7 +90,7 @@ void PDB_free(PDB *self)
 	File_free(self->corruptFile);
 	Datum_free(self->unusedPid);
 	Pool_free(self->pool);
-	self->jsonGenerator = 0x0;
+	self->yajl = 0x0;
 	free(self);
 }
 
@@ -101,8 +101,8 @@ PNode *PDB_allocNode(PDB *self)
 	PNode *node = POOL_ALLOC(self->pool, PNode);
 	PNode_setPdb_(node, self);
 	PNode_setToRoot(node);
-	assert(self->jsonGenerator);
-	PNode_setYajl_(node, self->jsonGenerator);
+	assert(self->yajl);
+	PNode_setYajl_(node, self->yajl);
 	return node;
 }
 

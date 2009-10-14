@@ -39,7 +39,7 @@ typedef struct
 	Datum *parentPid;
 	PQuery *query;
 	
-	yajl_gen jsonGenerator;
+	yajl_gen yajl;
 } PNode;
 
 typedef int (PNodeOp)(PNode *, Datum *);
