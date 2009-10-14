@@ -45,6 +45,7 @@ typedef struct
 typedef int (PNodeOp)(PNode *, Datum *);
 
 PNode *PNode_new(void);
+void PNode_setYajl_(PNode *self, yajl_gen y);
 void PNode_free(PNode *self);
 
 void PNode_setPdb_(PNode *self, void *pdb);

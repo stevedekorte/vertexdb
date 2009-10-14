@@ -8,24 +8,24 @@
 			8DD76FA90486AB0100D96B5E /* Vertex */,
 		);
 		breakpoints = (
-			AA622D800FF830B000FBCA1A /* VertexServer.c:865 */,
-			AA622D8A0FF8310500FBCA1A /* VertexServer.c:897 */,
-			AA622D8E0FF8333A00FBCA1A /* VertexServer.c:204 */,
-			AA622D940FF8337200FBCA1A /* VertexServer.c:197 */,
-			AA622DAB0FF836A900FBCA1A /* VertexServer.c:209 */,
+			AA622D800FF830B000FBCA1A /* VertexServer.c:873 */,
+			AA622D8A0FF8310500FBCA1A /* VertexServer.c:905 */,
+			AA622D8E0FF8333A00FBCA1A /* VertexServer.c:212 */,
+			AA622D940FF8337200FBCA1A /* VertexServer.c:205 */,
+			AA622DAB0FF836A900FBCA1A /* VertexServer.c:217 */,
 			AA622DEE0FF8439E00FBCA1A /* PQuery.c:70 */,
-			AA622DF40FF843DB00FBCA1A /* PNode.c:56 */,
-			AA622E0E0FF8458800FBCA1A /* PNode.c:862 */,
-			AACDFC060FF9AAD20056205A /* VertexServer.c:343 */,
-			AACDFC180FF9ADA30056205A /* VertexServer.c:371 */,
-			AACDFC230FF9AEA60056205A /* PNode.c:836 */,
-			AA955C9E108302BC0044CD9F /* VertexServer.c:294 */,
-			AA955CA5108304E70044CD9F /* VertexServer.c:308 */,
-			AA955CAA108306D60044CD9F /* PNode.c:836 */,
-			AA955CB1108306F20044CD9F /* PNode.c:816 */,
-			AA955CB3108308940044CD9F /* PNode.c:70 */,
-			AA955D3510831B3C0044CD9F /* PNode.c:972 */,
-			AA955D5E108320B60044CD9F /* PNode.c:959 */,
+			AA622DF40FF843DB00FBCA1A /* PNode.c:59 */,
+			AA622E0E0FF8458800FBCA1A /* PNode.c:866 */,
+			AACDFC060FF9AAD20056205A /* VertexServer.c:351 */,
+			AACDFC180FF9ADA30056205A /* VertexServer.c:379 */,
+			AACDFC230FF9AEA60056205A /* PNode.c:840 */,
+			AA955C9E108302BC0044CD9F /* VertexServer.c:302 */,
+			AA955CA5108304E70044CD9F /* VertexServer.c:316 */,
+			AA955CAA108306D60044CD9F /* PNode.c:840 */,
+			AA955CB1108306F20044CD9F /* PNode.c:820 */,
+			AA955CB3108308940044CD9F /* PNode.c:73 */,
+			AA955D3510831B3C0044CD9F /* PNode.c:976 */,
+			AA955D5E108320B60044CD9F /* PNode.c:963 */,
 		);
 		codeSenseManager = AAD9776D0F515E8300FA8E04 /* Code sense */;
 		executables = (
@@ -226,6 +226,13 @@
 			AA955E1A108547850044CD9F /* PBXTextBookmark */ = AA955E1A108547850044CD9F /* PBXTextBookmark */;
 			AA955E21108548770044CD9F /* PBXTextBookmark */ = AA955E21108548770044CD9F /* PBXTextBookmark */;
 			AA955E22108548920044CD9F /* PBXTextBookmark */ = AA955E22108548920044CD9F /* PBXTextBookmark */;
+			AA955E2510854CE50044CD9F /* PBXBookmark */ = AA955E2510854CE50044CD9F /* PBXBookmark */;
+			AA955E2810854E7F0044CD9F /* PBXTextBookmark */ = AA955E2810854E7F0044CD9F /* PBXTextBookmark */;
+			AA955E2910854E7F0044CD9F /* PBXTextBookmark */ = AA955E2910854E7F0044CD9F /* PBXTextBookmark */;
+			AA955E2B108554920044CD9F /* PBXBookmark */ = AA955E2B108554920044CD9F /* PBXBookmark */;
+			AA955E3B10855A550044CD9F /* XCBuildMessageTextBookmark */ = AA955E3B10855A550044CD9F /* XCBuildMessageTextBookmark */;
+			AA955E4610855A840044CD9F /* PBXTextBookmark */ = AA955E4610855A840044CD9F /* PBXTextBookmark */;
+			AA955E4910855A840044CD9F /* PBXTextBookmark */ = AA955E4910855A840044CD9F /* PBXTextBookmark */;
 		};
 		sourceControlManager = AAD9776C0F515E8300FA8E04 /* Source Control */;
 		userBuildSettings = {
@@ -295,7 +302,7 @@
 		path = /Users/steve/Developer/opensource/vertexdb/basekit/source/UArray_utf.c;
 		sourceTree = "<absolute>";
 	};
-	AA622D800FF830B000FBCA1A /* VertexServer.c:865 */ = {
+	AA622D800FF830B000FBCA1A /* VertexServer.c:873 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -307,13 +314,13 @@
 		functionName = "VertexServer_requestHandler()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 865;
+		lineNumber = 873;
 		location = Vertex;
 		modificationTime = 277029191.057686;
 		originalNumberOfMultipleMatches = 0;
 		state = 2;
 	};
-	AA622D8A0FF8310500FBCA1A /* VertexServer.c:897 */ = {
+	AA622D8A0FF8310500FBCA1A /* VertexServer.c:905 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -325,13 +332,13 @@
 		functionName = "VertexServer_requestHandler()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 897;
+		lineNumber = 905;
 		location = Vertex;
 		modificationTime = 277029191.057739;
 		originalNumberOfMultipleMatches = 0;
 		state = 2;
 	};
-	AA622D8E0FF8333A00FBCA1A /* VertexServer.c:204 */ = {
+	AA622D8E0FF8333A00FBCA1A /* VertexServer.c:212 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -343,13 +350,13 @@
 		functionName = "VertexServer_parseUri_()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 204;
+		lineNumber = 212;
 		location = Vertex;
 		modificationTime = 277029191.057762;
 		originalNumberOfMultipleMatches = 0;
 		state = 2;
 	};
-	AA622D940FF8337200FBCA1A /* VertexServer.c:197 */ = {
+	AA622D940FF8337200FBCA1A /* VertexServer.c:205 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -361,13 +368,13 @@
 		functionName = "VertexServer_parseUri_()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 197;
+		lineNumber = 205;
 		location = Vertex;
 		modificationTime = 277029191.057785;
 		originalNumberOfMultipleMatches = 0;
 		state = 2;
 	};
-	AA622DAB0FF836A900FBCA1A /* VertexServer.c:209 */ = {
+	AA622DAB0FF836A900FBCA1A /* VertexServer.c:217 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -379,7 +386,7 @@
 		functionName = "VertexServer_parseUri_()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 209;
+		lineNumber = 217;
 		location = Vertex;
 		modificationTime = 277029191.057807;
 		originalNumberOfMultipleMatches = 0;
@@ -403,7 +410,7 @@
 		originalNumberOfMultipleMatches = 0;
 		state = 2;
 	};
-	AA622DF40FF843DB00FBCA1A /* PNode.c:56 */ = {
+	AA622DF40FF843DB00FBCA1A /* PNode.c:59 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -415,13 +422,13 @@
 		functionName = "PNode_query()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 56;
+		lineNumber = 59;
 		location = Vertex;
 		modificationTime = 277029191.0579261;
 		originalNumberOfMultipleMatches = 0;
 		state = 2;
 	};
-	AA622E0E0FF8458800FBCA1A /* PNode.c:862 */ = {
+	AA622E0E0FF8458800FBCA1A /* PNode.c:866 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -433,7 +440,7 @@
 		functionName = "PNode_op_list()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 862;
+		lineNumber = 866;
 		location = Vertex;
 		modificationTime = 277029191.058094;
 		originalNumberOfMultipleMatches = 0;
@@ -545,17 +552,17 @@
 	};
 	AA9559461082A9130044CD9F /* VertexServer.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {760, 18058}}";
-			sepNavSelRange = "{10408, 0}";
-			sepNavVisRange = "{9954, 1003}";
+			sepNavIntBoundsRect = "{{0, 0}, {859, 17452}}";
+			sepNavSelRange = "{2878, 0}";
+			sepNavVisRange = "{2398, 1274}";
 			sepNavWindowFrame = "{{571, 18}, {828, 860}}";
 		};
 	};
 	AA9559471082A9130044CD9F /* VertexServer.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {626, 1152}}";
-			sepNavSelRange = "{718, 0}";
-			sepNavVisRange = "{380, 1149}";
+			sepNavIntBoundsRect = "{{0, 0}, {626, 1184}}";
+			sepNavSelRange = "{153, 27}";
+			sepNavVisRange = "{0, 794}";
 			sepNavWindowFrame = "{{688, 10}, {675, 868}}";
 		};
 	};
@@ -572,7 +579,7 @@
 		comments = "Format not a string literal and no format arguments";
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		rLen = 1;
-		rLoc = 901;
+		rLoc = 909;
 		rType = 1;
 	};
 	AA9559551082A9380044CD9F /* PBXTextBookmark */ = {
@@ -580,7 +587,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 910";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 770;
 		vrLoc = 21541;
@@ -610,7 +617,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 910";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 770;
 		vrLoc = 21541;
@@ -866,18 +873,34 @@
 	};
 	AA955C001082CE100044CD9F /* PDB.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1092, 10214}}";
-			sepNavSelRange = "{7294, 13}";
-			sepNavVisRange = "{6761, 820}";
+			sepNavIntBoundsRect = "{{0, 0}, {852, 9882}}";
+			sepNavSelRange = "{270, 0}";
+			sepNavVisRange = "{0, 809}";
 			sepNavWindowFrame = "{{179, 108}, {809, 768}}";
+		};
+	};
+	AA955C011082CE100044CD9F /* PDB.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {862, 1596}}";
+			sepNavSelRange = "{613, 12}";
+			sepNavVisRange = "{215, 860}";
+			sepNavWindowFrame = "{{422, 47}, {911, 720}}";
 		};
 	};
 	AA955C021082CE100044CD9F /* PNode.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1052, 18250}}";
-			sepNavSelRange = "{14255, 0}";
-			sepNavVisRange = "{16088, 816}";
-			sepNavWindowFrame = "{{284, 66}, {765, 775}}";
+			sepNavIntBoundsRect = "{{0, 0}, {862, 18424}}";
+			sepNavSelRange = "{725, 0}";
+			sepNavVisRange = "{253, 841}";
+			sepNavWindowFrame = "{{332, 158}, {911, 720}}";
+		};
+	};
+	AA955C031082CE100044CD9F /* PNode.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {867, 2498}}";
+			sepNavSelRange = "{387, 27}";
+			sepNavVisRange = "{87, 901}";
+			sepNavWindowFrame = "{{173, 20}, {916, 817}}";
 		};
 	};
 	AA955C061082CE100044CD9F /* PQuery.c */ = {
@@ -905,12 +928,12 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 107";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 1368;
 		vrLoc = 2599;
 	};
-	AA955C9E108302BC0044CD9F /* VertexServer.c:294 */ = {
+	AA955C9E108302BC0044CD9F /* VertexServer.c:302 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -922,7 +945,7 @@
 		functionName = "VertexServer_api_select()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 294;
+		lineNumber = 302;
 		location = Vertex;
 		modificationTime = 277029191.0583819;
 		originalNumberOfMultipleMatches = 1;
@@ -933,7 +956,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 517";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 1262;
 		vrLoc = 7281;
@@ -943,7 +966,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 517";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 1262;
 		vrLoc = 7281;
@@ -953,12 +976,12 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 517";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 918;
 		vrLoc = 18560;
 	};
-	AA955CA5108304E70044CD9F /* VertexServer.c:308 */ = {
+	AA955CA5108304E70044CD9F /* VertexServer.c:316 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -970,7 +993,7 @@
 		functionName = "VertexServer_api_select()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 308;
+		lineNumber = 316;
 		location = Vertex;
 		modificationTime = 277029191.058419;
 		originalNumberOfMultipleMatches = 1;
@@ -981,7 +1004,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 517";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 918;
 		vrLoc = 18560;
@@ -991,7 +1014,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 517";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 918;
 		vrLoc = 18560;
@@ -1001,12 +1024,12 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 517";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 918;
 		vrLoc = 18560;
 	};
-	AA955CAA108306D60044CD9F /* PNode.c:836 */ = {
+	AA955CAA108306D60044CD9F /* PNode.c:840 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -1018,7 +1041,7 @@
 		functionName = "PNode_op_items()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 836;
+		lineNumber = 840;
 		location = Vertex;
 		modificationTime = 277029322.397505;
 		originalNumberOfMultipleMatches = 1;
@@ -1029,7 +1052,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 837";
 		rLen = 0;
-		rLoc = 15381;
+		rLoc = 15395;
 		rType = 0;
 		vrLen = 888;
 		vrLoc = 15243;
@@ -1039,7 +1062,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 837";
 		rLen = 0;
-		rLoc = 15381;
+		rLoc = 15395;
 		rType = 0;
 		vrLen = 888;
 		vrLoc = 15243;
@@ -1049,12 +1072,12 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 517";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 918;
 		vrLoc = 18560;
 	};
-	AA955CB1108306F20044CD9F /* PNode.c:816 */ = {
+	AA955CB1108306F20044CD9F /* PNode.c:820 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -1066,13 +1089,13 @@
 		functionName = "PNode_op_keys()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 816;
+		lineNumber = 820;
 		location = Vertex;
 		modificationTime = 277029191.058569;
 		originalNumberOfMultipleMatches = 1;
 		state = 2;
 	};
-	AA955CB3108308940044CD9F /* PNode.c:70 */ = {
+	AA955CB3108308940044CD9F /* PNode.c:73 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -1084,7 +1107,7 @@
 		functionName = "PNode_startQuery()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 70;
+		lineNumber = 73;
 		location = Vertex;
 		modificationTime = 277029191.058691;
 		originalNumberOfMultipleMatches = 1;
@@ -1095,7 +1118,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 70";
 		rLen = 12;
-		rLoc = 1265;
+		rLoc = 1241;
 		rType = 0;
 		vrLen = 640;
 		vrLoc = 985;
@@ -1105,7 +1128,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 70";
 		rLen = 12;
-		rLoc = 1265;
+		rLoc = 1241;
 		rType = 0;
 		vrLen = 640;
 		vrLoc = 985;
@@ -1115,7 +1138,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 517";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 1263;
 		vrLoc = 7664;
@@ -1125,7 +1148,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 70";
 		rLen = 12;
-		rLoc = 1265;
+		rLoc = 1241;
 		rType = 0;
 		vrLen = 640;
 		vrLoc = 985;
@@ -1135,7 +1158,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 517";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 1263;
 		vrLoc = 7664;
@@ -1145,7 +1168,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 70";
 		rLen = 12;
-		rLoc = 1265;
+		rLoc = 1241;
 		rType = 0;
 		vrLen = 654;
 		vrLoc = 1019;
@@ -1155,7 +1178,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 517";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 1274;
 		vrLoc = 7666;
@@ -1165,7 +1188,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 70";
 		rLen = 12;
-		rLoc = 1265;
+		rLoc = 1241;
 		rType = 0;
 		vrLen = 654;
 		vrLoc = 1019;
@@ -1175,7 +1198,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 517";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 1274;
 		vrLoc = 7666;
@@ -1185,7 +1208,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 873";
 		rLen = 0;
-		rLoc = 16616;
+		rLoc = 16630;
 		rType = 0;
 		vrLen = 858;
 		vrLoc = 15856;
@@ -1195,7 +1218,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 399";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 666;
 		vrLoc = 9833;
@@ -1205,7 +1228,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 838";
 		rLen = 0;
-		rLoc = 15381;
+		rLoc = 15395;
 		rType = 0;
 		vrLen = 836;
 		vrLoc = 15242;
@@ -1215,7 +1238,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 399";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 653;
 		vrLoc = 9852;
@@ -1225,7 +1248,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 840";
 		rLen = 0;
-		rLoc = 15381;
+		rLoc = 15395;
 		rType = 0;
 		vrLen = 879;
 		vrLoc = 15243;
@@ -1235,7 +1258,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 399";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 653;
 		vrLoc = 9852;
@@ -1245,7 +1268,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 840";
 		rLen = 0;
-		rLoc = 15381;
+		rLoc = 15395;
 		rType = 0;
 		vrLen = 844;
 		vrLoc = 15322;
@@ -1255,7 +1278,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 399";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 653;
 		vrLoc = 9852;
@@ -1265,7 +1288,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 399";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 653;
 		vrLoc = 9852;
@@ -1275,7 +1298,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 769";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 635;
 		vrLoc = 18760;
@@ -1285,7 +1308,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 1050";
 		rLen = 15;
-		rLoc = 20616;
+		rLoc = 20630;
 		rType = 0;
 		vrLen = 850;
 		vrLoc = 15095;
@@ -1295,7 +1318,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 1050";
 		rLen = 15;
-		rLoc = 20616;
+		rLoc = 20630;
 		rType = 0;
 		vrLen = 834;
 		vrLoc = 15242;
@@ -1305,7 +1328,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 1051";
 		rLen = 15;
-		rLoc = 20616;
+		rLoc = 20630;
 		rType = 0;
 		vrLen = 908;
 		vrLoc = 15243;
@@ -1315,7 +1338,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 1051";
 		rLen = 15;
-		rLoc = 20616;
+		rLoc = 20630;
 		rType = 0;
 		vrLen = 908;
 		vrLoc = 15243;
@@ -1325,7 +1348,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 1051";
 		rLen = 15;
-		rLoc = 20616;
+		rLoc = 20630;
 		rType = 0;
 		vrLen = 908;
 		vrLoc = 15243;
@@ -1339,7 +1362,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 779";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 308;
 		vrLoc = 19183;
@@ -1349,7 +1372,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 774";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 289;
 		vrLoc = 19241;
@@ -1382,7 +1405,7 @@
 		vrLen = 321;
 		vrLoc = 1470;
 	};
-	AA955D3510831B3C0044CD9F /* PNode.c:972 */ = {
+	AA955D3510831B3C0044CD9F /* PNode.c:976 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -1394,7 +1417,7 @@
 		functionName = "PNode_op_rm()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 972;
+		lineNumber = 976;
 		location = Vertex;
 		modificationTime = 277029191.0588139;
 		originalNumberOfMultipleMatches = 1;
@@ -1405,7 +1428,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 935";
 		rLen = 15;
-		rLoc = 18092;
+		rLoc = 18106;
 		rType = 0;
 		vrLen = 835;
 		vrLoc = 17027;
@@ -1415,7 +1438,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 935";
 		rLen = 15;
-		rLoc = 18092;
+		rLoc = 18106;
 		rType = 0;
 		vrLen = 835;
 		vrLoc = 17027;
@@ -1425,7 +1448,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 935";
 		rLen = 15;
-		rLoc = 18092;
+		rLoc = 18106;
 		rType = 0;
 		vrLen = 835;
 		vrLoc = 17027;
@@ -1435,7 +1458,7 @@
 		comments = "'size' undeclared (first use in this function)";
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		rLen = 1;
-		rLoc = 975;
+		rLoc = 979;
 		rType = 1;
 	};
 	AA955D4710831E0C0044CD9F /* PBXTextBookmark */ = {
@@ -1443,7 +1466,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 952";
 		rLen = 0;
-		rLoc = 17701;
+		rLoc = 17715;
 		rType = 0;
 		vrLen = 820;
 		vrLoc = 17213;
@@ -1452,7 +1475,7 @@
 		isa = PBXTextBookmark;
 		fRef = AA955C001082CE100044CD9F /* PDB.c */;
 		rLen = 4;
-		rLoc = 3243;
+		rLoc = 3435;
 		rType = 0;
 	};
 	AA955D4C10831EA30044CD9F /* PBXTextBookmark */ = {
@@ -1460,7 +1483,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 952";
 		rLen = 0;
-		rLoc = 17701;
+		rLoc = 17715;
 		rType = 0;
 		vrLen = 780;
 		vrLoc = 17255;
@@ -1470,7 +1493,7 @@
 		comments = "'removeCount' undeclared (first use in this function)";
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		rLen = 1;
-		rLoc = 970;
+		rLoc = 974;
 		rType = 1;
 	};
 	AA955D5210831FB40044CD9F /* PBXTextBookmark */ = {
@@ -1478,7 +1501,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 960";
 		rLen = 0;
-		rLoc = 18061;
+		rLoc = 18075;
 		rType = 0;
 		vrLen = 378;
 		vrLoc = 14347;
@@ -1488,7 +1511,7 @@
 		fRef = AA955C001082CE100044CD9F /* PDB.c */;
 		name = "PDB.c: 187";
 		rLen = 0;
-		rLoc = 3831;
+		rLoc = 4023;
 		rType = 0;
 		vrLen = 481;
 		vrLoc = 10;
@@ -1498,7 +1521,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 304";
 		rLen = 0;
-		rLoc = 5902;
+		rLoc = 5878;
 		rType = 0;
 		vrLen = 969;
 		vrLoc = 5505;
@@ -1508,7 +1531,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 306";
 		rLen = 0;
-		rLoc = 5949;
+		rLoc = 5925;
 		rType = 0;
 		vrLen = 969;
 		vrLoc = 5505;
@@ -1518,12 +1541,12 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 306";
 		rLen = 0;
-		rLoc = 5949;
+		rLoc = 5925;
 		rType = 0;
 		vrLen = 969;
 		vrLoc = 5507;
 	};
-	AA955D5E108320B60044CD9F /* PNode.c:959 */ = {
+	AA955D5E108320B60044CD9F /* PNode.c:963 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -1535,7 +1558,7 @@
 		functionName = "PNode_op_rm()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 959;
+		lineNumber = 963;
 		location = Vertex;
 		modificationTime = 277029191.05898;
 		originalNumberOfMultipleMatches = 1;
@@ -1546,7 +1569,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 306";
 		rLen = 0;
-		rLoc = 5949;
+		rLoc = 5925;
 		rType = 0;
 		vrLen = 880;
 		vrLoc = 5597;
@@ -1570,7 +1593,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 962";
 		rLen = 20;
-		rLoc = 17944;
+		rLoc = 17958;
 		rType = 0;
 		vrLen = 812;
 		vrLoc = 17427;
@@ -1590,7 +1613,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 962";
 		rLen = 20;
-		rLoc = 17944;
+		rLoc = 17958;
 		rType = 0;
 		vrLen = 812;
 		vrLoc = 17427;
@@ -1610,7 +1633,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 962";
 		rLen = 20;
-		rLoc = 17944;
+		rLoc = 17958;
 		rType = 0;
 		vrLen = 797;
 		vrLoc = 17445;
@@ -1630,7 +1653,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 962";
 		rLen = 20;
-		rLoc = 17944;
+		rLoc = 17958;
 		rType = 0;
 		vrLen = 797;
 		vrLoc = 17445;
@@ -1640,7 +1663,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 961";
 		rLen = 0;
-		rLoc = 17867;
+		rLoc = 17881;
 		rType = 0;
 		vrLen = 392;
 		vrLoc = 17726;
@@ -1650,7 +1673,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 961";
 		rLen = 0;
-		rLoc = 17867;
+		rLoc = 17881;
 		rType = 0;
 		vrLen = 373;
 		vrLoc = 17815;
@@ -1670,7 +1693,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 962";
 		rLen = 20;
-		rLoc = 17944;
+		rLoc = 17958;
 		rType = 0;
 		vrLen = 797;
 		vrLoc = 17445;
@@ -1694,7 +1717,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 122";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3191;
 		rType = 0;
 		vrLen = 819;
 		vrLoc = 3843;
@@ -1703,7 +1726,7 @@
 		isa = PBXTextBookmark;
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		rLen = 0;
-		rLoc = 19173;
+		rLoc = 19352;
 		rType = 0;
 	};
 	AA955DB41083F7A50044CD9F /* PBXTextBookmark */ = {
@@ -1711,7 +1734,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 827";
 		rLen = 0;
-		rLoc = 19308;
+		rLoc = 19487;
 		rType = 0;
 		vrLen = 615;
 		vrLoc = 18752;
@@ -1721,7 +1744,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 834";
 		rLen = 0;
-		rLoc = 20752;
+		rLoc = 20931;
 		rType = 0;
 		vrLen = 618;
 		vrLoc = 18752;
@@ -1731,7 +1754,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 834";
 		rLen = 0;
-		rLoc = 20752;
+		rLoc = 20931;
 		rType = 0;
 		vrLen = 1049;
 		vrLoc = 18178;
@@ -1749,7 +1772,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 907";
 		rLen = 0;
-		rLoc = 22371;
+		rLoc = 22550;
 		rType = 0;
 		vrLen = 1144;
 		vrLoc = 21463;
@@ -1759,7 +1782,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 769";
 		rLen = 0;
-		rLoc = 14255;
+		rLoc = 14231;
 		rType = 0;
 		vrLen = 1276;
 		vrLoc = 14080;
@@ -1769,7 +1792,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 899";
 		rLen = 0;
-		rLoc = 22014;
+		rLoc = 22193;
 		rType = 0;
 		vrLen = 1146;
 		vrLoc = 21587;
@@ -1779,7 +1802,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 769";
 		rLen = 0;
-		rLoc = 14255;
+		rLoc = 14231;
 		rType = 0;
 		vrLen = 816;
 		vrLoc = 16088;
@@ -1789,7 +1812,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 834";
 		rLen = 0;
-		rLoc = 20752;
+		rLoc = 20931;
 		rType = 0;
 		vrLen = 997;
 		vrLoc = 18236;
@@ -1799,7 +1822,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 879";
 		rLen = 0;
-		rLoc = 21700;
+		rLoc = 21879;
 		rType = 0;
 		vrLen = 1146;
 		vrLoc = 21587;
@@ -1809,7 +1832,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 769";
 		rLen = 0;
-		rLoc = 14255;
+		rLoc = 14231;
 		rType = 0;
 		vrLen = 816;
 		vrLoc = 16088;
@@ -1819,7 +1842,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 769";
 		rLen = 0;
-		rLoc = 14255;
+		rLoc = 14231;
 		rType = 0;
 		vrLen = 816;
 		vrLoc = 16088;
@@ -1829,7 +1852,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 911";
 		rLen = 0;
-		rLoc = 22271;
+		rLoc = 22450;
 		rType = 0;
 		vrLen = 1144;
 		vrLoc = 22192;
@@ -1839,7 +1862,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 369";
 		rLen = 0;
-		rLoc = 9828;
+		rLoc = 10008;
 		rType = 0;
 		vrLen = 970;
 		vrLoc = 9189;
@@ -1849,7 +1872,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 769";
 		rLen = 0;
-		rLoc = 14255;
+		rLoc = 14231;
 		rType = 0;
 		vrLen = 816;
 		vrLoc = 16088;
@@ -1859,7 +1882,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 361";
 		rLen = 0;
-		rLoc = 9543;
+		rLoc = 9723;
 		rType = 0;
 		vrLen = 1072;
 		vrLoc = 9206;
@@ -1869,7 +1892,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 769";
 		rLen = 0;
-		rLoc = 14255;
+		rLoc = 14231;
 		rType = 0;
 		vrLen = 816;
 		vrLoc = 16088;
@@ -1879,7 +1902,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 467";
 		rLen = 93;
-		rLoc = 11890;
+		rLoc = 12069;
 		rType = 0;
 		vrLen = 1254;
 		vrLoc = 11553;
@@ -1889,7 +1912,7 @@
 		fRef = AA955C021082CE100044CD9F /* PNode.c */;
 		name = "PNode.c: 769";
 		rLen = 0;
-		rLoc = 14255;
+		rLoc = 14231;
 		rType = 0;
 		vrLen = 816;
 		vrLoc = 16088;
@@ -1903,7 +1926,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 366";
 		rLen = 0;
-		rLoc = 9808;
+		rLoc = 9988;
 		rType = 0;
 		vrLen = 1068;
 		vrLoc = 9206;
@@ -1913,7 +1936,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 371";
 		rLen = 0;
-		rLoc = 9751;
+		rLoc = 9931;
 		rType = 0;
 		vrLen = 999;
 		vrLoc = 9206;
@@ -1923,7 +1946,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 403";
 		rLen = 0;
-		rLoc = 10532;
+		rLoc = 10711;
 		rType = 0;
 		vrLen = 911;
 		vrLoc = 6932;
@@ -1933,7 +1956,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 925";
 		rLen = 0;
-		rLoc = 22494;
+		rLoc = 22673;
 		rType = 0;
 		vrLen = 906;
 		vrLoc = 21697;
@@ -1944,7 +1967,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		fallbackIsa = XCBuildMessageTextBookmark;
 		rLen = 1;
-		rLoc = 907;
+		rLoc = 915;
 		rType = 1;
 	};
 	AA955E1610852A260044CD9F /* PBXTextBookmark */ = {
@@ -1952,7 +1975,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 907";
 		rLen = 0;
-		rLoc = 22088;
+		rLoc = 22267;
 		rType = 0;
 		vrLen = 983;
 		vrLoc = 21655;
@@ -1962,7 +1985,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 402";
 		rLen = 0;
-		rLoc = 10531;
+		rLoc = 10710;
 		rType = 0;
 		vrLen = 994;
 		vrLoc = 10116;
@@ -1972,7 +1995,7 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 402";
 		rLen = 0;
-		rLoc = 10408;
+		rLoc = 10587;
 		rType = 0;
 		vrLen = 1064;
 		vrLoc = 9825;
@@ -1982,12 +2005,69 @@
 		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
 		name = "VertexServer.c: 402";
 		rLen = 0;
-		rLoc = 10408;
+		rLoc = 10587;
 		rType = 0;
 		vrLen = 1003;
 		vrLoc = 9954;
 	};
-	AACDFC060FF9AAD20056205A /* VertexServer.c:343 */ = {
+	AA955E2510854CE50044CD9F /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = AA955C021082CE100044CD9F /* PNode.c */;
+	};
+	AA955E2810854E7F0044CD9F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = AA955C021082CE100044CD9F /* PNode.c */;
+		name = "PNode.c: 792";
+		rLen = 0;
+		rLoc = 15119;
+		rType = 0;
+		vrLen = 1207;
+		vrLoc = 14186;
+	};
+	AA955E2910854E7F0044CD9F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
+		name = "VertexServer.c: 158";
+		rLen = 0;
+		rLoc = 4583;
+		rType = 0;
+		vrLen = 988;
+		vrLoc = 3600;
+	};
+	AA955E2B108554920044CD9F /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = AA9559471082A9130044CD9F /* VertexServer.h */;
+	};
+	AA955E3B10855A550044CD9F /* XCBuildMessageTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "Implicit declaration of function 'PDB_setYajl_'";
+		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
+		fallbackIsa = XCBuildMessageTextBookmark;
+		rLen = 1;
+		rLoc = 96;
+		rType = 1;
+	};
+	AA955E4610855A840044CD9F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = AA9559461082A9130044CD9F /* VertexServer.c */;
+		name = "VertexServer.c: 97";
+		rLen = 0;
+		rLoc = 2878;
+		rType = 0;
+		vrLen = 1274;
+		vrLoc = 2398;
+	};
+	AA955E4910855A840044CD9F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = AA9559471082A9130044CD9F /* VertexServer.h */;
+		name = "VertexServer.h: 9";
+		rLen = 27;
+		rLoc = 153;
+		rType = 0;
+		vrLen = 794;
+		vrLoc = 0;
+	};
+	AACDFC060FF9AAD20056205A /* VertexServer.c:351 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -1999,13 +2079,13 @@
 		functionName = "VertexServer_api_read()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 343;
+		lineNumber = 351;
 		location = Vertex;
 		modificationTime = 277029191.05822;
 		originalNumberOfMultipleMatches = 0;
 		state = 2;
 	};
-	AACDFC180FF9ADA30056205A /* VertexServer.c:371 */ = {
+	AACDFC180FF9ADA30056205A /* VertexServer.c:379 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -2017,13 +2097,13 @@
 		functionName = "VertexServer_api_write()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 371;
+		lineNumber = 379;
 		location = Vertex;
 		modificationTime = 277029191.058242;
 		originalNumberOfMultipleMatches = 0;
 		state = 2;
 	};
-	AACDFC230FF9AEA60056205A /* PNode.c:836 */ = {
+	AACDFC230FF9AEA60056205A /* PNode.c:840 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -2035,7 +2115,7 @@
 		functionName = "PNode_op_items()";
 		hitCount = 2;
 		ignoreCount = 0;
-		lineNumber = 836;
+		lineNumber = 840;
 		location = Vertex;
 		modificationTime = 277029323.79734;
 		originalNumberOfMultipleMatches = 1;

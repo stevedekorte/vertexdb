@@ -92,6 +92,10 @@ VertexServer *VertexServer_new(void)
 	srand((clock() % INT_MAX));
 	
 	self->pdb   = PDB_new();
+	yajl_gen_config config = { 0, "" };
+	self->jsonGenerator = yajl_gen_alloc(&config, NULL);
+	PDB_setYajl_(self->pdb, self->jsonGenerator);
+	
 	self->pool  = Pool_new();
 	
 	self->query = CHash_new();	
@@ -127,6 +131,7 @@ VertexServer *VertexServer_new(void)
 	self->error = Datum_new(); 
 	self->result = Datum_new(); 
 
+
 	return self;
 }
 
@@ -151,6 +156,9 @@ void VertexServer_free(VertexServer *self)
 	Datum_free(self->error);
 	Datum_free(self->result);
 	RunningStat_free(self->rstat);
+
+	yajl_gen_free(self->jsonGenerator);
+
 	free(self);
 }
 
@@ -398,7 +406,7 @@ int VertexServer_api_link(VertexServer *self)
 	PNode *fromNode = PDB_allocNode(self->pdb);
 	
 	Datum *key      = VertexServer_queryValue_(self, "key");
-	Daturm *fromPath = self->uriPath;
+	Datum *fromPath = self->uriPath;
 	//Datum *fromPath = VertexServer_queryValue_(self, "fromPath");
 	Datum *toPath   = VertexServer_queryValue_(self, "toPath");
 

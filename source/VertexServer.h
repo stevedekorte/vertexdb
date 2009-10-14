@@ -6,6 +6,7 @@
 #include "RunningStat.h"
 #include "CHash.h"
 #include "Pool.h"
+#include <yajl/yajl_gen.h>
 
 #define HTTP_SERVERERROR 500
 #define HTTP_SERVERERROR_MESSAGE "Internal Server Error"
@@ -50,6 +51,7 @@ typedef struct
 	
 	RunningStat *rstat;
 	size_t requestsPerSample;
+	yajl_gen jsonGenerator;
 } VertexServer;
 
 typedef int (VertexAction)(VertexServer *);

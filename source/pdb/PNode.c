@@ -26,10 +26,12 @@ PNode *PNode_new(void)
 	self->sizePath      = Datum_new();
 	self->parentPid     = Datum_new();
 	
-	yajl_gen_config config = { 0, "" };
-	self->jsonGenerator = yajl_gen_alloc(&config, NULL);
-	
 	return self;
+}
+
+void PNode_setYajl_(PNode *self, yajl_gen y)
+{
+	self->jsonGenerator = y;
 }
 
 void PNode_free(PNode *self)
@@ -48,7 +50,8 @@ void PNode_free(PNode *self)
 		PQuery_free(self->query);
 		self->query = 0x0;
 	}
-	yajl_gen_free(self->jsonGenerator);
+	
+	self->jsonGenerator = 0x0;
 	
 	free(self);
 }
@@ -789,6 +792,7 @@ int PNode_op_object(PNode *self, Datum *d)
 	yajl_gen_map_close(self->jsonGenerator);
 	yajl_gen_get_buf(self->jsonGenerator, &jsonBuffer, &jsonBufferLength);
 	Datum_appendBytes_size_(d, jsonBuffer, (size_t)jsonBufferLength);
+	yajl_gen_clear(self->jsonGenerator);
 	//Datum_appendCString_(d, "}");
 	return 0;
 }
