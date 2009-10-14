@@ -351,12 +351,16 @@ int VertexServer_api_read(VertexServer *self)
 
 	if (value) 
 	{
-		Datum_appendQuoted_(self->result, value);
+		//Datum_appendQuoted_(self->result, value);
+		yajl_gen_datum(self->yajl, value);
 	}
 	else
 	{
-		Datum_appendCString_(self->result, "null");
+		//Datum_appendCString_(self->result, "null");
+		yajl_gen_null(self->yajl);
 	}
+	
+	Datum_appendYajl_(self->result, self->yajl);
 
 	return 0;
 }
@@ -927,6 +931,11 @@ void VertexServer_requestHandler(struct evhttp_request *req, void *arg)
 			if (Datum_size(self->error))
 			{
 				Datum_nullTerminate(self->error); 
+				
+				yajl_gen_clear(self->yajl);
+				yajl_gen_datum(self->yajl, self->error);
+				Datum_setYajl_(self->error, self->yajl);
+				
 				evbuffer_add_printf(buf, "\"%s\"", Datum_data(self->error)); 
 				Datum_setSize_(self->error, 0);
 			}

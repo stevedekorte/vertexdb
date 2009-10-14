@@ -22,7 +22,7 @@ extern "C" {
 #include <string.h>
 #include "Datum.h"
 #include "PQuery.h"
-#include <yajl/yajl_gen.h>
+#include "Yajl_extras.h"
 
 typedef struct
 {

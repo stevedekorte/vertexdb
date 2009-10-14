@@ -13,7 +13,7 @@ extern "C" {
 #include "Common.h"
 #include "CHash.h"
 #include "Pool.h"
-#include <yajl/yajl_gen.h>
+#include "Yajl_extras.h"
 
 typedef struct
 {

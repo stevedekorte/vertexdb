@@ -6,7 +6,7 @@
 #include "RunningStat.h"
 #include "CHash.h"
 #include "Pool.h"
-#include <yajl/yajl_gen.h>
+#include "Yajl_extras.h"
 
 #define HTTP_SERVERERROR 500
 #define HTTP_SERVERERROR_MESSAGE "Internal Server Error"
