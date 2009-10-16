@@ -84,6 +84,15 @@ void Datum_decodeUri(Datum *self)
 
 // ----------------------------------------------------------
 
+void VertexServer_setupYajl(VertexServer *self)
+{
+	if(self->yajl) 	yajl_gen_free(self->yajl);
+
+	yajl_gen_config config = { 0, "" };
+	self->yajl = yajl_gen_alloc(&config, NULL);
+	PDB_setYajl_(self->pdb, self->yajl);
+}
+
 VertexServer *VertexServer_new(void)
 {
 	VertexServer *self = calloc(1, sizeof(VertexServer));
@@ -92,9 +101,7 @@ VertexServer *VertexServer_new(void)
 	srand((clock() % INT_MAX));
 	
 	self->pdb   = PDB_new();
-	yajl_gen_config config = { 0, "" };
-	self->yajl = yajl_gen_alloc(&config, NULL);
-	PDB_setYajl_(self->pdb, self->yajl);
+	VertexServer_setupYajl(self);
 	
 	self->pool  = Pool_new();
 	
@@ -157,7 +164,7 @@ void VertexServer_free(VertexServer *self)
 	Datum_free(self->result);
 	RunningStat_free(self->rstat);
 
-	yajl_gen_free(self->yajl);
+	if(self->yajl) 	yajl_gen_free(self->yajl);
 
 	free(self);
 }
@@ -881,7 +888,8 @@ void VertexServer_requestHandler(struct evhttp_request *req, void *arg)
 	struct evbuffer *buf = evbuffer_new();
 	
 	self->request = req;
-
+	VertexServer_setupYajl(self); 
+	
 	{
 		struct evbuffer *evb = self->request->input_buffer;
 		Datum_setData_size_(self->post, (const char *)EVBUFFER_DATA(evb), EVBUFFER_LENGTH(evb));
@@ -908,10 +916,10 @@ void VertexServer_requestHandler(struct evhttp_request *req, void *arg)
 	*/
 	{
 		VertexServer_parseUri_(self, uri);
-		
+
 		Datum_clear(self->result);
 		result = VertexServer_process(self);
-		
+
 		if (result == 0)
 		{
 			if (Datum_size(self->result))
