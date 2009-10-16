@@ -13,6 +13,7 @@ extern "C" {
 #include "Common.h"
 #include "CHash.h"
 #include "Pool.h"
+#include "Yajl_extras.h"
 
 typedef struct
 {
@@ -35,9 +36,11 @@ typedef struct
 	Datum *currentUser;
 		
 	Pool *pool;
+	yajl_gen yajl;
 } PDB;
 
 PDB *PDB_new(void);
+void PDB_setYajl_(PDB *self, yajl_gen yajl);
 void PDB_free(PDB *self);
 
 // node caching -------------

@@ -22,7 +22,7 @@ extern "C" {
 #include <string.h>
 #include "Datum.h"
 #include "PQuery.h"
-#include <yajl/yajl_gen.h>
+#include "Yajl_extras.h"
 
 typedef struct
 {
@@ -39,12 +39,13 @@ typedef struct
 	Datum *parentPid;
 	PQuery *query;
 	
-	yajl_gen jsonGenerator;
+	yajl_gen yajl;
 } PNode;
 
 typedef int (PNodeOp)(PNode *, Datum *);
 
 PNode *PNode_new(void);
+void PNode_setYajl_(PNode *self, yajl_gen y);
 void PNode_free(PNode *self);
 
 void PNode_setPdb_(PNode *self, void *pdb);

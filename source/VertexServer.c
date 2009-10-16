@@ -92,6 +92,10 @@ VertexServer *VertexServer_new(void)
 	srand((clock() % INT_MAX));
 	
 	self->pdb   = PDB_new();
+	yajl_gen_config config = { 0, "" };
+	self->yajl = yajl_gen_alloc(&config, NULL);
+	PDB_setYajl_(self->pdb, self->yajl);
+	
 	self->pool  = Pool_new();
 	
 	self->query = CHash_new();	
@@ -127,6 +131,7 @@ VertexServer *VertexServer_new(void)
 	self->error = Datum_new(); 
 	self->result = Datum_new(); 
 
+
 	return self;
 }
 
@@ -151,6 +156,9 @@ void VertexServer_free(VertexServer *self)
 	Datum_free(self->error);
 	Datum_free(self->result);
 	RunningStat_free(self->rstat);
+
+	yajl_gen_free(self->yajl);
+
 	free(self);
 }
 
@@ -343,12 +351,16 @@ int VertexServer_api_read(VertexServer *self)
 
 	if (value) 
 	{
-		Datum_appendQuoted_(self->result, value);
+		//Datum_appendQuoted_(self->result, value);
+		yajl_gen_datum(self->yajl, value);
 	}
 	else
 	{
-		Datum_appendCString_(self->result, "null");
+		//Datum_appendCString_(self->result, "null");
+		yajl_gen_null(self->yajl);
 	}
+	
+	Datum_appendYajl_(self->result, self->yajl);
 
 	return 0;
 }
@@ -398,7 +410,7 @@ int VertexServer_api_link(VertexServer *self)
 	PNode *fromNode = PDB_allocNode(self->pdb);
 	
 	Datum *key      = VertexServer_queryValue_(self, "key");
-	Daturm *fromPath = self->uriPath;
+	Datum *fromPath = self->uriPath;
 	//Datum *fromPath = VertexServer_queryValue_(self, "fromPath");
 	Datum *toPath   = VertexServer_queryValue_(self, "toPath");
 
@@ -919,6 +931,11 @@ void VertexServer_requestHandler(struct evhttp_request *req, void *arg)
 			if (Datum_size(self->error))
 			{
 				Datum_nullTerminate(self->error); 
+				
+				yajl_gen_clear(self->yajl);
+				yajl_gen_datum(self->yajl, self->error);
+				Datum_setYajl_(self->error, self->yajl);
+				
 				evbuffer_add_printf(buf, "\"%s\"", Datum_data(self->error)); 
 				Datum_setSize_(self->error, 0);
 			}

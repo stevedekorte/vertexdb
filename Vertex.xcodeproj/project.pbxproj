@@ -59,6 +59,7 @@
 		AA955C7E1082CE110044CD9F /* PNode.c in Sources */ = {isa = PBXBuildFile; fileRef = AA955C021082CE100044CD9F /* PNode.c */; };
 		AA955C7F1082CE110044CD9F /* Pool.c in Sources */ = {isa = PBXBuildFile; fileRef = AA955C041082CE100044CD9F /* Pool.c */; };
 		AA955C801082CE110044CD9F /* PQuery.c in Sources */ = {isa = PBXBuildFile; fileRef = AA955C061082CE100044CD9F /* PQuery.c */; };
+		AA955E821085614E0044CD9F /* Yajl_extras.c in Sources */ = {isa = PBXBuildFile; fileRef = AA955E801085614E0044CD9F /* Yajl_extras.c */; };
 		AA9C0F6C0EB1387F00F997D7 /* libtokyocabinet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9C0F6B0EB1387F00F997D7 /* libtokyocabinet.a */; };
 		AA9C0F720EB138C100F997D7 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9C0F710EB138C100F997D7 /* libz.a */; };
 /* End PBXBuildFile section */
@@ -185,6 +186,8 @@
 		AA955C051082CE100044CD9F /* Pool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pool.h; path = source/pdb/Pool.h; sourceTree = SOURCE_ROOT; };
 		AA955C061082CE100044CD9F /* PQuery.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = PQuery.c; path = source/pdb/PQuery.c; sourceTree = SOURCE_ROOT; };
 		AA955C071082CE100044CD9F /* PQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PQuery.h; path = source/pdb/PQuery.h; sourceTree = SOURCE_ROOT; };
+		AA955E801085614E0044CD9F /* Yajl_extras.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Yajl_extras.c; path = source/pdb/Yajl_extras.c; sourceTree = SOURCE_ROOT; };
+		AA955E811085614E0044CD9F /* Yajl_extras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Yajl_extras.h; path = source/pdb/Yajl_extras.h; sourceTree = SOURCE_ROOT; };
 		AA9C0F6B0EB1387F00F997D7 /* libtokyocabinet.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtokyocabinet.a; path = /usr/local/lib/libtokyocabinet.a; sourceTree = "<absolute>"; };
 		AA9C0F710EB138C100F997D7 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = /opt/local/lib/libz.a; sourceTree = "<absolute>"; };
 		C6A0FF2C0290799A04C91782 /* Vertex.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Vertex.1; sourceTree = "<group>"; };
@@ -374,6 +377,8 @@
 		AA955BF91082CE100044CD9F /* pdb */ = {
 			isa = PBXGroup;
 			children = (
+				AA955E801085614E0044CD9F /* Yajl_extras.c */,
+				AA955E811085614E0044CD9F /* Yajl_extras.h */,
 				AA955BFA1082CE100044CD9F /* Datum.c */,
 				AA955BFB1082CE100044CD9F /* Datum.h */,
 				AA955BFC1082CE100044CD9F /* File.c */,
@@ -492,6 +497,7 @@
 				AA955C7E1082CE110044CD9F /* PNode.c in Sources */,
 				AA955C7F1082CE110044CD9F /* Pool.c in Sources */,
 				AA955C801082CE110044CD9F /* PQuery.c in Sources */,
+				AA955E821085614E0044CD9F /* Yajl_extras.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

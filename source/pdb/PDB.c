@@ -10,6 +10,7 @@ Notes:
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 #define PDB_USE_TX 1
 //#define PDB_USE_SYNC 1
@@ -72,6 +73,11 @@ PDB *PDB_new(void)
 	return self;
 }
 
+void PDB_setYajl_(PDB *self, yajl_gen y)
+{
+	self->yajl = y;
+}
+
 void PDB_free(PDB *self)
 {
 	PDB_freeNodes(self);
@@ -83,8 +89,8 @@ void PDB_free(PDB *self)
 	File_free(self->newBackupFile);
 	File_free(self->corruptFile);
 	Datum_free(self->unusedPid);
-	
 	Pool_free(self->pool);
+	self->yajl = 0x0;
 	free(self);
 }
 
@@ -95,6 +101,8 @@ PNode *PDB_allocNode(PDB *self)
 	PNode *node = POOL_ALLOC(self->pool, PNode);
 	PNode_setPdb_(node, self);
 	PNode_setToRoot(node);
+	assert(self->yajl);
+	PNode_setYajl_(node, self->yajl);
 	return node;
 }
 
