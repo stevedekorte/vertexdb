@@ -944,7 +944,7 @@ void VertexServer_requestHandler(struct evhttp_request *req, void *arg)
 				yajl_gen_datum(self->yajl, self->error);
 				Datum_setYajl_(self->error, self->yajl);
 				
-				evbuffer_add_printf(buf, "\"%s\"", Datum_data(self->error)); 
+				evbuffer_add_printf(buf, "%s", Datum_data(self->error));
 				Datum_setSize_(self->error, 0);
 			}
 			else
