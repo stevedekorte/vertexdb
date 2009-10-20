@@ -1009,6 +1009,7 @@ int PNode_op_rm(PNode *self, Datum *d)
 	return 0;  
 }
 
+/*
 int PNode_op_html(PNode *self, Datum *d)
 {	
 	PQuery *q = PNode_startQuery(self);
@@ -1022,18 +1023,7 @@ int PNode_op_html(PNode *self, Datum *d)
 	{		
 		Datum_append_(d, k);
 		Datum_appendCString_(d, "<br>");
-		/*
-		if(!Datum_beginsWithCString_(k, "_"))
-		{
-			PNode_setPid_(tmpNode, PNode_value(self));
-			PNode_op_object(tmpNode, d);
-		}
-		else
-		{
-			//Datum_appendQuoted_(d, PNode_value(self));
-			yajl_gen_datum(self->yajl, PNode_value(self));
-		}
-		*/
+
 				
 		PQuery_enumerate(q);
 		//if (PNode_key(self)) Datum_appendCString_(d, ",");
@@ -1042,6 +1032,7 @@ int PNode_op_html(PNode *self, Datum *d)
 	Datum_appendCString_(d, "<hr>");
 	return 0; 
 }
+*/
 
 // meta slots ----------------------------------------------------
 
