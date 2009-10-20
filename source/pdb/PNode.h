@@ -124,6 +124,7 @@ int PNode_op_keys(PNode *self, Datum *d);
 int PNode_op_pairs(PNode *self, Datum *d);
 int PNode_op_values(PNode *self, Datum *d);
 int PNode_op_rm(PNode *self, Datum *d);
+int PNode_op_html(PNode *self, Datum *d);
 
 Datum *PNode_op_owner(PNode *self);
 Datum *PNode_op_public(PNode *self);

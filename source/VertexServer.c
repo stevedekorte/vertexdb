@@ -337,6 +337,18 @@ int VertexServer_api_select(VertexServer *self)
 	return -1;
 }
 
+int VertexServer_api_show(VertexServer *self)
+{
+	PNode *node = PDB_allocNode(self->pdb);
+	//Datum *value = VertexServer_queryValue_(self, "mode");
+
+	if (VertexServer_api_setCursorPathOnNode_(self, node)) return 2;
+	
+	Datum_appendLong_(self->result, (long)PNode_size(node));
+
+	return 0;
+}
+
 int VertexServer_api_rm(VertexServer *self)
 {
 	PNode *node = PDB_allocNode(self->pdb);
@@ -845,6 +857,7 @@ void VertexServer_setupActions(VertexServer *self)
 	
 	VERTEX_SERVER_ADD_ACTION(chmod);
 	VERTEX_SERVER_ADD_ACTION(chown);
+
 	
 	// management
 	VERTEX_SERVER_ADD_ACTION(shutdown);
@@ -859,6 +872,7 @@ void VertexServer_setupActions(VertexServer *self)
 	VERTEX_SERVER_ADD_OP(values);
 	VERTEX_SERVER_ADD_OP(pairs);
 	VERTEX_SERVER_ADD_OP(rm);
+	VERTEX_SERVER_ADD_OP(html);
 }  
 
 int VertexServer_process(VertexServer *self)

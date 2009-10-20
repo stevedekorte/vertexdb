@@ -23,7 +23,7 @@ void Datum_setYajl_(Datum *self, yajl_gen y)
 		
 	yajl_gen_get_buf(y, &jsonBuffer, &jsonBufferLength);
 	
-	Datum_setData_size_(self, jsonBuffer, (size_t)jsonBufferLength);
+	Datum_setData_size_(self, (char *)jsonBuffer, (size_t)jsonBufferLength);
 	yajl_gen_clear(y);
 }
 

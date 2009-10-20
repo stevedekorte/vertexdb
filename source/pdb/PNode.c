@@ -945,6 +945,7 @@ int PNode_op_values(PNode *self, Datum *d)
 	
 	//Datum_appendCString_(d, "]");
 	yajl_gen_array_close(self->yajl);
+	Datum_appendYajl_(d, self->yajl);
 	return 0; 
 }
 
@@ -1006,6 +1007,40 @@ int PNode_op_rm(PNode *self, Datum *d)
 	Datum_appendYajl_(d, self->yajl);
 	//Datum_appendLong_(d, removeCount);
 	return 0;  
+}
+
+int PNode_op_html(PNode *self, Datum *d)
+{	
+	PQuery *q = PNode_startQuery(self);
+	//PNode *tmpNode = PDB_allocNode(self->pdb);
+	Datum *k;
+	
+	Datum_append_(d, self->keyPath);
+	Datum_appendCString_(d, "<hr>");
+	
+	while (k = PNode_key(self))
+	{		
+		Datum_append_(d, k);
+		Datum_appendCString_(d, "<br>");
+		/*
+		if(!Datum_beginsWithCString_(k, "_"))
+		{
+			PNode_setPid_(tmpNode, PNode_value(self));
+			PNode_op_object(tmpNode, d);
+		}
+		else
+		{
+			//Datum_appendQuoted_(d, PNode_value(self));
+			yajl_gen_datum(self->yajl, PNode_value(self));
+		}
+		*/
+				
+		PQuery_enumerate(q);
+		//if (PNode_key(self)) Datum_appendCString_(d, ",");
+	}
+	
+	Datum_appendCString_(d, "<hr>");
+	return 0; 
 }
 
 // meta slots ----------------------------------------------------
