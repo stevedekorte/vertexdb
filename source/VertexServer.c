@@ -834,6 +834,7 @@ int VertexServer_api_view(VertexServer *self)
 			else
 			{
 				Datum_appendCString_(self->result, "<a href=");
+				Datum_appendCString_(self->result, "/");
 				Datum_append_(self->result, self->uriPath);
 				Datum_appendCString_(self->result, "/");
 				Datum_append_(self->result, k);
