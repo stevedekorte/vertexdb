@@ -508,7 +508,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				ARCHS = "$(NATIVE_ARCH)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -525,6 +525,7 @@
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = Vertex;
+				SDKROOT = "";
 				VALID_ARCHS = "x86_64 i386";
 			};
 			name = Debug;
@@ -547,6 +548,7 @@
 					"\"$(SRCROOT)/source/basekit/_build/lib\"",
 				);
 				PRODUCT_NAME = Vertex;
+				SDKROOT = "";
 				VALID_ARCHS = "x86_64 i386";
 			};
 			name = Release;
@@ -554,7 +556,7 @@
 		1DEB928A08733DD80010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				ARCHS = "$(NATIVE_ARCH)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = NON_EXTERN_INLINES;
@@ -567,7 +569,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "";
 				PREBINDING = NO;
-				SDKROOT = macosx10.6;
+				SDKROOT = "";
 				VALID_ARCHS = "x86_64 i386";
 			};
 			name = Debug;
@@ -586,7 +588,7 @@
 				);
 				OTHER_CFLAGS = "";
 				PREBINDING = NO;
-				SDKROOT = macosx10.5;
+				SDKROOT = "";
 				VALID_ARCHS = "x86_64 i386";
 			};
 			name = Release;
