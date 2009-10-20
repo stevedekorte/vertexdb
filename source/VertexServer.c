@@ -796,6 +796,7 @@ int VertexServer_api_syncSizes(VertexServer *self)
 int VertexServer_api_view(VertexServer *self)
 {
 	PNode *node = PDB_allocNode(self->pdb);
+	Datum *d = self->result;
 	
 	if (PNode_moveToPathIfExists_(node, self->uriPath) != 0) 
 	{
@@ -803,21 +804,38 @@ int VertexServer_api_view(VertexServer *self)
 		VertexServer_appendErrorDatum_(self, self->uriPath);
 		return -1;
 	}
+		Datum_appendCString_(d, "<html>");
+		Datum_appendCString_(d, "<title>");
+		Datum_append_(d, self->uriPath);
+		Datum_appendCString_(d, "</title>");
+		Datum_appendCString_(d, "<style>");
+		Datum_appendCString_(d, "body { font-family: sans; }");
+		Datum_appendCString_(d, ".path { font-size: 1em; font-weight: bold; font-family: sans; }");
+		Datum_appendCString_(d, ".note { color:#aaaaaa; font-size: 1em; font-weight: normal; font-family: sans;  }");
+		Datum_appendCString_(d, ".key { color:#888888;  }");
+		Datum_appendCString_(d, ".value { color:#000000;  }");
+		Datum_appendCString_(d, "a { color: #0000aa; text-decoration: none;  }");
+
+		Datum_appendCString_(d, "</style>\n");
+		Datum_appendCString_(d, "</head>\n");
+		Datum_appendCString_(d, "<body>\n");
 	
 	/*
 	if(Datum_size(self->uriPath) == 0)
 	{
-	Datum_appendCString_(self->result, "/");
+	Datum_appendCString_(d, "/");
 	}
 	else
 	{
 	*/
-		Datum_appendCString_(self->result, "/");
-		Datum_append_(self->result, self->uriPath);
-		Datum_appendCString_(self->result, "<br>\n");
+		Datum_appendCString_(d, "<font class=path>");
+		Datum_appendCString_(d, "/");
+		Datum_append_(d, self->uriPath);
+		Datum_appendCString_(d, "</font>");
+		Datum_appendCString_(d, "<br>\n");
 	//}
 	
-	Datum_appendCString_(self->result, "<ul>\n");
+	Datum_appendCString_(d, "<ul>\n");
 	PNode_first(node);
 	
 	{
@@ -827,30 +845,35 @@ int VertexServer_api_view(VertexServer *self)
 		{
 			if (Datum_beginsWithCString_(k , "_"))
 			{
-				Datum_append_(self->result, k);
-				Datum_appendCString_(self->result, " : ");
-				Datum_append_(self->result, PNode_value(node));
-				Datum_appendCString_(self->result, "<br>\n");
+				Datum_appendCString_(d, "<font class=key>");
+				Datum_append_(d, k);
+				Datum_appendCString_(d, "</font>");
+				Datum_appendCString_(d, " : ");
+				Datum_appendCString_(d, "<font class=value>");
+				Datum_append_(d, PNode_value(node));
+				Datum_appendCString_(d, "</font>");
+				Datum_appendCString_(d, "<br>\n");
 			}
 			else
 			{
-				Datum_appendCString_(self->result, "<a href=");
-				if(Datum_size(self->uriPath) != 0) Datum_appendCString_(self->result, "/");
-				Datum_append_(self->result, self->uriPath);
-				Datum_appendCString_(self->result, "/");
-				Datum_append_(self->result, k);
-				//Datum_appendCString_(self->result, "?action=view");
-				Datum_appendCString_(self->result, ">");
-				Datum_append_(self->result, k);
-				Datum_appendCString_(self->result, "</a> (");
-				Datum_appendLong_(self->result, PNode_nodeSizeAtCursor(node));
-				Datum_appendCString_(self->result, ")<br>\n");			
+				Datum_appendCString_(d, "<a href=");
+				if(Datum_size(self->uriPath) != 0) Datum_appendCString_(d, "/");
+				Datum_append_(d, self->uriPath);
+				Datum_appendCString_(d, "/");
+				Datum_append_(d, k);
+				//Datum_appendCString_(d, "?action=view");
+				Datum_appendCString_(d, ">");
+				Datum_append_(d, k);
+				Datum_appendCString_(d, "</a> <font class=note>(");
+				Datum_appendLong_(d, PNode_nodeSizeAtCursor(node));
+				Datum_appendCString_(d, ")</font><br>\n");			
 			}
 			PNode_next(node);
 		}
 	}
 	
-	Datum_appendCString_(self->result, "</ul>\n");
+	Datum_appendCString_(d, "</ul>\n");
+	Datum_appendCString_(d, "</body>\n");
 	return 0;
 }
 
