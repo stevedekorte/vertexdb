@@ -208,6 +208,7 @@ void VertexServer_parseUri_(VertexServer *self, const char *uri)
 	
 	CHash_clear(self->query);
 	
+	Datum_setSize_(self->uriPath, 0);
 	index = Datum_from_beforeChar_into_(uriDatum, 1, '?', self->uriPath);
 	
 	for (;;)
@@ -813,10 +814,10 @@ int VertexServer_api_view(VertexServer *self)
 	*/
 		Datum_appendCString_(self->result, "/");
 		Datum_append_(self->result, self->uriPath);
-		Datum_appendCString_(self->result, "<br>");
+		Datum_appendCString_(self->result, "<br>\n");
 	//}
 	
-	Datum_appendCString_(self->result, "<ul>");
+	Datum_appendCString_(self->result, "<ul>\n");
 	PNode_first(node);
 	
 	{
@@ -829,27 +830,27 @@ int VertexServer_api_view(VertexServer *self)
 				Datum_append_(self->result, k);
 				Datum_appendCString_(self->result, " : ");
 				Datum_append_(self->result, PNode_value(node));
-				Datum_appendCString_(self->result, "<br>");
+				Datum_appendCString_(self->result, "<br>\n");
 			}
 			else
 			{
 				Datum_appendCString_(self->result, "<a href=");
-				Datum_appendCString_(self->result, "/");
+				if(Datum_size(self->uriPath) != 0) Datum_appendCString_(self->result, "/");
 				Datum_append_(self->result, self->uriPath);
 				Datum_appendCString_(self->result, "/");
 				Datum_append_(self->result, k);
-				Datum_appendCString_(self->result, "?action=view");
+				//Datum_appendCString_(self->result, "?action=view");
 				Datum_appendCString_(self->result, ">");
 				Datum_append_(self->result, k);
 				Datum_appendCString_(self->result, "</a> (");
 				Datum_appendLong_(self->result, PNode_nodeSizeAtCursor(node));
-				Datum_appendCString_(self->result, ")<br>");			
+				Datum_appendCString_(self->result, ")<br>\n");			
 			}
 			PNode_next(node);
 		}
 	}
 	
-	Datum_appendCString_(self->result, "</ul>");
+	Datum_appendCString_(self->result, "</ul>\n");
 	return 0;
 }
 
@@ -950,6 +951,11 @@ int VertexServer_process(VertexServer *self)
 			return action(self);
 		}
 	}
+	else 
+	{
+		return VertexServer_api_view(self);
+	}
+
 	
 	Datum_appendCString_(self->error, "invalid action");
 
