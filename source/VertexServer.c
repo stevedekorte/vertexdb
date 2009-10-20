@@ -792,6 +792,66 @@ int VertexServer_api_syncSizes(VertexServer *self)
 	return 0;
 }
 
+int VertexServer_api_view(VertexServer *self)
+{
+	PNode *node = PDB_allocNode(self->pdb);
+	
+	if (PNode_moveToPathIfExists_(node, self->uriPath) != 0) 
+	{
+		VertexServer_setError_(self, "path does not exist: ");
+		VertexServer_appendErrorDatum_(self, self->uriPath);
+		return -1;
+	}
+	
+	/*
+	if(Datum_size(self->uriPath) == 0)
+	{
+	Datum_appendCString_(self->result, "/");
+	}
+	else
+	{
+	*/
+		Datum_appendCString_(self->result, "/");
+		Datum_append_(self->result, self->uriPath);
+		Datum_appendCString_(self->result, "<br>");
+	//}
+	
+	Datum_appendCString_(self->result, "<ul>");
+	PNode_first(node);
+	
+	{
+		Datum *k;
+
+		while (k = PNode_key(node))
+		{
+			if (Datum_beginsWithCString_(k , "_"))
+			{
+				Datum_append_(self->result, k);
+				Datum_appendCString_(self->result, " : ");
+				Datum_append_(self->result, PNode_value(node));
+				Datum_appendCString_(self->result, "<br>");
+			}
+			else
+			{
+				Datum_appendCString_(self->result, "<a href=");
+				Datum_append_(self->result, self->uriPath);
+				Datum_appendCString_(self->result, "/");
+				Datum_append_(self->result, k);
+				Datum_appendCString_(self->result, "?action=view");
+				Datum_appendCString_(self->result, ">");
+				Datum_append_(self->result, k);
+				Datum_appendCString_(self->result, "</a> (");
+				Datum_appendLong_(self->result, PNode_nodeSizeAtCursor(node));
+				Datum_appendCString_(self->result, ")<br>");			
+			}
+			PNode_next(node);
+		}
+	}
+	
+	Datum_appendCString_(self->result, "</ul>");
+	return 0;
+}
+
 // ---------------------------------------------------------------------
 
 #define VERTEX_SERVER_ADD_ACTION(name) CHash_at_put_(self->actions, Datum_newWithCString_(#name ""), (void *)VertexServer_api_##name);
@@ -864,6 +924,7 @@ void VertexServer_setupActions(VertexServer *self)
 	VERTEX_SERVER_ADD_ACTION(backup);
 	VERTEX_SERVER_ADD_ACTION(collectGarbage);
 	VERTEX_SERVER_ADD_ACTION(showStats);
+	VERTEX_SERVER_ADD_ACTION(view);
 	//VERTEX_SERVER_ADD_ACTION(syncSizes);
 	
 	VERTEX_SERVER_ADD_OP(object);
@@ -872,7 +933,7 @@ void VertexServer_setupActions(VertexServer *self)
 	VERTEX_SERVER_ADD_OP(values);
 	VERTEX_SERVER_ADD_OP(pairs);
 	VERTEX_SERVER_ADD_OP(rm);
-	VERTEX_SERVER_ADD_OP(html);
+	//VERTEX_SERVER_ADD_OP(html);
 }  
 
 int VertexServer_process(VertexServer *self)
