@@ -70,6 +70,8 @@ struct fuse_operations {
 #include "PQuery.h"
 
 #define USER_ID_LENGTH 12
+#define DISK_SYNC_ON_EACH_TRANSACTION 1
+//#define COMMIT_PERIODICALLY 1
 
 static VertexServer *globalVertexServer = 0x0;
 
@@ -460,7 +462,9 @@ int VertexServer_api_transaction(VertexServer *self)
 	int r, result;
 	
 	// for performance, do our commits at periodic checkpoints
-	//PDB_commit(self->pdb);
+	#ifdef DISK_SYNC_ON_EACH_TRANSACTION
+		PDB_commit(self->pdb);
+	#endif
 	
 	do
 	{
@@ -470,23 +474,22 @@ int VertexServer_api_transaction(VertexServer *self)
 		VertexServer_parseUri_(self, Datum_data(uri));
 		error = VertexServer_process(self);
 		Pool_freeRefs(self->pool);
-		/*
-		if (error)
-		{
-			printf("got error %i\n", error);
-		}
-		*/
 	} while ((r != -1) && (!error));
 	
 	if (error)
 	{
-		//PDB_abort(self->pdb);
+		#ifdef DISK_SYNC_ON_EACH_TRANSACTION
+			printf("ABORT\n\n");
+			PDB_abort(self->pdb);
+		#endif
 		result = -1;
 	}
 	else
 	{
-		//printf("COMMIT\n\n");
-		//PDB_commit(self->pdb);
+		#ifdef DISK_SYNC_ON_EACH_TRANSACTION
+			//printf("COMMIT\n\n");
+			PDB_commit(self->pdb);
+		#endif
 		result = 0;
 	}
 		
@@ -795,7 +798,11 @@ int VertexServer_api_syncSizes(VertexServer *self)
 
 int VertexServer_api_view(VertexServer *self)
 {
+	Datum *before = VertexServer_queryValue_(self, "before");
+	Datum *after = VertexServer_queryValue_(self, "after");
 	PNode *node = PDB_allocNode(self->pdb);
+	Datum *d = self->result;
+	int maxCount = 1000;
 	
 	if (PNode_moveToPathIfExists_(node, self->uriPath) != 0) 
 	{
@@ -803,56 +810,134 @@ int VertexServer_api_view(VertexServer *self)
 		VertexServer_appendErrorDatum_(self, self->uriPath);
 		return -1;
 	}
+		Datum_appendCString_(d, "<html>");
+		Datum_appendCString_(d, "<title>");
+		Datum_append_(d, self->uriPath);
+		Datum_appendCString_(d, "</title>");
+		Datum_appendCString_(d, "<style>");
+		Datum_appendCString_(d, "body { font-family: sans; margin-top:2em; margin-left:2em; }");
+		Datum_appendCString_(d, ".path { font-size: 1em; font-weight: normal; font-family: sans; }");
+		Datum_appendCString_(d, ".note { color:#aaaaaa; font-size: 1em; font-weight: normal; font-family: sans;  }");
+		Datum_appendCString_(d, ".key { color:#888888;  }");
+		Datum_appendCString_(d, ".value { color:#000000;  }");
+		Datum_appendCString_(d, "a { color: #0000aa; text-decoration: none;  }");
+
+		Datum_appendCString_(d, "</style>\n");
+		Datum_appendCString_(d, "</head>\n");
+		Datum_appendCString_(d, "<body>\n");
 	
 	evhttp_add_header(self->request->output_headers, "Content-Type", "text/html;charset=utf-8");
 	
 	/*
 	if(Datum_size(self->uriPath) == 0)
 	{
-	Datum_appendCString_(self->result, "/");
+	Datum_appendCString_(d, "/");
 	}
 	else
 	{
 	*/
-		Datum_appendCString_(self->result, "/");
-		Datum_append_(self->result, self->uriPath);
-		Datum_appendCString_(self->result, "<br>\n");
+		Datum_appendCString_(d, "<font class=path>");
+		Datum_appendCString_(d, "/");
+		Datum_append_(d, self->uriPath);
+		Datum_appendCString_(d, "</font>");
+		Datum_appendCString_(d, "<br>\n");
 	//}
 	
-	Datum_appendCString_(self->result, "<ul>\n");
 	PNode_first(node);
 	
+	if(Datum_size(before))
+	{
+		PNode_jump_(node, before);
+		
+		int i;
+		for(i = 0; i < maxCount; i++)
+		{
+			PNode_previous(node);
+		}
+		PNode_next(node);
+
+	}
+	else if(Datum_size(after))
+	{
+		PNode_jump_(node, after);
+	}
+
+	if (Datum_size(after) && PNode_key(node))
+	{
+		Datum_appendCString_(d, "<a href=/");
+		Datum_append_(d, self->uriPath);
+		Datum_appendCString_(d, "?before=");
+		Datum_append_(d, PNode_key(node));
+		Datum_appendCString_(d, ">previous</a>");
+	}
+
+	
+	Datum_appendCString_(d, "<ul>\n");
+	Datum_appendCString_(d, "<table cellpadding=0 cellspacing=0 border=0>");
+
 	{
 		Datum *k;
-
-		while (k = PNode_key(node))
+		int count = 0;
+		
+		while ((k = PNode_key(node)) && count < maxCount)
 		{
+			Datum_appendCString_(d, "<tr>");
+			
 			if (Datum_beginsWithCString_(k , "_"))
 			{
-				Datum_append_(self->result, k);
-				Datum_appendCString_(self->result, " : ");
-				Datum_append_(self->result, PNode_value(node));
-				Datum_appendCString_(self->result, "<br>\n");
+				Datum_appendCString_(d, "<td align=right style=\"line-height:1.5em\">");
+				Datum_appendCString_(d, "<font class=key>");
+				Datum_append_(d, k);
+				Datum_appendCString_(d, "</font>");
+				Datum_appendCString_(d, " ");
+				Datum_appendCString_(d, "</td>");
+				
+				Datum_appendCString_(d, "<td>");
+				Datum_appendCString_(d, "&nbsp;&nbsp;<font class=value>");
+				Datum_append_(d, PNode_value(node));
+				Datum_appendCString_(d, "</font>");
+				Datum_appendCString_(d, "<br>\n");
+				Datum_appendCString_(d, "</td>");
 			}
 			else
 			{
-				Datum_appendCString_(self->result, "<a href=");
-				if(Datum_size(self->uriPath) != 0) Datum_appendCString_(self->result, "/");
-				Datum_append_(self->result, self->uriPath);
-				Datum_appendCString_(self->result, "/");
-				Datum_append_(self->result, k);
-				//Datum_appendCString_(self->result, "?action=view");
-				Datum_appendCString_(self->result, ">");
-				Datum_append_(self->result, k);
-				Datum_appendCString_(self->result, "</a> (");
-				Datum_appendLong_(self->result, PNode_nodeSizeAtCursor(node));
-				Datum_appendCString_(self->result, ")<br>\n");			
+				Datum_appendCString_(d, "<td align=right style=\"line-height:1.5em\">");
+				Datum_appendCString_(d, "<a href=");
+				if(Datum_size(self->uriPath) != 0) Datum_appendCString_(d, "/");
+				Datum_append_(d, self->uriPath);
+				Datum_appendCString_(d, "/");
+				Datum_append_(d, k);
+				//Datum_appendCString_(d, "?action=view");
+				Datum_appendCString_(d, ">");
+				Datum_append_(d, k);
+				Datum_appendCString_(d, "</a>");
+				Datum_appendCString_(d, "</td>");
+				
+				Datum_appendCString_(d, "<td>");
+				Datum_appendCString_(d, "&nbsp;&nbsp;<font class=note>");
+				Datum_appendLong_(d, PNode_nodeSizeAtCursor(node));
+				Datum_appendCString_(d, "</font><br>\n");			
+				Datum_appendCString_(d, "</td>");
 			}
+			
+			Datum_appendCString_(d, "</tr>");
 			PNode_next(node);
+			count ++;
 		}
 	}
+	Datum_appendCString_(d, "</table>");
+	Datum_appendCString_(d, "</ul>\n");
 	
-	Datum_appendCString_(self->result, "</ul>\n");
+	if(PNode_key(node))
+	{
+		Datum_appendCString_(d, "<a href=/");
+		Datum_append_(d, self->uriPath);
+		Datum_appendCString_(d, "?after=");
+		Datum_append_(d, PNode_key(node));
+		Datum_appendCString_(d, ">next</a><br>");
+	}
+	
+	Datum_appendCString_(d, "</body>\n");
 	return 0;
 }
 
@@ -1045,8 +1130,10 @@ void VertexServer_requestHandler(struct evhttp_request *req, void *arg)
 	evhttp_send_reply_end(self->request);
 	evbuffer_free(buf);
 	
+	#ifdef COMMIT_PERIODICALLY
 	VertexServer_commitIfNeeded(self);
-
+	#endif
+	
 	if(self->requestCount % self->requestsPerSample == 0)
 	{
 		Log_Printf__("STATS: %i requests, %i bytes to write\n", 
@@ -1067,6 +1154,12 @@ int VertexServer_api_shutdown(VertexServer *self)
 
 void VertexServer_SingalHandler(int s)
 {
+	if(s == SIGPIPE) 
+	{
+		Log_Printf("received signal SIGPIPE - ignoring\n");
+		return;
+	}
+	
 	Log_Printf_("received signal %i\n", s);
 	VertexServer_api_shutdown(globalVertexServer);
 }
@@ -1076,6 +1169,7 @@ void VertexServer_registerSignals(VertexServer *self)
 	signal(SIGABRT, VertexServer_SingalHandler);
 	signal(SIGINT,  VertexServer_SingalHandler);
 	signal(SIGTERM, VertexServer_SingalHandler);
+	signal(SIGPIPE, VertexServer_SingalHandler);
 }
 
 void VertexServer_setLogPath_(VertexServer *self, const char *path)
