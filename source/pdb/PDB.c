@@ -12,8 +12,8 @@ Notes:
 #include <string.h>
 #include <assert.h>
 
-#define PDB_USE_TX 1
-//#define PDB_USE_SYNC 1
+//#define PDB_USE_TX 1
+#define PDB_USE_SYNC 1
 
 static int pathCompareBase(const char *p1, int len1, const char *p2, int len2, void *optionalOpaqueValue)
 {
@@ -155,10 +155,18 @@ int PDB_open(PDB *self)
 		return -1;
 	}
 	
-	tcbdbsetxmsiz(self->db, 1024*1024*100);
+	tcbdbsetxmsiz(self->db, 1024*1024*1024); // 1GB
 	
+	/*
+	if(!tcbdbtune(self->db, 0, 0, 0, -1, 10*1000*1000/10, HDBTLARGE))
+	{
+		Log_Printf("tcbdbtune failed\n");
+		return -1;
+	}
+	*/
+		
 	//commented out until our server has a reasonable amount of ram
-	if (!tcbdbsetcache(self->db, 1024*10, 512*10))
+	if (!tcbdbsetcache(self->db, 1024*100, 512*100))
 	{
 		Log_Printf("tcbdbsetcache failed\n");
 		return -1;
@@ -181,9 +189,11 @@ int PDB_open(PDB *self)
 	{
 		int flags = BDBOWRITER | BDBOCREAT | BDBONOLCK;
 		
+		/*
 		#ifdef PDB_USE_SYNC
 		flags |= BDBOTSYNC;
 		#endif
+		*/
 		
 		if (!tcbdbopen(self->db, File_pathCString(self->dbFile), flags ))
 		{
@@ -337,10 +347,12 @@ void PDB_commit(PDB *self)
 		PDB_fatalError_(self, "tcbdbtrancommit");
 	}
 	#else
+	/*
 	if(!tcbdbsync(self->db))
 	{
 		PDB_fatalError_(self, "tcbdbsync");
 	}
+	*/
 	#endif
 	
 	Log_Printf___("commit took %i seconds, %i records, %iMB\n", 
