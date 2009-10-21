@@ -826,6 +826,8 @@ int VertexServer_api_view(VertexServer *self)
 		Datum_appendCString_(d, "</head>\n");
 		Datum_appendCString_(d, "<body>\n");
 	
+	evhttp_add_header(self->request->output_headers, "Content-Type", "text/html;charset=utf-8");
+	
 	/*
 	if(Datum_size(self->uriPath) == 0)
 	{
@@ -1087,6 +1089,8 @@ void VertexServer_requestHandler(struct evhttp_request *req, void *arg)
 		Datum_clear(self->result);
 		result = VertexServer_process(self);
 
+		evhttp_add_header(self->request->output_headers, "Content-Type", "application/json;charset=utf-8");
+		
 		if (result == 0)
 		{
 			if (Datum_size(self->result))
