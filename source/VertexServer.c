@@ -827,7 +827,7 @@ int VertexServer_api_view(VertexServer *self)
 		Datum_appendCString_(d, ".path { font-size: 1em; font-weight: normal; font-family: sans; }");
 		Datum_appendCString_(d, ".note { color:#aaaaaa; font-size: 1em; font-weight: normal; font-family: sans;  }");
 		Datum_appendCString_(d, ".key { color:#000000;  }");
-		Datum_appendCString_(d, ".value { color:#888888;  }");
+		Datum_appendCString_(d, ".value { color:#888888; white-space:pre; }");
 		Datum_appendCString_(d, "a { color: #0000aa; text-decoration: none;  }");
 
 		Datum_appendCString_(d, "</style>\n");
@@ -901,9 +901,9 @@ int VertexServer_api_view(VertexServer *self)
 				Datum_appendCString_(d, "</td>");
 				
 				Datum_appendCString_(d, "<td>");
-				Datum_appendCString_(d, "&nbsp;&nbsp;<font class=value>");
+				Datum_appendCString_(d, "&nbsp;&nbsp;<span class=value>");
 				Datum_append_(d, PNode_value(node));
-				Datum_appendCString_(d, "</font>");
+				Datum_appendCString_(d, "</span>");
 				Datum_appendCString_(d, "<br>\n");
 				Datum_appendCString_(d, "</td>");
 			}
