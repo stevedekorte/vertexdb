@@ -914,9 +914,10 @@ int VertexServer_api_view(VertexServer *self)
 				Datum_append_(d, self->uriPath);
 				Datum_appendCString_(d, "/");
 				Datum_append_(d, k);
-				Datum_appendCString_(d, "> *");
+				Datum_appendCString_(d, "> ↠ ");
 				Datum_appendLong_(d, PNode_nodeSizeAtCursor(node));
-				Datum_appendCString_(d, "</a>");
+				Datum_appendCString_(d, "</a> ");
+				Datum_appendCString_(d, "<font class=value>");
 				Datum_appendCString_(d, "</td>");
 			}
 			
