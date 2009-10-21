@@ -575,10 +575,16 @@ int VertexServer_api_queuePopTo(VertexServer *self)
 			}
 			
 			//printf("queueing key %s\n", Datum_data(k));
-			Datum_append_(self->result, k);
+			yajl_gen_datum(self->yajl, k);
 			PNode_removeAtCursor(fromNode);
 		}
+		else
+		{
+			yajl_gen_null(self->yajl);
+		}
 	}
+	
+	Datum_appendYajl_(self->result, self->yajl);
 	
 	return 0;
 }
@@ -634,7 +640,9 @@ int VertexServer_api_queueExpireTo(VertexServer *self)
 		Datum_free(qExpireKey);
 	}
 	
-	Datum_appendLong_(self->result, (long)itemsExpired);
+	yajl_gen_integer(self->yajl, (long)itemsExpired);
+	Datum_appendYajl_(self->result, self->yajl);
+	
 	return 0;
 }
 
