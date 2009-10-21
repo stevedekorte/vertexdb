@@ -339,7 +339,7 @@ void PDB_commit(PDB *self)
 
 	now = time(NULL);
 	
-	Log_Printf("committing...\n");
+	//Log_Printf("committing...\n");
 
 	#ifdef PDB_USE_TX
 	if (!tcbdbtrancommit(self->db))
@@ -355,10 +355,12 @@ void PDB_commit(PDB *self)
 	*/
 	#endif
 	
+	/*
 	Log_Printf___("commit took %i seconds, %i records, %iMB\n", 
 		(int)difftime(time(NULL), now),
 		(int)tcbdbrnum(self->db), 
 		(int)(tcbdbfsiz(self->db)/(1024*1024)));
+	*/
 	
 	self->writeByteCount = 0;
 	self->inTransaction = 0;

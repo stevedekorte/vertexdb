@@ -70,7 +70,7 @@ struct fuse_operations {
 #include "PQuery.h"
 
 #define USER_ID_LENGTH 12
-//#define DISK_SYNC_ON_EACH_TRANSACTION 1
+#define DISK_SYNC_ON_EACH_TRANSACTION 1
 //#define COMMIT_PERIODICALLY 1
 
 static VertexServer *globalVertexServer = 0x0;
@@ -463,7 +463,7 @@ int VertexServer_api_transaction(VertexServer *self)
 	
 	// for performance, do our commits at periodic checkpoints
 	#ifdef DISK_SYNC_ON_EACH_TRANSACTION
-	PDB_commit(self->pdb);
+		PDB_commit(self->pdb);
 	#endif
 	
 	do
@@ -474,27 +474,22 @@ int VertexServer_api_transaction(VertexServer *self)
 		VertexServer_parseUri_(self, Datum_data(uri));
 		error = VertexServer_process(self);
 		Pool_freeRefs(self->pool);
-		/*
-		if (error)
-		{
-			printf("got error %i\n", error);
-		}
-		*/
 	} while ((r != -1) && (!error));
 	
 	if (error)
 	{
-	#ifdef DISK_SYNC_ON_EACH_TRANSACTION
-		PDB_abort(self->pdb);
-	#endif
+		#ifdef DISK_SYNC_ON_EACH_TRANSACTION
+			printf("ABORT\n\n");
+			PDB_abort(self->pdb);
+		#endif
 		result = -1;
 	}
 	else
 	{
-	#ifdef DISK_SYNC_ON_EACH_TRANSACTION
-		printf("COMMIT\n\n");
-		PDB_commit(self->pdb);
-	#endif
+		#ifdef DISK_SYNC_ON_EACH_TRANSACTION
+			//printf("COMMIT\n\n");
+			PDB_commit(self->pdb);
+		#endif
 		result = 0;
 	}
 		
@@ -820,8 +815,8 @@ int VertexServer_api_view(VertexServer *self)
 		Datum_append_(d, self->uriPath);
 		Datum_appendCString_(d, "</title>");
 		Datum_appendCString_(d, "<style>");
-		Datum_appendCString_(d, "body { font-family: sans; }");
-		Datum_appendCString_(d, ".path { font-size: 1em; font-weight: bold; font-family: sans; }");
+		Datum_appendCString_(d, "body { font-family: sans; margin-top:2em; margin-left:2em; }");
+		Datum_appendCString_(d, ".path { font-size: 1em; font-weight: normal; font-family: sans; }");
 		Datum_appendCString_(d, ".note { color:#aaaaaa; font-size: 1em; font-weight: normal; font-family: sans;  }");
 		Datum_appendCString_(d, ".key { color:#888888;  }");
 		Datum_appendCString_(d, ".value { color:#000000;  }");
