@@ -818,8 +818,8 @@ int VertexServer_api_view(VertexServer *self)
 		Datum_appendCString_(d, "body { font-family: sans; margin-top:2em; margin-left:2em; }");
 		Datum_appendCString_(d, ".path { font-size: 1em; font-weight: normal; font-family: sans; }");
 		Datum_appendCString_(d, ".note { color:#aaaaaa; font-size: 1em; font-weight: normal; font-family: sans;  }");
-		Datum_appendCString_(d, ".key { color:#888888;  }");
-		Datum_appendCString_(d, ".value { color:#000000;  }");
+		Datum_appendCString_(d, ".key { color:#000000;  }");
+		Datum_appendCString_(d, ".value { color:#888888;  }");
 		Datum_appendCString_(d, "a { color: #0000aa; text-decoration: none;  }");
 
 		Datum_appendCString_(d, "</style>\n");
@@ -901,22 +901,22 @@ int VertexServer_api_view(VertexServer *self)
 			}
 			else
 			{
-				Datum_appendCString_(d, "<td align=right style=\"line-height:1.5em\">");
-				Datum_appendCString_(d, "<a href=");
+				
+				Datum_appendCString_(d, "<td align=right>");
+				Datum_appendCString_(d, "<font class=key>");
+				Datum_append_(d, k);
+				Datum_appendCString_(d, "</font><br>\n");			
+				Datum_appendCString_(d, "</td>");
+				
+				Datum_appendCString_(d, "<td style=\"line-height:1.5em\">");
+				Datum_appendCString_(d, "&nbsp;&nbsp;<a href=");
 				if(Datum_size(self->uriPath) != 0) Datum_appendCString_(d, "/");
 				Datum_append_(d, self->uriPath);
 				Datum_appendCString_(d, "/");
 				Datum_append_(d, k);
-				//Datum_appendCString_(d, "?action=view");
-				Datum_appendCString_(d, ">");
-				Datum_append_(d, k);
-				Datum_appendCString_(d, "</a>");
-				Datum_appendCString_(d, "</td>");
-				
-				Datum_appendCString_(d, "<td>");
-				Datum_appendCString_(d, "&nbsp;&nbsp;<font class=note>");
+				Datum_appendCString_(d, "> *");
 				Datum_appendLong_(d, PNode_nodeSizeAtCursor(node));
-				Datum_appendCString_(d, "</font><br>\n");			
+				Datum_appendCString_(d, "</a>");
 				Datum_appendCString_(d, "</td>");
 			}
 			
