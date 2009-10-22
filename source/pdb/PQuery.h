@@ -26,6 +26,7 @@ typedef struct
 	unsigned int selectCount;
 	unsigned int selectCountMax;
 	unsigned int hasFilter;
+	int isDone;
 } PQuery;
 
 typedef int (PQueryMethod)(PQuery *);
@@ -44,6 +45,7 @@ void PQuery_setWhereValue_(PQuery *self, Datum *d);
 void PQuery_setSelectCountMax_(PQuery *self, unsigned int n);
 
 int PQuery_setup(PQuery *self);
+Datum *PQuery_key(PQuery *self);
 void PQuery_enumerate(PQuery *self);
 int PQuery_stepDirection(PQuery *self);
 
