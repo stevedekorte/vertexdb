@@ -307,12 +307,8 @@ int VertexServer_api_chown(VertexServer *self)
 	return 0;
 }
 
-int VertexServer_api_select(VertexServer *self)
+void VertexServer_setupPQuery_(VertexServer *self, PQuery *q)
 {
-	PNode *node = PDB_allocNode(self->pdb);
-	PQuery *q = PNode_query(node);
-	Datum *opName;
-	
 	PQuery_setId_(q, VertexServer_queryValue_(self, "id"));
 	PQuery_setAfter_(q, VertexServer_queryValue_(self, "after"));
 	PQuery_setBefore_(q, VertexServer_queryValue_(self, "before"));
@@ -320,6 +316,14 @@ int VertexServer_api_select(VertexServer *self)
 	PQuery_setWhereKey_(q, VertexServer_queryValue_(self, "whereKey"));
 	PQuery_setWhereValue_(q, VertexServer_queryValue_(self, "whereValue"));
 	//PQuery_setMode_(q, VertexServer_queryValue_(self, "mode"));
+}
+
+int VertexServer_api_select(VertexServer *self)
+{
+	PNode *node = PDB_allocNode(self->pdb);
+	PQuery *q = PNode_query(node);
+	VertexServer_setupPQuery_(self, q);
+	Datum *opName;
 	
 	if (VertexServer_api_setCursorPathOnNode_(self, node)) return 2;
 	
@@ -510,12 +514,10 @@ int VertexServer_api_queuePopTo(VertexServer *self)
 	PNode *toNode   = PDB_allocNode(self->pdb);
 	Datum *toPath   = VertexServer_queryValue_(self, "toPath");
 
-	long ttl = Datum_asLong(VertexServer_queryValue_(self, "ttl"));
+	PQuery *q = PNode_query(fromNode);
+	VertexServer_setupPQuery_(self, q);
 	
-	Datum *wk = VertexServer_queryValue_(self, "whereKey");
-	Datum *wv = VertexServer_queryValue_(self, "whereValue");
-
-	// return key if successfull, "" if queue is empty, ERROR if path doesn't exist
+	long ttl = Datum_asLong(VertexServer_queryValue_(self, "ttl"));
 	
 	if (PNode_moveToPathIfExists_(fromNode, self->uriPath) != 0) 
 	{
@@ -526,30 +528,9 @@ int VertexServer_api_queuePopTo(VertexServer *self)
 	
 	PNode_moveToPath_(toNode, toPath);
 	
-	if (Datum_isEmpty(wk))
 	{
-		PNode_first(fromNode);
-	}
-	else
-	{
-		PNode *whereNode = PDB_allocNode(self->pdb);
-		Datum *k;
-		
-		PNode_first(fromNode);
-		
-		while (k = PNode_key(fromNode))
-		{
-			if(PNode_withId_hasKey_andValue_(whereNode, PNode_value(fromNode), wk, wv))
-			{
-				break;
-			}
-						
-			PNode_next(fromNode);
-		}
-	}
-	
-	{
-		Datum *k = PNode_key(fromNode);
+		Datum *k = PQuery_key(q);
+		//Datum *k = PNode_key(fromNode);
 		Datum *v = PNode_value(fromNode);
 		
 		if (k)
