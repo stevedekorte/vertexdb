@@ -69,6 +69,7 @@ int PQuery_setup(PQuery *self)
 {
 	PDB *pdb = PNode_pdb(self->node);
 	self->tmpNode = PDB_allocNode(pdb);
+	self->isDone = 0;
 	
 	self->hasFilter = self->whereKey && self->whereValue && 
 		(!Datum_isEmpty(self->whereKey)) && (!Datum_isEmpty(self->whereValue));
@@ -137,6 +138,12 @@ void PQuery_step(PQuery *self)
 	}
 }
 
+Datum *PQuery_key(PQuery *self)
+{
+	if (self->isDone) return 0x0;
+	return PNode_key(self->node);
+}
+
 void PQuery_enumerate(PQuery *self)
 {
 	if (self->selectCount < self->selectCountMax)
@@ -155,6 +162,11 @@ void PQuery_enumerate(PQuery *self)
 			}
 		}
 	}
+	else 
+	{
+		self->isDone = 1;
+	}
+
 	
 	return;
 }

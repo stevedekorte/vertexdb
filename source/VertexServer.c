@@ -1018,11 +1018,12 @@ void VertexServer_setupActions(VertexServer *self)
 	//VERTEX_SERVER_ADD_ACTION(syncSizes);
 	
 	VERTEX_SERVER_ADD_OP(object);
-	VERTEX_SERVER_ADD_OP(counts);
+	VERTEX_SERVER_ADD_OP(sizes);
 	VERTEX_SERVER_ADD_OP(keys);
 	VERTEX_SERVER_ADD_OP(values);
 	VERTEX_SERVER_ADD_OP(pairs);
 	VERTEX_SERVER_ADD_OP(rm);
+	VERTEX_SERVER_ADD_OP(count);
 	//VERTEX_SERVER_ADD_OP(html);
 }  
 
