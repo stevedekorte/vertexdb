@@ -974,7 +974,7 @@ int VertexServer_api_shutdown(VertexServer *self)
 	return 0;
 }
 
-void VertexServer_SingalHandler(int s)
+void VertexServer_SignalHandler(int s)
 {
 	if(s == SIGPIPE) 
 	{
@@ -988,10 +988,10 @@ void VertexServer_SingalHandler(int s)
 
 void VertexServer_registerSignals(VertexServer *self)
 {
-	signal(SIGABRT, VertexServer_SingalHandler);
-	signal(SIGINT,  VertexServer_SingalHandler);
-	signal(SIGTERM, VertexServer_SingalHandler);
-	signal(SIGPIPE, VertexServer_SingalHandler);
+	signal(SIGABRT, VertexServer_SignalHandler);
+	signal(SIGINT,  VertexServer_SignalHandler);
+	signal(SIGTERM, VertexServer_SignalHandler);
+	signal(SIGPIPE, VertexServer_SignalHandler);
 }
 
 void VertexServer_setLogPath_(VertexServer *self, const char *path)
