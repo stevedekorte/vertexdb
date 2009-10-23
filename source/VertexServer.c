@@ -818,8 +818,6 @@ int VertexServer_api_view(VertexServer *self)
 		Datum_appendCString_(d, "</head>\n");
 		Datum_appendCString_(d, "<body>\n");
 	
-	evhttp_add_header(self->request->output_headers, "Content-Type", "text/html;charset=utf-8");
-	
 	/*
 	if(Datum_size(self->uriPath) == 0)
 	{
@@ -932,6 +930,7 @@ int VertexServer_api_view(VertexServer *self)
 	
 	Datum_appendCString_(d, "</body>\n");
 	//Log_Printf("done request\n");
+	self->isHtml = 1;
 	return 0;
 }
 
@@ -1082,7 +1081,7 @@ void VertexServer_requestHandler(struct evhttp_request *req, void *arg)
 		VertexServer_parseUri_(self, uri);
 
 		Datum_clear(self->result);
-		evhttp_add_header(self->request->output_headers, "Content-Type", "application/json;charset=utf-8");
+		self->isHtml = 0;
 		result = VertexServer_process(self);
 
 		if (result == 0)
@@ -1097,10 +1096,13 @@ void VertexServer_requestHandler(struct evhttp_request *req, void *arg)
 				evbuffer_add_printf(buf, "null");
 			}
 
+			evhttp_add_header(self->request->output_headers, "Content-Type", self->isHtml ? "text/html;charset=utf-8" : "application/json;charset=utf-8");
+			
 			evhttp_send_reply(self->request, HTTP_OK, HTTP_OK_MESSAGE, buf);
 		}
 		else
 		{
+			evhttp_add_header(self->request->output_headers, "Content-Type", "application/json;charset=utf-8");
 			if (Datum_size(self->error))
 			{
 				Datum_nullTerminate(self->error); 

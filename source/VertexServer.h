@@ -48,6 +48,7 @@ typedef struct
 	int shutdown;
 	Datum *error;
 	Datum *result;
+	int isHtml;
 	
 	RunningStat *rstat;
 	size_t requestsPerSample;
