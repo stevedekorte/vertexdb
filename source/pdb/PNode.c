@@ -944,6 +944,7 @@ int PNode_op_values(PNode *self, Datum *d)
 	PNode *tmpNode = PDB_allocNode(self->pdb);
 	Datum *k;
 	Datum *attribute = PQuery_attribute(q);
+	int hasAttribute = Datum_size(attribute) != 0;
 	
 	yajl_gen_array_open(self->yajl);
 	
@@ -953,7 +954,7 @@ int PNode_op_values(PNode *self, Datum *d)
 		{
 			PNode_setPid_(tmpNode, PNode_value(self));
 			
-			if(attribute)
+			if(hasAttribute)
 			{
 				//Datum *a = PQuery_attributeValue(q);
 				Datum *a = PNode_at_(tmpNode, attribute);
