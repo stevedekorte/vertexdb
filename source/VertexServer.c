@@ -474,7 +474,7 @@ int VertexServer_api_transaction(VertexServer *self)
 	{
 		Datum_copy_(uri, self->post);
 		r = Datum_sepOnChars_with_(uri, "\n", self->post);
-		if (Datum_size(uri) == 0) break;
+		if (Datum_size(uri) == 0) { error = 1; break; }
 		VertexServer_parseUri_(self, Datum_data(uri));
 		error = VertexServer_process(self);
 		Pool_freeRefs(self->pool);
