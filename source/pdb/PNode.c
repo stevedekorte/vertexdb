@@ -829,9 +829,7 @@ int PNode_op_count(PNode *self, Datum *d)
 	PQuery *q = PNode_startQuery(self);
 	Datum *k;
 	long count = 0;
-	
-	yajl_gen_map_open(self->yajl);
-	
+		
 	while (k = PQuery_key(q))
 	{
 		count ++;
@@ -945,31 +943,52 @@ int PNode_op_values(PNode *self, Datum *d)
 	PQuery *q = PNode_startQuery(self);
 	PNode *tmpNode = PDB_allocNode(self->pdb);
 	Datum *k;
+	Datum *attribute = PQuery_attribute(q);
 	
-	//Datum_appendCString_(d, "[");
 	yajl_gen_array_open(self->yajl);
 	
 	while (k = PQuery_key(q))
 	{		
-		//Datum_appendQuoted_(d, k);
-		//Datum_appendCString_(d, ":");
-					
 		if(!Datum_beginsWithCString_(k, "_"))
 		{
 			PNode_setPid_(tmpNode, PNode_value(self));
-			PNode_op_object(tmpNode, 0x0);
+			
+			if(attribute)
+			{
+				//Datum *a = PQuery_attributeValue(q);
+				Datum *a = PNode_at_(tmpNode, attribute);
+				
+				yajl_gen_array_open(self->yajl);
+				yajl_gen_datum(self->yajl, k);
+				
+				if(a)
+				{
+					yajl_gen_datum(self->yajl, a);
+				}
+				else 
+				{
+					yajl_gen_null(self->yajl);
+				}
+				
+				yajl_gen_array_close(self->yajl);
+
+			}
+			else 
+			{
+				PNode_setPid_(tmpNode, PNode_value(self));
+				PNode_op_object(tmpNode, 0x0);
+				//PNode_op_object(PQuery_tmpNode(q), 0x0);
+				//PNode_op_object(PQuery_tmpNode(q), 0x0);
+			}
 		}
 		else
 		{
-			//Datum_appendQuoted_(d, PNode_value(self));
-			yajl_gen_datum(self->yajl, PNode_value(self));
+				yajl_gen_datum(self->yajl, PNode_value(self));
 		}
-				
+
 		PQuery_enumerate(q);
-		//if (PNode_key(self)) Datum_appendCString_(d, ",");
 	}
 	
-	//Datum_appendCString_(d, "]");
 	yajl_gen_array_close(self->yajl);
 	Datum_appendYajl_(d, self->yajl);
 	return 0; 

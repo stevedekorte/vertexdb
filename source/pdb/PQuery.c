@@ -11,7 +11,6 @@
 PQuery *PQuery_new(void)
 {
 	PQuery *self = calloc(1, sizeof(PQuery));
-
 	return self;
 }
 
@@ -33,6 +32,11 @@ PNode *PQuery_node(PQuery *self)
 void PQuery_setTmpNode_(PQuery *self, void *node)
 {
 	self->tmpNode = node;
+}
+
+void *PQuery_tmpNode(PQuery *self)
+{
+	return (void *)self->tmpNode;
 }
 
 void PQuery_setId_(PQuery *self, Datum *d)
@@ -63,6 +67,21 @@ void PQuery_setWhereValue_(PQuery *self, Datum *d)
 void PQuery_setSelectCountMax_(PQuery *self, unsigned int n)
 {
 	self->selectCountMax = n;
+}
+
+void PQuery_setAttribute_(PQuery *self, Datum *d)
+{
+	self->attribute = d;
+}
+
+Datum *PQuery_attribute(PQuery *self)
+{
+	return self->attribute;
+}
+
+Datum *PQuery_attributeValue(PQuery *self)
+{
+	return PNode_at_(self->tmpNode, self->attribute);
 }
 
 int PQuery_setup(PQuery *self)

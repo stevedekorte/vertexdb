@@ -315,6 +315,7 @@ void VertexServer_setupPQuery_(VertexServer *self, PQuery *q)
 	PQuery_setSelectCountMax_(q, Datum_asInt(VertexServer_queryValue_(self, "count")));
 	PQuery_setWhereKey_(q, VertexServer_queryValue_(self, "whereKey"));
 	PQuery_setWhereValue_(q, VertexServer_queryValue_(self, "whereValue"));
+	PQuery_setAttribute_(q, VertexServer_queryValue_(self, "attribute"));
 	//PQuery_setMode_(q, VertexServer_queryValue_(self, "mode"));
 }
 
@@ -387,7 +388,6 @@ int VertexServer_api_read(VertexServer *self)
 	}
 	
 	Datum_appendYajl_(self->result, self->yajl);
-
 	return 0;
 }
 
@@ -751,6 +751,8 @@ int VertexServer_api_backup(VertexServer *self)
 
 int VertexServer_api_collectGarbage(VertexServer *self)
 {
+	Log_Printf("collectGarbage disabled until bug fixed\n");
+/*
 	time_t t1 = time(NULL);
 	long collectedCount; 
 	
@@ -764,6 +766,7 @@ int VertexServer_api_collectGarbage(VertexServer *self)
 	Datum_appendCString_(self->result, " seconds");
 	Log_Printf__("collected %i slots in %f seconds\n", 
 		(int)collectedCount, (float)dt);
+*/
 	return 0;
 }
 
@@ -791,7 +794,7 @@ int VertexServer_api_view(VertexServer *self)
 	Datum *after = VertexServer_queryValue_(self, "after");
 	PNode *node = PDB_allocNode(self->pdb);
 	Datum *d = self->result;
-	int maxCount = 1000;
+	int maxCount = 200;
 	
 	if (PNode_moveToPathIfExists_(node, self->uriPath) != 0) 
 	{
@@ -928,6 +931,7 @@ int VertexServer_api_view(VertexServer *self)
 	}
 	
 	Datum_appendCString_(d, "</body>\n");
+	//Log_Printf("done request\n");
 	return 0;
 }
 
@@ -1269,6 +1273,11 @@ int VertexServer_run(VertexServer *self)
 		return -1; 
 	}
 	
+	/*
+	Log_Printf("warmup database...");
+	PDB_warmup(self->pdb);
+	Log_Printf("warmup done");
+	*/
 	event_init();
 	self->httpd = evhttp_start("0.0.0.0", 8080); 
 	 
