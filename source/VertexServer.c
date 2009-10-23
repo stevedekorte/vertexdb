@@ -474,13 +474,10 @@ int VertexServer_api_transaction(VertexServer *self)
 	{
 		Datum_copy_(uri, self->post);
 		r = Datum_sepOnChars_with_(uri, "\n", self->post);
-		if (Datum_size(uri) == 0) 
-		{
-			if(r != -1)
-			{
-				VertexServer_setError_(self, "empty line in transaction");
-				error = 1;
-			}
+
+		if (Datum_size(uri) == 0) {
+			VertexServer_setError_(self, "empty line in transaction");
+			error = 1;
 			break;
 		}
 		VertexServer_parseUri_(self, Datum_data(uri));
