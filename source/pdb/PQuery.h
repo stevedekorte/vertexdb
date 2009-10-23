@@ -22,6 +22,7 @@ typedef struct
 	Datum *before;
 	Datum *whereKey;
 	Datum *whereValue;
+	Datum *attribute;
 		
 	unsigned int selectCount;
 	unsigned int selectCountMax;
@@ -36,6 +37,7 @@ void PQuery_free(PQuery *self);
 
 void PQuery_setNode_(PQuery *self, void *node);
 void PQuery_setTmpNode_(PQuery *self, void *node);
+void *PQuery_tmpNode(PQuery *self);
 
 void PQuery_setId_(PQuery *self, Datum *d);
 void PQuery_setAfter_(PQuery *self, Datum *d);
@@ -43,6 +45,9 @@ void PQuery_setBefore_(PQuery *self, Datum *d);
 void PQuery_setWhereKey_(PQuery *self, Datum *d);
 void PQuery_setWhereValue_(PQuery *self, Datum *d);
 void PQuery_setSelectCountMax_(PQuery *self, unsigned int n);
+void PQuery_setAttribute_(PQuery *self, Datum *d);
+Datum *PQuery_attribute(PQuery *self);
+Datum *PQuery_attributeValue(PQuery *self);
 
 int PQuery_setup(PQuery *self);
 Datum *PQuery_key(PQuery *self);

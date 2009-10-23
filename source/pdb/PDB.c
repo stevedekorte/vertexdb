@@ -181,8 +181,9 @@ int PDB_open(PDB *self)
 	{
 		if (File_exists(self->isOpenFile))
 		{
-			Log_Printf("PDB: Found isOpen file - database was not closed properly, assuming corrupt and replacing with last backup\n");
+			Log_Printf("PDB: Found isOpen file - database was not closed properly, assuming corrupt and replacing with last backup...\n");
 			PDB_replaceDbWithLastBackUp(self);
+			Log_Printf("PDB: finished backup replace\n");
 		}
 	}
 	
@@ -263,6 +264,7 @@ int PDB_backup(PDB *self) // returns "true" if successful
 	Log_Printf_("PDB creating backup: %s\n", path);
 	result = tcbdbcopy(self->db, path); //tc will create a .wal file
 	File_symbolicallyLinkTo_(self->newBackupFile, self->lastBackupFile);
+	Log_Printf("PDB done creating backup\n");
 	return !result;
 }
 
@@ -639,4 +641,11 @@ void PDB_remove(PDB *self)
 	if(File_exists(self->dbFile)) File_remove(self->dbFile);
 }
 
+void PDB_warmup(PDB *self)
+{
+	// touch all the indexes to pull them into memory
+	BDBCUR *c = tcbdbcurnew(self->db);
+	tcbdbcurfirst(c);
+	while(tcbdbcurnext(c)) {}
+}
 
