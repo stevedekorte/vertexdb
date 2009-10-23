@@ -177,6 +177,10 @@ void PQuery_enumerate(PQuery *self)
 					PNode_value(self->node), self->whereKey, self->whereValue))
 			{		
 				self->selectCount ++;
+				if(self->selectCount >= self->selectCountMax)
+				{
+					self->isDone = 1;
+				}
 				return;
 			}
 		}
