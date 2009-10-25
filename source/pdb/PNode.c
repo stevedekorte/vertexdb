@@ -686,14 +686,11 @@ void PNode_mark(PNode *self)
 
 	PNode_first(self);
 
-
-
-	
 	while ((k = PNode_key(self)))
 	{
 		Datum *v = PNode_value(self);
 		
-		printf("key %s\n", Datum_data(k)); 
+		//printf("key %s\n", Datum_data(k)); 
 		
 		if ((!Datum_beginsWithCString_(k , "_")) && strchr(Datum_data(v), '.') == 0x0) 
 		// && Datum_size(v) == PNODE_ID_LENGTH)
@@ -704,11 +701,12 @@ void PNode_mark(PNode *self)
 			{
 				if (!PDB_hasMarked_(self->pdb, pid))
 				{
+					/*
 					printf("%s %s\t%i\n", 
 						Datum_data(PNode_pid(self)), 
 						Datum_data(k), 
 						(int)pid);
-						
+					*/
 					PDB_addToMarkQueue_(self->pdb, pid);
 				}
 			}
@@ -813,7 +811,6 @@ int PNode_op_sizes(PNode *self, Datum *d)
 	Datum *k;
 	PQuery *q = PNode_startQuery(self);
 	
-	//Datum_appendCString_(d, "{");
 	yajl_gen_map_open(self->yajl);
 	
 	while (k = PQuery_key(q))
@@ -822,10 +819,7 @@ int PNode_op_sizes(PNode *self, Datum *d)
 		{			
 			yajl_gen_datum(self->yajl, PNode_key(self));
 		
-			//Datum_appendQuoted_(d, k);
-			//Datum_appendCString_(d, ":"); 
 			PNode_setPid_(tmpNode, PNode_value(self));
-			//Datum_appendLong_(d, PNode_size(tmpNode));
 			yajl_gen_integer(self->yajl, PNode_size(tmpNode));
 		}
 		
@@ -860,21 +854,16 @@ int PNode_op_keys(PNode *self, Datum *d)
 	PQuery *q = PNode_startQuery(self);
 	Datum *k;
 	
-	//Datum_appendCString_(d, "[");
 	yajl_gen_array_open(self->yajl);
 	
 	while (k = PQuery_key(q))
 	{
-		//Datum_appendQuoted_(d, k);
 		yajl_gen_datum(self->yajl, k);
-
 		PQuery_enumerate(q);
-		//if (PNode_key(self)) Datum_appendCString_(d, ",");
 	}
 
 	yajl_gen_array_close(self->yajl);
 	Datum_appendYajl_(d, self->yajl);
-	//Datum_appendCString_(d, "]");
 	return 0;
 }
 
@@ -884,15 +873,12 @@ int PNode_op_pairs(PNode *self, Datum *d)
 	PNode *tmpNode = PDB_allocNode(self->pdb);
 	Datum *k;
 	
-	//Datum_appendCString_(d, "[");
 	yajl_gen_array_open(self->yajl);
 	
 	while (k = PQuery_key(q))
 	{		
 		yajl_gen_array_open(self->yajl);
-		//Datum_appendCString_(d, "[");
-		//Datum_appendQuoted_(d, k);
-		//Datum_appendCString_(d, ",");
+
 		yajl_gen_datum(self->yajl, k);
 					
 		if(!Datum_beginsWithCString_(k, "_"))
@@ -902,17 +888,13 @@ int PNode_op_pairs(PNode *self, Datum *d)
 		}
 		else
 		{
-			//Datum_appendQuoted_(d, PNode_value(self));
 			yajl_gen_datum(self->yajl, PNode_value(self));
 		}
 				
 		PQuery_enumerate(q);
-		//Datum_appendCString_(d, "]");
-		//if (PNode_key(self)) Datum_appendCString_(d, ",");
 		yajl_gen_array_close(self->yajl);
 	}
 	
-	//Datum_appendCString_(d, "]");
 	yajl_gen_array_close(self->yajl);
 	Datum_appendYajl_(d, self->yajl);
 	return 0; 
@@ -991,8 +973,6 @@ int PNode_op_values(PNode *self, Datum *d)
 			{
 				PNode_setPid_(tmpNode, PNode_value(self));
 				PNode_op_object(tmpNode, 0x0);
-				//PNode_op_object(PQuery_tmpNode(q), 0x0);
-				//PNode_op_object(PQuery_tmpNode(q), 0x0);
 			}
 		}
 		else

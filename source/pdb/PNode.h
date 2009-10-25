@@ -73,6 +73,7 @@ int PNode_incrementSize(PNode *self);
 int PNode_decrementSize(PNode *self);
 long PNode_nodeSizeAtCursor(PNode *self);
 
+PQuery *PNode_startQuery(PNode *self);
 int PNode_doesExist(PNode *self);
 void PNode_first(PNode *self);
 void PNode_jump_(PNode *self, Datum *k);

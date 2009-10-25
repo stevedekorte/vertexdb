@@ -204,7 +204,9 @@ sample response: ???
 
 <p class=api1>queuePopTo</p>
 <ul>
-Returns the key.
+Atomically moves the first sub-node found at the source path into the destination path (using the same key it was under in the source path). 
+Returns the key that the node was under. The ttl attribute is a time-to-live value as a number of seconds. 
+When the server pops the node to the new location, it computes the expiration date and creates a _qexpire and _qtime slots on the node which are used by the server when queueExpireTo requests are sent. Note: Expirations on a node are only performed when the queueExpireTo request is sent to it. 
 <p>
 optional parameters: 
 <p>
@@ -224,6 +226,7 @@ sample response: akey123
 	
 <p class=api1>queueExpireTo</p>
 
+Expires items in the queue past by looking at their _expire attribute and moves expired items to the specified path.
 Returns the number of items expired.
 <ul>
 <pre>

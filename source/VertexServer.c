@@ -517,9 +517,6 @@ int VertexServer_api_queuePopTo(VertexServer *self)
 	PNode *fromNode = PDB_allocNode(self->pdb);
 	PNode *toNode   = PDB_allocNode(self->pdb);
 	Datum *toPath   = VertexServer_queryValue_(self, "toPath");
-
-	PQuery *q = PNode_query(fromNode);
-	VertexServer_setupPQuery_(self, q);
 	
 	long ttl = Datum_asLong(VertexServer_queryValue_(self, "ttl"));
 	
@@ -529,10 +526,17 @@ int VertexServer_api_queuePopTo(VertexServer *self)
 		VertexServer_appendErrorDatum_(self, self->uriPath);
 		return -1;
 	}
-	
+
 	PNode_moveToPath_(toNode, toPath);
 	
+	//printf("to   pid: %s\n", Datum_data(PNode_pid(toNode)));
+	//printf("from pid: %s\n", Datum_data(PNode_pid(fromNode)));
+	
 	{
+		PQuery *q = PNode_query(fromNode);
+		VertexServer_setupPQuery_(self, q);
+		PNode_startQuery(fromNode);
+	
 		Datum *k = PQuery_key(q);
 		//Datum *k = PNode_key(fromNode);
 		Datum *v = PNode_value(fromNode);

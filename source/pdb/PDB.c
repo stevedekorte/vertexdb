@@ -13,7 +13,7 @@ Notes:
 #include <assert.h>
 
 //#define PDB_USE_TX 1
-#define PDB_USE_SYNC 1
+//#define PDB_USE_SYNC 1
 
 static int pathCompareBase(const char *p1, int len1, const char *p2, int len2, void *optionalOpaqueValue)
 {
@@ -158,20 +158,24 @@ int PDB_open(PDB *self)
 		return -1;
 	}
 	
-	tcbdbsetxmsiz(self->db, 1024*1024*1024); // 1GB
+	//tcbdbsetxmsiz(self->db, 1024*1024*64); 
 	
-	if(!tcbdbtune(self->db, 0, 0, 0, -1, -1, HDBTLARGE | BDBTDEFLATE))
+	/*
+	if(!tcbdbtune(self->db, 0, 0, 0, -1, -1, BDBTDEFLATE)) // HDBTLARGE
 	{
 		Log_Printf("tcbdbtune failed\n");
 		return -1;
 	}
+	*/
 		
 	//commented out until our server has a reasonable amount of ram
+	/*
 	if (!tcbdbsetcache(self->db, 1024*100, 512*100))
 	{
 		Log_Printf("tcbdbsetcache failed\n");
 		return -1;
 	}
+	*/
 	
 	if (Datum_isEmpty(File_path(self->dbFile)))
 	{
@@ -223,8 +227,11 @@ void PDB_close(PDB *self)
 {
 	if (self->db)
 	{
-		PDB_abort(self);
+		PDB_commit(self); // right thing to do?
+		//PDB_abort(self);
+		Log_Printf("PDB: closing...\n");
 		tcbdbclose(self->db);
+		Log_Printf("PDB: closed\n");
 		self->db = 0x0;		
 		if (self->useBackups) File_remove(self->isOpenFile);
 	}
