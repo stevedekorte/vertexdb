@@ -334,6 +334,13 @@ int VertexServer_api_mknod(VertexServer *self)
 	PNode *node = PDB_allocNode(self->pdb);
 	Datum *key = VertexServer_queryValue_(self, "key");
 
+	if (PNode_moveToPathIfExists_(node, self->uriPath) != 0) 
+	{
+		VertexServer_setError_(self, "mknod path does not exist: ");
+		VertexServer_appendErrorDatum_(self, self->uriPath);
+		return -1;
+	}	
+
 	PNode_createMoveToKey_(node, key);
 	return 0;
 }
