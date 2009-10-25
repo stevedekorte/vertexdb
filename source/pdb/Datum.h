@@ -59,6 +59,7 @@ int Datum_isEmpty(Datum *self);
 void Datum_makeIdOfLength_(Datum *self, int length);
 void Datum_makePidOfLength_(Datum *self, int length);
 void Datum_makePid32(Datum *self);
+void Datum_makePid64(Datum *self);
 void Datum_fromLong_(Datum *self, long n);
 int Datum_asInt(Datum *self);
 long Datum_asLong(Datum *self);

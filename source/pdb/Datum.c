@@ -257,6 +257,16 @@ void Datum_makePid32(Datum *self)
 	Datum_setCString_(self, s);
 }
 
+void Datum_makePid64(Datum *self)
+{
+	char s[128];
+	unsigned int r1 = rand();
+	unsigned int r2 = rand();
+
+	snprintf(s, 124, "%u%u", r1, r2);
+	Datum_setCString_(self, s);
+}
+
 int Datum_asInt(Datum *self)
 {
 	return atoi(self->data);

@@ -81,6 +81,7 @@ long PDB_collectGarbage(PDB *self); // returns # of nodes collected
 int PDB_hasMarked_(PDB *self, long pid);
 void PDB_addToMarkQueue_(PDB *self, long pid);
 void PDB_warmup(PDB *self);
+int PDB_sync(PDB *self);
 
 
 #ifdef __cplusplus

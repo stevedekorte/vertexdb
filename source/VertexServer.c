@@ -755,8 +755,8 @@ int VertexServer_api_backup(VertexServer *self)
 
 int VertexServer_api_collectGarbage(VertexServer *self)
 {
-	Log_Printf("collectGarbage disabled until bug fixed\n");
-/*
+	//Log_Printf("collectGarbage disabled until bug fixed\n");
+
 	time_t t1 = time(NULL);
 	long collectedCount; 
 	
@@ -770,7 +770,7 @@ int VertexServer_api_collectGarbage(VertexServer *self)
 	Datum_appendCString_(self->result, " seconds");
 	Log_Printf__("collected %i slots in %f seconds\n", 
 		(int)collectedCount, (float)dt);
-*/
+
 	return 0;
 }
 
@@ -789,6 +789,12 @@ int VertexServer_api_showStats(VertexServer *self)
 int VertexServer_api_syncSizes(VertexServer *self)
 {
 	PDB_syncSizes(self->pdb);
+	return 0;
+}
+
+int VertexServer_api_sync(VertexServer *self)
+{
+	PDB_sync(self->pdb);
 	return 0;
 }
 
@@ -1012,6 +1018,7 @@ void VertexServer_setupActions(VertexServer *self)
 	VERTEX_SERVER_ADD_ACTION(showStats);
 	VERTEX_SERVER_ADD_ACTION(view);
 	//VERTEX_SERVER_ADD_ACTION(syncSizes);
+	VERTEX_SERVER_ADD_ACTION(sync);
 	
 	VERTEX_SERVER_ADD_OP(object);
 	VERTEX_SERVER_ADD_OP(sizes);

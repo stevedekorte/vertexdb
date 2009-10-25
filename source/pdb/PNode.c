@@ -649,12 +649,21 @@ int PNode_moveToPathCString_(PNode *self, const char *p)
 void PNode_create(PNode *self)
 {	
 	int size;
+	int tryCount = 0;
 	
 	do
 	{
 		Datum_makePid32(self->pid);
+		//Datum_makePid64(self->pid);
 		PNode_setPathsFromPid(self);
+		
+		tryCount ++;
 	} while (PDB_at_(self->pdb, Datum_data(self->sizePath), (int)Datum_size(self->sizePath), &size));
+	
+	if(tryCount > 3) 
+	{ 
+		printf("WARNING: pid creation tryCount: %i %s\n", tryCount, Datum_data(self->pid));
+	}
 	
 	PDB_at_put_(self->pdb, Datum_data(self->sizePath), (int)Datum_size(self->sizePath), "", 0);
 }
@@ -677,14 +686,14 @@ void PNode_mark(PNode *self)
 
 	PNode_first(self);
 
-	if (99900808 == Datum_asLong(self->pid))
-	{
-		printf("marking products node\n");
-	}
+
+
 	
 	while ((k = PNode_key(self)))
 	{
 		Datum *v = PNode_value(self);
+		
+		printf("key %s\n", Datum_data(k)); 
 		
 		if ((!Datum_beginsWithCString_(k , "_")) && strchr(Datum_data(v), '.') == 0x0) 
 		// && Datum_size(v) == PNODE_ID_LENGTH)
@@ -695,7 +704,11 @@ void PNode_mark(PNode *self)
 			{
 				if (!PDB_hasMarked_(self->pdb, pid))
 				{
-					//printf("mark key: %s adding to markQueue pid %i\n", Datum_data(k), pid);
+					printf("%s %s\t%i\n", 
+						Datum_data(PNode_pid(self)), 
+						Datum_data(k), 
+						(int)pid);
+						
 					PDB_addToMarkQueue_(self->pdb, pid);
 				}
 			}
