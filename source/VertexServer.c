@@ -329,6 +329,15 @@ int VertexServer_api_write(VertexServer *self)
 	return 0;
 }
 
+int VertexServer_api_mknod(VertexServer *self)
+{	
+	PNode *node = PDB_allocNode(self->pdb);
+	Datum *key = VertexServer_queryValue_(self, "key");
+
+	PNode_createMoveToKey_(node, key);
+	return 0;
+}
+
 int VertexServer_api_link(VertexServer *self)
 {
 	PNode *toNode   = PDB_allocNode(self->pdb);
@@ -868,6 +877,7 @@ void VertexServer_setupActions(VertexServer *self)
 	VERTEX_SERVER_ADD_ACTION(rm);
 			
 	// insert
+	VERTEX_SERVER_ADD_ACTION(mknod);
 	VERTEX_SERVER_ADD_ACTION(write);
 	VERTEX_SERVER_ADD_ACTION(mkdir);
 	VERTEX_SERVER_ADD_ACTION(link);
