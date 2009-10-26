@@ -329,22 +329,6 @@ int VertexServer_api_write(VertexServer *self)
 	return 0;
 }
 
-int VertexServer_api_mknod(VertexServer *self)
-{	
-	PNode *node = PDB_allocNode(self->pdb);
-	Datum *key = VertexServer_queryValue_(self, "key");
-
-	if (PNode_moveToPathIfExists_(node, self->uriPath) != 0) 
-	{
-		VertexServer_setError_(self, "mknod path does not exist: ");
-		VertexServer_appendErrorDatum_(self, self->uriPath);
-		return -1;
-	}	
-
-	PNode_createMoveToKey_(node, key);
-	return 0;
-}
-
 int VertexServer_api_link(VertexServer *self)
 {
 	PNode *toNode   = PDB_allocNode(self->pdb);
@@ -884,7 +868,6 @@ void VertexServer_setupActions(VertexServer *self)
 	VERTEX_SERVER_ADD_ACTION(rm);
 			
 	// insert
-	VERTEX_SERVER_ADD_ACTION(mknod);
 	VERTEX_SERVER_ADD_ACTION(write);
 	VERTEX_SERVER_ADD_ACTION(mkdir);
 	VERTEX_SERVER_ADD_ACTION(link);
