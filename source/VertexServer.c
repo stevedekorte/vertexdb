@@ -538,7 +538,6 @@ int VertexServer_api_queuePopTo(VertexServer *self)
 		PNode_startQuery(fromNode);
 	
 		Datum *k = PQuery_key(q);
-		//Datum *k = PNode_key(fromNode);
 		Datum *v = PNode_value(fromNode);
 		
 		if (k)
