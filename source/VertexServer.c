@@ -1302,7 +1302,7 @@ int VertexServer_run(VertexServer *self)
 		exit(-1);
 	}
 	
-	evhttp_set_timeout(self->httpd, 60);
+	evhttp_set_timeout(self->httpd, 180);
 	evhttp_set_gencb(self->httpd, VertexServer_requestHandler, self);  
 	//printf("libevent using: %s\n", event_get_action());
 	
