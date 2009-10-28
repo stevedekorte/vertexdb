@@ -8,7 +8,7 @@ ToDo
 - add performance tests for:
 	- writes, removes, reads per second
 	- db size per number of writes
-	- possibly look into tokyo cabinet tuning parameters
+	- possibly look into tokyocabinet tuning parameters
 
 - FUSE interface
 
