@@ -205,6 +205,7 @@ void *CHash_atString_(CHash *self, const char *s)
 void VertexServer_parseUri_(VertexServer *self, const char *uri)
 {
 	int index;
+	printf("%s\n", uri);
 	Datum *uriDatum = POOL_ALLOC(self->pool, Datum);
 	Datum_setCString_(uriDatum, uri);
 	
