@@ -1,7 +1,19 @@
 
 ToDo
 
-- complete tests in test/test.io (ok to use a python script instead)
+- add tests to tests.io
+	- error conditions (highest priority)
+	- transactions
+	- collect garbage
+	- backup
+	- shutdown
+	- queuePopTo ttl
+	- chmod
+	- chown
+	- stat
+	- stats
+	- login?
+	- newuser? (lowest priority)
 
 - make sure docs are in sync with code
 

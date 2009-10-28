@@ -1,36 +1,5 @@
 #!/usr/local/bin/io
 
-/*
-	select 
-		op: keys / values | pairs / rm | counts | json
-		before:id
-		after:id
-		count:max
-		whereKey:k, whereValue:v
-	rm
-	mkdir
-	link
-	chmod
-	chown
-	stat
-	size
-
-	read
-	write mode: set / append
-
-	queuePopTo
-	queueExpireTo
-
-	transaction
-	login
-	newUser
-
-	shutdown
-	backup
-	collectGarbage
-	stats
-*/
-
 VDBTest := UnitTest clone do(
 	setUp := method(
 		url := URL with("http://localhost:8080/?action=transaction")
@@ -94,7 +63,6 @@ VDBTest := UnitTest clone do(
 		
 		assert := method(
 			u := url
-			//writeln(u url)
 			setActualBody(u fetch)
 			setActualStatusCode(u statusCode)
 			
@@ -108,15 +76,21 @@ VDBTest := UnitTest clone do(
 		)
 	)
 	
-	
-	
+	//reads
 	ReadAssertion := VDBAssertion clone setAction("read")
+	
 	testRead := method(
 		ReadAssertion clone setPath("/a") addParams("key=_a") setExpectedBody("\"1\"") assert
 		ReadAssertion clone setPath("/a") addParams("key=_b") setExpectedBody("\"2\"") assert
 		ReadAssertion clone setPath("/a") addParams("key=_c") setExpectedBody("\"3\"") assert
 		ReadAssertion with("missing key") setPath("/a") addParams("key=_d") setExpectedBody("null") assert
 		ReadAssertion with("bad path") setPath("/d") addParams("key=_d") setExpectedBody("\"path does not exist: test/d\"") setExpectedStatusCode(500) assert
+	)
+	
+	SizeAssertion := VDBAssertion clone setAction("size")
+	
+	testSize := method(
+		SizeAssertion clone setExpectedBody("3") assert
 	)
 	
 	SelectAssertion := VDBAssertion clone do(
@@ -129,7 +103,7 @@ VDBTest := UnitTest clone do(
 		)
 	)
 	
-	KeysAssertion ::= SelectAssertion clone setOp("keys")
+	KeysAssertion := SelectAssertion clone setOp("keys")
 	
 	testSelectKeys := method(
 		KeysAssertion clone setExpectedBody("""["a","b","c"]""") assert
@@ -140,7 +114,7 @@ VDBTest := UnitTest clone do(
 		KeysAssertion with("non-matching where") addParams("whereKey=_a", "whereValue=10") setExpectedBody("[]") assert
 	)
 	
-	PairsAssertion ::= SelectAssertion clone setOp("pairs")
+	PairsAssertion := SelectAssertion clone setOp("pairs")
 	
 	testSelectPairs := method(
 		PairsAssertion clone setExpectedBody("""[["a",{"_a":"1","_b":"2","_c":"3"}],["b",{"_a":"4","_b":"5","_c":"6"}],["c",{"_a":"7","_b":"5","_c":"9"}]]""") assert
@@ -151,7 +125,7 @@ VDBTest := UnitTest clone do(
 		PairsAssertion with("non-matching where") addParams("whereKey=_a", "whereValue=10") setExpectedBody("[]") assert
 	)
 	
-	ValuesAssertion ::= SelectAssertion clone setOp("values")
+	ValuesAssertion := SelectAssertion clone setOp("values")
 
 	testSelectValues := method(
 		ValuesAssertion clone setExpectedBody("""[{"_a":"1","_b":"2","_c":"3"},{"_a":"4","_b":"5","_c":"6"},{"_a":"7","_b":"5","_c":"9"}]""") assert
@@ -162,7 +136,7 @@ VDBTest := UnitTest clone do(
 		ValuesAssertion with("non-matching where") addParams("whereKey=_a", "whereValue=10") setExpectedBody("[]") assert
 	)
 	
-	SizesAssertion ::= SelectAssertion clone setOp("sizes")
+	SizesAssertion := SelectAssertion clone setOp("sizes")
 
 	testSelectSizes := method(
 		SizesAssertion clone setExpectedBody("""{"a":3,"b":3,"c":3}""") assert
@@ -173,7 +147,7 @@ VDBTest := UnitTest clone do(
 		SizesAssertion with("non-matching where") addParams("whereKey=_a", "whereValue=10") setExpectedBody("{}") assert
 	)
 	
-	RmAssertion ::= SelectAssertion clone setOp("rm")
+	RmAssertion := SelectAssertion clone setOp("rm")
 
 	testSelectRm := method(
 		RmAssertion clone setExpectedBody("3") assert
@@ -200,72 +174,73 @@ VDBTest := UnitTest clone do(
 		PairsAssertion with("rm non-matching where") setExpectedBody("""[["a",{"_a":"1","_b":"2","_c":"3"}],["b",{"_a":"4","_b":"5","_c":"6"}],["c",{"_a":"7","_b":"5","_c":"9"}]]""") assert
 	)
 	
-	ObjectAssertion ::= SelectAssertion clone setOp("object")
+	ObjectAssertion := SelectAssertion clone setOp("object")
 	
 	testSelectObject := method(
 		ObjectAssertion clone setPath("/a") setExpectedBody("""{"_a":"1","_b":"2","_c":"3"}""") assert
 	)
-)
-
-VDBTest run
-
-/*
-assertEquals := method(a, b, 
-	if(a != b, 
-		Exception raise(call message argAt(0) .. " == " .. a .. " instead of " .. b)
+	
+	//writes
+	
+	WriteAssertion := VDBAssertion clone setAction("write")
+	testWrite := method(
+		WriteAssertion clone setPath("/a") addParams("key=_d", "value=4") setExpectedBody("null") assert
+		ObjectAssertion with("write") clone setPath("/a") setExpectedBody("""{"_a":"1","_b":"2","_c":"3","_d":"4"}""") assert
+		
+		WriteAssertion with("overwrite") setPath("/a") addParams("key=_d", "value=5") setExpectedBody("null") assert
+		ObjectAssertion with("write") clone setPath("/a") setExpectedBody("""{"_a":"1","_b":"2","_c":"3","_d":"5"}""") assert
+		
+		WriteAssertion with("write append") setPath("/a") addParams("key=_d", "value=6", "mode=append") setExpectedBody("null") assert
+		ObjectAssertion with("write") clone setPath("/a") setExpectedBody("""{"_a":"1","_b":"2","_c":"3","_d":"56"}""") assert
+	)
+	
+	LinkAssertion := VDBAssertion clone setAction("link")
+	testLink := method(
+		LinkAssertion clone setPath("/a") addParams("toPath=/test", "key=d") setExpectedBody("null") assert
+		ObjectAssertion with("link") clone setPath("/a") setExpectedBody("""{"_a":"1","_b":"2","_c":"3"}""") assert
+	)
+	
+	QueuePopToAssertion := VDBAssertion clone setAction("queuePopTo")
+	testQueuePopTo := method(
+		URL with("http://localhost:8080/?action=transaction") post(
+"/test/queue/waiting?action=mkdir
+/test/queue/waiting/a?action=mkdir
+/test/queue/waiting/a?action=write&key=_a&value=1
+/test/queue/waiting/b?action=mkdir
+/test/queue/waiting/b?action=write&key=_a&value=2
+/test/queue/active?action=mkdir
+")
+		QueuePopToAssertion with("first") setPath("/queue/waiting") addParams("toPath=/test/queue/active") setExpectedBody("\"a\"") assert
+		KeysAssertion with("first queuePopTo") clone setPath("/queue/active/a") setExpectedBody("""["_a","_qexpire","_qtime"]""") assert
+		
+		QueuePopToAssertion with("second") setPath("/queue/waiting") addParams("toPath=/test/queue/active") setExpectedBody("\"b\"") assert
+		KeysAssertion with("second queuePopTo") clone setPath("/queue/active/b") setExpectedBody("""["_a","_qexpire","_qtime"]""") assert
+		
+		QueuePopToAssertion with("third") setPath("/queue/waiting") addParams("toPath=/test/queue/active") setExpectedBody("null") assert
+		SizeAssertion with("third queuePopTo waiting") clone setPath("/queue/waiting") setExpectedBody("0") assert
+		SizeAssertion with("third queuePopTo active") clone setPath("/queue/active") setExpectedBody("2") assert
+	)
+	
+	QueueExpireToAssertion := VDBAssertion clone setAction("queueExpireTo")
+	testQueueExpireTo := method(
+		URL with("http://localhost:8080/?action=transaction") post(
+"/test/queue/waiting?action=mkdir
+/test/queue/active?action=mkdir
+/test/queue/active/a?action=mkdir
+/test/queue/active/a?action=write&key=_a&value=1
+/test/queue/active/a?action=write&key=_qexpire&value=0000000000
+/test/queue/active/a?action=write&key=_qtime&value=0000000000
+/test/queue/active/b?action=mkdir
+/test/queue/active/b?action=write&key=_a&value=2
+/test/queue/active/b?action=write&key=_qexpire&value=2000000000
+/test/queue/active/b?action=write&key=_qtime&value=2000000000
+")
+		QueueExpireToAssertion with("first") setPath("/queue/active") addParams("toPath=/test/queue/waiting") setExpectedBody("1") assert
+		ObjectAssertion with("first queueExpireTo") clone setPath("/queue/waiting/a") setExpectedBody("""{"_a":"1"}""") assert
+		
+		QueueExpireToAssertion with("second") setPath("/queue/active") addParams("toPath=/test/queue/waiting") setExpectedBody("0") assert
+		KeysAssertion with("second queueExpireTo") clone setPath("/queue/active/b") setExpectedBody("""["_a","_qexpire","_qtime"]""") assert
 	)
 )
 
-URL with("http://localhost:8080/?action=select&op=rm") fetch
-
-// test size
-
-assertEquals(URL with("http://localhost:8080/?action=size") fetch, "0")
-
-// test mkdir, write
-
-URL with("http://localhost:8080/test?action=mkdir") fetch
-URL with("http://localhost:8080/test?action=write&key=_a") post("1")
-URL with("http://localhost:8080/test?action=write&key=_b") post("2")
-URL with("http://localhost:8080/test?action=write&key=_c") post("3")
-
-// test read
-
-
-
-// test select keys/values
-
-
-
-// test select pairs before/after
-
-assertEquals(URL with("http://localhost:8080/test?action=select&op=pairs") fetch, """[["_a","1"],["_b","2"],["_c","3"]]""")
-assertEquals(URL with("http://localhost:8080/test?action=select&op=pairs&after=_a") fetch,  """[["_b","2"],["_c","3"]]""")
-assertEquals(URL with("http://localhost:8080/test?action=select&op=pairs&before=_c") fetch, """[["_b","2"],["_a","1"]]""")
-assertEquals(URL with("http://localhost:8080/test?action=size") fetch, "3")
-
-// test rm
-
-URL with("http://localhost:8080/test?action=rm&key=_a") fetch
-//assertEquals(URL with("http://localhost:8080/test?action=read&key=_a") fetch, null)
-assertEquals(URL with("http://localhost:8080/test?action=size") fetch, "2")
-
-// test select rm
-
-URL with("http://localhost:8080/test?action=write&key=_a") post("1")
-URL with("http://localhost:8080/test?action=select&op=rm&after=_a") fetch
-assertEquals(URL with("http://localhost:8080/test?action=size") fetch, "1")
-
-/*
-userId := URL with("http://localhost:8080/?newUser") fetch
-c1 := URL with("http://localhost:8080/users/" .. userId .. "/items/unseen?count") fetch
-c2 := URL with("http://localhost:8080/public/items?count") fetch
-assertEquals(c1, c2)
-*/
-
-/*
-Object squareBrackets := Object getSlot("list")
-Object curlyBrackets := Object getSlot("list")
-assertEquals(id1, id2)
-*/
-*/
+VDBTest run
