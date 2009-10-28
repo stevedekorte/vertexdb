@@ -770,7 +770,7 @@ int VertexServer_api_collectGarbage(VertexServer *self)
 	Datum_appendLong_(self->result, collectedCount);
 	Datum_appendCString_(self->result, ",\"seconds\":");
 	Datum_appendLong_(self->result, (long)dt);
-	Datum_appendCString_(self->result, " }");
+	Datum_appendCString_(self->result, "}");
 	Log_Printf__("collected %i slots in %f seconds\n", (int)collectedCount, (float)dt);
 
 	return 0;
