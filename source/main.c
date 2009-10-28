@@ -23,8 +23,8 @@ int main(int argc, char **argv)
 		}
 		else if (strcmp(argv[a], "-daemon") == 0)
 		{
-			VertexServer_setIsDaemon_(server, 1);
 			a ++;
+			VertexServer_setIsDaemon_(server, 1);
 		}
 		else if (strcmp(argv[a], "-log") == 0)
 		{
@@ -42,7 +42,6 @@ int main(int argc, char **argv)
 		{
 			a ++;
 			VertexServer_setDebug_(server, 1);
-			a ++;
 		}
 	}
 	

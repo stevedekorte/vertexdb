@@ -450,6 +450,7 @@ PNode *PDB_newNode(PDB *self)
 
 int PDB_sync(PDB *self)
 {
+	PDB_commit(self);
 	if(!tcbdbsync(self->db))
 	{
 		PDB_fatalError_(self, "tcbdbsync");
