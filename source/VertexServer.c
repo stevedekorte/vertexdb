@@ -1280,10 +1280,10 @@ void VertexServer_runEventLoop(VertexServer *self)
 
 int VertexServer_run(VertexServer *self)
 {  	
-	Log_Printf("VertexServer_run\n");
 	Socket_SetDescriptorLimitToMax();
 	VertexServer_setupActions(self);
 	VertexServer_openLog(self);
+	Log_Printf("VertexServer_run\n");
 	
 	
 	if (self->isDaemon)
