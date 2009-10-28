@@ -70,6 +70,11 @@ VDBTest := UnitTest clone do(
 			self clone setVariant(aVariant)
 		)
 		
+		init := method(
+			resend
+			params = params clone
+		)
+		
 		queryString := method(
 			str := ("?action=" .. action) asMutable
 			if(params size > 0,
@@ -98,14 +103,14 @@ VDBTest := UnitTest clone do(
 			)
 			
 			if(actualBody != expectedBody,
-				Exception raise(Sequence with(action, " action failed for \"", variant, "\" variant: \n", "expectedBody ", expectedBody, "\nactualBody   ", actualBody, "\n"))
+				Exception raise(Sequence with(action, " action failed for \"", variant, "\" variant: \n", u url, "\nexpectedBody ", expectedBody, "\nactualBody   ", actualBody, "\n"))
 			)
 		)
 	)
 	
 	
 	
-	ReadAssertion := VDBAssertion clone do(action ::= "read")
+	ReadAssertion := VDBAssertion clone setAction("read")
 	testRead := method(
 		ReadAssertion clone setPath("/a") addParams("key=_a") setExpectedBody("\"1\"") assert
 		ReadAssertion clone setPath("/a") addParams("key=_b") setExpectedBody("\"2\"") assert
@@ -124,7 +129,7 @@ VDBTest := UnitTest clone do(
 		)
 	)
 	
-	KeysAssertion ::= SelectAssertion clone do(op ::= "keys")
+	KeysAssertion ::= SelectAssertion clone setOp("keys")
 	
 	testSelectKeys := method(
 		KeysAssertion clone setExpectedBody("""["a","b","c"]""") assert
@@ -135,143 +140,71 @@ VDBTest := UnitTest clone do(
 		KeysAssertion with("non-matching where") addParams("whereKey=_a", "whereValue=10") setExpectedBody("[]") assert
 	)
 	
-	/*
+	PairsAssertion ::= SelectAssertion clone setOp("pairs")
+	
 	testSelectPairs := method(
-		actualPairs := URL with("http://localhost:8080/test?action=select&op=pairs") fetch
-		expectedPairs := """[["a",{"_a":"1","_b":"2","_c":"3"}],["b",{"_a":"4","_b":"5","_c":"6"}],["c",{"_a":"7","_b":"5","_c":"9"}]]"""
-		assertEquals(actualPairs, expectedPairs)
-		
-		
-		actualPairsWithCount := URL with("http://localhost:8080/test?action=select&op=pairs&count=1") fetch
-		expectedPairsWithCount := """[["a",{"_a":"1","_b":"2","_c":"3"}]]"""
-		assertEquals(actualPairsWithCount, expectedPairsWithCount)
-		
-		actualPairsWithAfter := URL with("http://localhost:8080/test?action=select&op=pairs&after=a") fetch
-		expectedPairsWithAfter := """[["b",{"_a":"4","_b":"5","_c":"6"}],["c",{"_a":"7","_b":"5","_c":"9"}]]"""
-		assertEquals(actualPairsWithAfter, expectedPairsWithAfter)
-		
-		actualPairsWithBefore := URL with("http://localhost:8080/test?action=select&op=pairs&before=b") fetch
-		expectedPairsWithBefore := """[["a",{"_a":"1","_b":"2","_c":"3"}]]"""
-		assertEquals(actualPairsWithBefore, expectedPairsWithBefore)
-		
-		actualPairsWithWhere := URL with("http://localhost:8080/test?action=select&op=pairs&whereKey=_b&whereValue=5") fetch
-		expectedPairsWithWhere := """[["b",{"_a":"4","_b":"5","_c":"6"}],["c",{"_a":"7","_b":"5","_c":"9"}]]"""
-		assertEquals(actualPairsWithWhere, expectedPairsWithWhere)
-		
-		actualEmptyPairsWithWhere := URL with("http://localhost:8080/test?action=select&op=pairs&whereKey=_a&whereValue=10") fetch
-		expectedEmptyPairsWithWhere := """[]"""
-		assertEquals(actualEmptyPairsWithWhere, expectedEmptyPairsWithWhere)
+		PairsAssertion clone setExpectedBody("""[["a",{"_a":"1","_b":"2","_c":"3"}],["b",{"_a":"4","_b":"5","_c":"6"}],["c",{"_a":"7","_b":"5","_c":"9"}]]""") assert
+		PairsAssertion with("count") addParams("count=1") setExpectedBody("""[["a",{"_a":"1","_b":"2","_c":"3"}]]""") assert
+		PairsAssertion with("after") addParams("after=a") setExpectedBody("""[["b",{"_a":"4","_b":"5","_c":"6"}],["c",{"_a":"7","_b":"5","_c":"9"}]]""") assert
+		PairsAssertion with("before") addParams("before=b") setExpectedBody("""[["a",{"_a":"1","_b":"2","_c":"3"}]]""") assert
+		PairsAssertion with("where") addParams("whereKey=_b", "whereValue=5") setExpectedBody("""[["b",{"_a":"4","_b":"5","_c":"6"}],["c",{"_a":"7","_b":"5","_c":"9"}]]""") assert
+		PairsAssertion with("non-matching where") addParams("whereKey=_a", "whereValue=10") setExpectedBody("[]") assert
 	)
 	
+	ValuesAssertion ::= SelectAssertion clone setOp("values")
+
 	testSelectValues := method(
-		actualValues := URL with("http://localhost:8080/test?action=select&op=values") fetch
-		expectedValues := """[{"_a":"1","_b":"2","_c":"3"},{"_a":"4","_b":"5","_c":"6"},{"_a":"7","_b":"5","_c":"9"}]"""
-		assertEquals(actualValues, expectedValues)
-		
-		
-		actualValuesWithCount := URL with("http://localhost:8080/test?action=select&op=values&count=1") fetch
-		expectedValuesWithCount := """[{"_a":"1","_b":"2","_c":"3"}]"""
-		assertEquals(actualValuesWithCount, expectedValuesWithCount)
-		
-		actualValuesWithAfter := URL with("http://localhost:8080/test?action=select&op=values&after=a") fetch
-		expectedValuesWithAfter := """[{"_a":"4","_b":"5","_c":"6"},{"_a":"7","_b":"5","_c":"9"}]"""
-		assertEquals(actualValuesWithAfter, expectedValuesWithAfter)
-		
-		actualValuesWithBefore := URL with("http://localhost:8080/test?action=select&op=values&before=b") fetch
-		expectedValuesWithBefore := """[{"_a":"1","_b":"2","_c":"3"}]"""
-		assertEquals(actualValuesWithBefore, expectedValuesWithBefore)
-		
-		actualValuesWithWhere := URL with("http://localhost:8080/test?action=select&op=values&whereKey=_b&whereValue=5") fetch
-		expectedValuesWithWhere := """[{"_a":"4","_b":"5","_c":"6"},{"_a":"7","_b":"5","_c":"9"}]"""
-		assertEquals(actualValuesWithWhere, expectedValuesWithWhere)
-		
-		actualEmptyValuesWithWhere := URL with("http://localhost:8080/test?action=select&op=values&whereKey=_a&whereValue=10") fetch
-		expectedEmptyValuesWithWhere := """[]"""
-		assertEquals(actualEmptyValuesWithWhere, expectedEmptyValuesWithWhere)
+		ValuesAssertion clone setExpectedBody("""[{"_a":"1","_b":"2","_c":"3"},{"_a":"4","_b":"5","_c":"6"},{"_a":"7","_b":"5","_c":"9"}]""") assert
+		ValuesAssertion with("count") addParams("count=1") setExpectedBody("""[{"_a":"1","_b":"2","_c":"3"}]""") assert
+		ValuesAssertion with("after") addParams("after=a") setExpectedBody("""[{"_a":"4","_b":"5","_c":"6"},{"_a":"7","_b":"5","_c":"9"}]""") assert
+		ValuesAssertion with("before") addParams("before=b") setExpectedBody("""[{"_a":"1","_b":"2","_c":"3"}]""") assert
+		ValuesAssertion with("where") addParams("whereKey=_b", "whereValue=5") setExpectedBody("""[{"_a":"4","_b":"5","_c":"6"},{"_a":"7","_b":"5","_c":"9"}]""") assert
+		ValuesAssertion with("non-matching where") addParams("whereKey=_a", "whereValue=10") setExpectedBody("[]") assert
 	)
 	
+	SizesAssertion ::= SelectAssertion clone setOp("sizes")
+
 	testSelectSizes := method(
-		actualSizes := URL with("http://localhost:8080/test?action=select&op=sizes") fetch
-		expectedSizes := """{"a":3,"b":3,"c":3}"""
-		assertEquals(actualSizes, expectedSizes)
-		
-		
-		actualSizesWithCount := URL with("http://localhost:8080/test?action=select&op=sizes&count=1") fetch
-		expectedSizesWithCount := """{"a":3}"""
-		assertEquals(actualSizesWithCount, expectedSizesWithCount)
-		
-		actualSizesWithAfter := URL with("http://localhost:8080/test?action=select&op=sizes&after=a") fetch
-		expectedSizesWithAfter := """{"b":3,"c":3}"""
-		assertEquals(actualSizesWithAfter, expectedSizesWithAfter)
-		
-		actualSizesWithBefore := URL with("http://localhost:8080/test?action=select&op=sizes&before=b") fetch
-		expectedSizesWithBefore := """{"a":3}"""
-		assertEquals(actualSizesWithBefore, expectedSizesWithBefore)
-		
-		actualSizesWithWhere := URL with("http://localhost:8080/test?action=select&op=sizes&whereKey=_b&whereValue=5") fetch
-		expectedSizesWithWhere := """{"b":3,"c":3}"""
-		assertEquals(actualSizesWithWhere, expectedSizesWithWhere)
-		
-		actualEmptySizesWithWhere := URL with("http://localhost:8080/test?action=select&op=sizes&whereKey=_a&whereValue=10") fetch
-		expectedEmptySizesWithWhere := """{}"""
-		assertEquals(actualEmptySizesWithWhere, expectedEmptySizesWithWhere)
+		SizesAssertion clone setExpectedBody("""{"a":3,"b":3,"c":3}""") assert
+		SizesAssertion with("count") addParams("count=1") setExpectedBody("""{"a":3}""") assert
+		SizesAssertion with("after") addParams("after=a") setExpectedBody("""{"b":3,"c":3}""") assert
+		SizesAssertion with("before") addParams("before=b") setExpectedBody("""{"a":3}""") assert
+		SizesAssertion with("where") addParams("whereKey=_b", "whereValue=5") setExpectedBody("""{"b":3,"c":3}""") assert
+		SizesAssertion with("non-matching where") addParams("whereKey=_a", "whereValue=10") setExpectedBody("{}") assert
 	)
 	
+	RmAssertion ::= SelectAssertion clone setOp("rm")
+
 	testSelectRm := method(
-		actualRm := URL with("http://localhost:8080/test?action=select&op=rm") fetch
-		expectedRm := """3"""
-		assertEquals(actualRm, expectedRm)
-		actualRmPairs := URL with("http://localhost:8080/test?action=select&op=pairs") fetch
-		expectedRmPairs := """[]"""
-		assertEquals(actualRmPairs, expectedRmPairs)
+		RmAssertion clone setExpectedBody("3") assert
+		PairsAssertion with("rm") setExpectedBody("[]") assert
 		setUp
 		
-		actualRmWithCount := URL with("http://localhost:8080/test?action=select&op=rm&count=1") fetch
-		expectedRmWithCount := """1"""
-		assertEquals(actualRmWithCount, expectedRmWithCount)
-		actualRmWithCountPairs := URL with("http://localhost:8080/test?action=select&op=pairs") fetch
-		expectedRmWithCountPairs := """[["b",{"_a":"4","_b":"5","_c":"6"}],["c",{"_a":"7","_b":"5","_c":"9"}]]"""
-		assertEquals(actualRmWithCountPairs, expectedRmWithCountPairs)
+		RmAssertion with("count") addParams("count=1") setExpectedBody("1") assert
+		PairsAssertion with("rm count") setExpectedBody("""[["b",{"_a":"4","_b":"5","_c":"6"}],["c",{"_a":"7","_b":"5","_c":"9"}]]""") assert
 		setUp
 		
-		actualRmWithAfter := URL with("http://localhost:8080/test?action=select&op=rm&after=a") fetch
-		expectedRmWithAfter := """2"""
-		assertEquals(actualRmWithAfter, expectedRmWithAfter)
-		actualRmWithAfterPairs := URL with("http://localhost:8080/test?action=select&op=pairs") fetch
-		expectedRmWithAfterPairs := """[["a",{"_a":"1","_b":"2","_c":"3"}]]"""
-		assertEquals(actualRmWithAfterPairs, expectedRmWithAfterPairs)
+		RmAssertion with("after") addParams("after=a") setExpectedBody("2") assert
+		PairsAssertion with("rm after") setExpectedBody("""[["a",{"_a":"1","_b":"2","_c":"3"}]]""") assert
 		setUp
 		
-		actualRmWithBefore := URL with("http://localhost:8080/test?action=select&op=rm&before=b") fetch
-		expectedRmWithBefore := """1"""
-		assertEquals(actualRmWithBefore, expectedRmWithBefore)
-		actualRmWithBeforePairs := URL with("http://localhost:8080/test?action=select&op=pairs") fetch
-		expectedRmWithBeforePairs := """[["b",{"_a":"4","_b":"5","_c":"6"}],["c",{"_a":"7","_b":"5","_c":"9"}]]"""
-		assertEquals(actualRmWithBeforePairs, expectedRmWithBeforePairs)
+		RmAssertion with("before") addParams("before=b") setExpectedBody("1") assert
+		PairsAssertion with("rm before") setExpectedBody("""[["b",{"_a":"4","_b":"5","_c":"6"}],["c",{"_a":"7","_b":"5","_c":"9"}]]""") assert
 		setUp
 		
-		actualRmWithWhere := URL with("http://localhost:8080/test?action=select&op=rm&whereKey=_b&whereValue=5") fetch
-		expectedRmWithWhere := """2"""
-		assertEquals(actualRmWithWhere, expectedRmWithWhere)
-		actualRmWithWherePairs := URL with("http://localhost:8080/test?action=select&op=pairs") fetch
-		expectedRmWithWherePairs := """[["a",{"_a":"1","_b":"2","_c":"3"}]]"""
-		assertEquals(actualRmWithWherePairs, expectedRmWithWherePairs)
+		RmAssertion with("where") addParams("whereKey=_b", "whereValue=5") setExpectedBody("2") assert
+		PairsAssertion with("rm where") setExpectedBody("""[["a",{"_a":"1","_b":"2","_c":"3"}]]""") assert
 		setUp
 		
-		actualEmptyRmWithWhere := URL with("http://localhost:8080/test?action=select&op=rm&whereKey=_a&whereValue=10") fetch
-		expectedEmptyRmWithWhere := """0"""
-		assertEquals(actualEmptySizesWithWhere, expectedEmptySizesWithWhere)
-		actualEmptyRmWithWherePairs := URL with("http://localhost:8080/test?action=select&op=pairs") fetch
-		expectedEmptyRmWithWherePairs := """[["a",{"_a":"1","_b":"2","_c":"3"}],["b",{"_a":"4","_b":"5","_c":"6"}],["c",{"_a":"7","_b":"5","_c":"9"}]]"""
-		assertEquals(actualEmptyRmWithWherePairs, expectedEmptyRmWithWherePairs)
+		RmAssertion with("non-matching where") addParams("whereKey=_a", "whereValue=10") setExpectedBody("0") assert
+		PairsAssertion with("rm non-matching where") setExpectedBody("""[["a",{"_a":"1","_b":"2","_c":"3"}],["b",{"_a":"4","_b":"5","_c":"6"}],["c",{"_a":"7","_b":"5","_c":"9"}]]""") assert
 	)
+	
+	ObjectAssertion ::= SelectAssertion clone setOp("object")
 	
 	testSelectObject := method(
-		actualObject := URL with("http://localhost:8080/test/a?action=select&op=object") fetch
-		expectedObject := """{"_a":"1","_b":"2","_c":"3"}"""
-		assertEquals(actualObject, expectedObject)
+		ObjectAssertion clone setPath("/a") setExpectedBody("""{"_a":"1","_b":"2","_c":"3"}""") assert
 	)
-	*/
 )
 
 VDBTest run
