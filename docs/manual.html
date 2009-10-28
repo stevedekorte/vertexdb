@@ -38,18 +38,15 @@ pre { text-align: left; font-size: .9em; font-weight: normal; font-family: couri
 
 <ul>
 
-VertexDB is a high performance (20,000+ requests per second) graph database server that supports automatic garbage collection. It uses the HTTP protocol for requests and JSON for it's response data format. 
-<p>
-
-It's API is inspired by the FUSE filesystem API (with a few extra APIs for queries and queues) and was designed with the intention of offering a FUSE interface in the future.
+VertexDB is a high performance (20,000+ requests per second) graph database server that supports automatic garbage collection. It uses the HTTP protocol for requests and JSON for it's response data format and the API is inspired by the FUSE filesystem API plus a few extra methods for queries and queues.
 <br>
 <br>
 
 <h2>Integrity</h2>
 
-On startup, VertexDB makes a backup of the database (if it exists). When shut down properly, it creates a file that marks the database as being safely. When started, if this file is not found, the database file is replaced by it's old copy.
+On startup, VertexDB makes a backup of the database (if it exists). When shut down properly, it creates a file that marks the database as being safely stored. When started, if this file is not found, the database file is replaced by it's old copy.
 <p>
-VDB caches all writes until a given number of bytes worth of writes is accumulated, then it transactionally writes all queued writes to disk.
+VertexDB uses TokyoCabinet in a mode where transactions are only to OS buffers and writes are cached and pushed to disk after they accumulated in order to allow the OS to minimize disk head movements for the writes.
 <br>
 <br>
 
@@ -68,7 +65,16 @@ Graph databases aren't ideal for all uses, but can be more suitable than other m
 
 <h2>Implementation</h2>
 
-The current implementation is in C and built on top of the TokyoCabinet (a b-tree key/value disk store), libevent (asynchronous sockets and HTTP) and Yajl(JSON parsing/generation) libraries. VertexDB uses a single OS thread and handles all requests serially, but uses async sockets so no request is blocked on socket i/o (though it can still block on disk i/o). 
+The current implementation is in C and built on top of:
+<p>
+<ul> 
+<li> TokyoCabinet, a b-tree key/value disk store
+<li> libevent, for asynchronous sockets and HTTP 
+<li> Yajl, for JSON generation
+</ul>
+<br>
+<p>
+VertexDB uses a single OS thread and handles all requests serially, but uses async sockets so no request is blocked on socket i/o (though it can still block on disk i/o). 
 <p>
 Requests should be generally designed such that responses don't spend too much time blocking on disk i/o or using too much memory in queued response buffers. This can be done by "paging" requests by limiting their results count and repeatedly using a query that selects the next set of matches.
 <br>
@@ -81,6 +87,8 @@ Possible future features:
 <ul>
 	<li> FUSE interface
 	<li> distributed redundant servers
+	<li> incremental garbage collection
+	<li> distributed synced in-memory transactions
 	<li> automatic index creation
 	<li> a NodeJS implementation which uses JS for queries?
 </ul>
@@ -298,35 +306,37 @@ sample response: ???
 <p class=api1>queuePopTo</p>
 <ul>
 Atomically moves the first sub-node found at the source path into the destination path (using the same key it was under in the source path). 
-Returns the key that the node was under. The ttl attribute is a time-to-live value as a number of seconds. 
-When the server pops the node to the new location, it computes the expiration date and creates a _qexpire and _qtime slots on the node which are used by the server when queueExpireTo requests are sent. Note: Expirations on a node are only performed when the queueExpireTo request is sent to it. 
+Returns the key that the node was under. 
 <p>
-optional parameters: 
-<p>
-<ul>
-<pre>
-whereKey=k&whereValue=v 
-ttl=numberOfSeconds
-</pre>
-</ul>
-
 <pre>
 sample request: /sourcePath/?action=queuePopTo&toPath=/destinationPath
 sample response: akey123
 </pre>
+
+<p>
+optional parameters: 
+<p>
+<pre>
+whereKey=k&whereValue=v 
+ttl=numberOfSeconds
+</pre>
+
+The ttl attribute is a time-to-live value as a number of seconds. 
+When the server pops the node to the new location, it computes the expiration date and creates a _qexpire and _qtime slots on the node which are used by the server when queueExpireTo requests are sent. Expirations on a node are only performed when the queueExpireTo request is sent to it.
+
+
 </ul>
 <br>
 	
 <p class=api1>queueExpireTo</p>
 <ul>
-Expires items in the queue past by looking at their _expire attribute and moves expired items to the specified path.
+Expires items in the queue by looking at their _expire attribute and moves expired items to the specified path.
+The _qexpire and _qtime keys are removed after the node is moved.
 Returns the number of items expired.
-<ul>
 <pre>
 sample request: /sourcePath/?action=queueExpireTo&toPath=/destinationPath
 sample response: 42
 </pre>
-</ul>
 </ul>
 
 </ul>

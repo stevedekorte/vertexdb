@@ -564,7 +564,7 @@ int VertexServer_api_queuePopTo(VertexServer *self)
 			
 			//printf("queueing key %s\n", Datum_data(k));
 			yajl_gen_datum(self->yajl, k);
-			PNode_removeAtCursor(fromNode);
+			PNode_removeAt_(fromNode, k);
 		}
 		else
 		{
