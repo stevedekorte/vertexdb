@@ -38,6 +38,12 @@ int main(int argc, char **argv)
 			VertexServer_setPidPath_(server, argv[a]);
 			a ++;
 		}
+		else if (strcmp(argv[a], "-debug") == 0)
+		{
+			a ++;
+			VertexServer_setDebug_(server, 1);
+			a ++;
+		}
 	}
 	
 	VertexServer_run(server);

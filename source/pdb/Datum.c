@@ -1,4 +1,3 @@
-
 #include "Datum.h"
 #include "Common.h"
 #include "Hash_murmur.h"
@@ -357,10 +356,3 @@ int Datum_from_beforeChar_into_(Datum *self, unsigned int start, char c, Datum *
 	
 	return -1;
 }
-
-/*
-int Datum_indexOfChar_(Datum *self, char c)
-{
-	
-}
-*/

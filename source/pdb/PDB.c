@@ -159,18 +159,18 @@ int PDB_open(PDB *self)
 		return -1;
 	}
 	
-	//tcbdbsetxmsiz(self->db, 1024*1024*64); 
 	
 	/*
+	//Tinkering with these seems to result in worse performance so far...
+	
+	tcbdbsetxmsiz(self->db, 1024*1024*64); 
+
 	if(!tcbdbtune(self->db, 0, 0, 0, -1, -1, BDBTDEFLATE)) // HDBTLARGE
 	{
 		Log_Printf("tcbdbtune failed\n");
 		return -1;
 	}
-	*/
-		
-	//commented out until our server has a reasonable amount of ram
-	/*
+
 	if (!tcbdbsetcache(self->db, 1024*100, 512*100))
 	{
 		Log_Printf("tcbdbsetcache failed\n");

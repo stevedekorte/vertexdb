@@ -25,7 +25,7 @@ typedef struct
 	const char *logPath;
 	const char *pidPath;
 	
-	Datum *staticPath;
+	//Datum *staticPath;
 	
 	CHash *actions;
 	CHash *query;
@@ -53,6 +53,8 @@ typedef struct
 	RunningStat *rstat;
 	size_t requestsPerSample;
 	yajl_gen yajl;
+	
+	int debug;
 } VertexServer;
 
 typedef int (VertexAction)(VertexServer *);
@@ -65,6 +67,7 @@ void VertexServer_setDbPath_(VertexServer *self, char *path);
 void VertexServer_setLogPath_(VertexServer *self, const char *path);
 void VertexServer_setPidPath_(VertexServer *self, const char *path);
 void VertexServer_setIsDaemon_(VertexServer *self, int isDaemon);
+void VertexServer_setDebug_(VertexServer *self, int aBool);
 
 int VertexServer_process(VertexServer *self);
 int VertexServer_run(VertexServer *self);

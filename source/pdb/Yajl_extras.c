@@ -1,5 +1,10 @@
 #include "Yajl_extras.h"
 
+void yajl_gen_cstring(yajl_gen self, const char *s)
+{
+	yajl_gen_string(self, (const unsigned char *)s, strlen(s));
+}
+
 void yajl_gen_datum(yajl_gen self, Datum *d)
 {
 	yajl_gen_string(self, (const unsigned char *)Datum_data(d), Datum_size(d));
