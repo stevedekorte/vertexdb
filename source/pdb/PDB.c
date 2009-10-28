@@ -12,7 +12,7 @@ Notes:
 #include <string.h>
 #include <assert.h>
 
-//#define PDB_USE_TX 1
+#define PDB_USE_TX 1
 //#define PDB_USE_SYNC 1
 
 static int pathCompareBase(const char *p1, int len1, const char *p2, int len2, void *optionalOpaqueValue)
