@@ -70,7 +70,6 @@ struct fuse_operations {
 #include "PQuery.h"
 
 #define USER_ID_LENGTH 12
-#define DISK_SYNC_ON_EACH_TRANSACTION 1
 //#define COMMIT_PERIODICALLY 1
 
 static VertexServer *globalVertexServer = 0x0;
@@ -466,10 +465,7 @@ int VertexServer_api_transaction(VertexServer *self)
 	int error = 0;
 	int r, result;
 	
-	// for performance, do our commits at periodic checkpoints
-	#ifdef DISK_SYNC_ON_EACH_TRANSACTION
-		PDB_commit(self->pdb);
-	#endif
+	PDB_commit(self->pdb);
 	
 	do
 	{
@@ -488,17 +484,12 @@ int VertexServer_api_transaction(VertexServer *self)
 	
 	if (error)
 	{
-		#ifdef DISK_SYNC_ON_EACH_TRANSACTION
-			PDB_abort(self->pdb);
-		#endif
+		PDB_abort(self->pdb);
 		result = -1;
 	}
 	else
 	{
-		#ifdef DISK_SYNC_ON_EACH_TRANSACTION
-			//printf("COMMIT\n\n");
-			PDB_commit(self->pdb);
-		#endif
+		PDB_commit(self->pdb);
 		result = 0;
 	}
 		
@@ -514,7 +505,6 @@ int VertexServer_api_mkdir(VertexServer *self)
 
 int VertexServer_api_queuePopTo(VertexServer *self)
 {
-	// example: http:localhost:8080/sites/amazon/crawl/waiting/?action=link&toPath=/sites/amazon/crawl/active
 	PNode *fromNode = PDB_allocNode(self->pdb);
 	PNode *toNode   = PDB_allocNode(self->pdb);
 	Datum *toPath   = VertexServer_queryValue_(self, "toPath");
@@ -616,7 +606,7 @@ int VertexServer_api_queueExpireTo(VertexServer *self)
 				PNode_removeAt_(itemNode, qTimeKey);
 				PNode_removeAt_(itemNode, qExpireKey);
 				PNode_atPut_(toNode, k, pid);
-				PNode_removeAtCursor(fromNode); // the remove will go to the next item
+				//PNode_removeAtCursor(fromNode); // the remove will go to the next item
 				PNode_removeAt_(fromNode, k);
 				itemsExpired ++;
 			}
