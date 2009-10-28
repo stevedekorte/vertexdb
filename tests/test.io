@@ -3,6 +3,7 @@
 VDBTest := UnitTest clone do(
 	setUp := method(
 		url := URL with("http://localhost:8080/?action=transaction")
+		writeln("\nSETUP: ", url url, "....\n")
 		result := url post("/?action=select&op=rm
 /test/a?action=mkdir
 /test/a?action=write&key=_a&value=1

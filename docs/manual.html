@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Vertex Database Reference</title>
+<title>Vertex Database</title>
 <style>
 td { font-size: .9em; font-family: sans; }
 h1 { font-size: 1.2em; font-weight: bold; font-family: sans; line-height: 2em; }
@@ -31,13 +31,65 @@ pre { text-align: left; font-size: .9em; font-weight: normal; font-family: couri
 
 <p style="height:1.25em">
 
-<h1>Vertex Database Reference</h1> 
-<!--
-<h2 style="color: #888;">Steve Dekorte <br> Rich Collins</h2>
-<p style="height:2em">
+<h1>The Vertex Database</h1> 
 <br>
--->
+
+<h1>Introduction</h1>
+
+<ul>
+
+VertexDB is a high performance (20,000+ requests per second) graph database server that supports automatic garbage collection. It uses the HTTP protocol for requests and JSON for it's response data format. 
+<p>
+
+It's API is inspired by the FUSE filesystem API (with a few extra APIs for queries and queues) and was designed with the intention of offering a FUSE interface in the future.
 <br>
+<br>
+
+<h2>Integrity</h2>
+
+On startup, VertexDB makes a backup of the database (if it exists). When shut down properly, it creates a file that marks the database as being safely. When started, if this file is not found, the database file is replaced by it's old copy.
+<p>
+VDB caches all writes until a given number of bytes worth of writes is accumulated, then it transactionally writes all queued writes to disk.
+<br>
+<br>
+
+<h2>Security</h2>
+
+The current way to secure the server is by running it on an isolated network. HTTP auth support will be added in the future.
+<br>
+<br>
+
+
+<h2>Applications</h2>
+
+Graph databases aren't ideal for all uses, but can be more suitable than other models for dealing with changing or informal schemas and data that is more naturally represented as a graph. It's atomic queue APIs can also make vertexdb useful as a high performance persistent queueing server.
+<br>
+<br>
+
+<h2>Implementation</h2>
+
+The current implementation is in C and built on top of the TokyoCabinet (a b-tree key/value disk store), libevent (asynchronous sockets and HTTP) and Yajl(JSON parsing/generation) libraries. VertexDB uses a single OS thread and handles all requests serially, but uses async sockets so no request is blocked on socket i/o (though it can still block on disk i/o). 
+<p>
+Requests should be generally designed such that responses don't spend too much time blocking on disk i/o or using too much memory in queued response buffers. This can be done by "paging" requests by limiting their results count and repeatedly using a query that selects the next set of matches.
+<br>
+<br>
+
+<h2>Future</h2>
+
+Possible future features:
+<p>
+<ul>
+	<li> FUSE interface
+	<li> distributed redundant servers
+	<li> automatic index creation
+	<li> a NodeJS implementation which uses JS for queries?
+</ul>
+<br>
+<br>
+
+</ul>
+
+
 
 <h1>Basics</h1>
 
@@ -51,6 +103,13 @@ The HTTP protocol is used for requests. The path part of the query specifies a p
 <h2>Responses</h2>
 <ul>
 Responses are sent in JSON format in the HTTP content. On error, a HTTP response status of 500 is sent with the HTTP content containing the error message in JSON format. 
+</ul>
+<br>
+
+<h2>Keys and Values</h2>
+<ul>
+	
+Node keys that hold string values......
 </ul>
 <br>
 
