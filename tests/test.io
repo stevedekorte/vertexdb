@@ -258,14 +258,14 @@ VDBTest run
 CollectGarbageTest := UnitTest clone do(
     CollectGarbageAssertion := VDBAssertion clone setAction("collectGarbage")
     testCollectGarbage := method(
-        //URL with("http://localhost:8080/?action=collectGarbage") fetch
+		URL with("http://localhost:8080/?action=select&op=rm") fetch
+        URL with("http://localhost:8080/?action=collectGarbage") fetch
         URL with("http://localhost:8080/a/b?action=mkdir") fetch
         URL with("http://localhost:8080/a/c?action=mkdir") fetch
         URL with("http://localhost:8080/a/d?action=mkdir") fetch
         URL with("http://localhost:8080/a?action=select&op=rm") fetch
-        //URL with("http://localhost:8080/?action=rm&key=b") fetch
-        CollectGarbageAssertion setBasePath("/") setExpectedBody("1") assert
+        CollectGarbageAssertion setBasePath("/") setExpectedBody("""{"saved":2,"seconds":0}""") assert
     )
 )
 
-//CollectGarbageTest run
+CollectGarbageTest run
