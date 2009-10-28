@@ -46,7 +46,7 @@ VDBAssertion := Object clone do(
 		setActualStatusCode(u statusCode)
 		
 		if(actualStatusCode != expectedStatusCode,
-			Exception raise(Sequence with(action, " action failed for \"", variant, "\" variant: \n", u url, "\nexpectedStatusCode ", expectedStatusCode asString, "\nactualStatusCode   ", actualStatusCode asString, "\n"))
+			Exception raise(Sequence with(action, " action failed for \"", variant, "\" variant: \n", u url, "\nexpectedStatusCode ", expectedStatusCode asString, "\nactualStatusCode   ", actualStatusCode asString, "\nactualBody         ", actualBody))
 		)
 		
 		if(actualBody != expectedBody,
