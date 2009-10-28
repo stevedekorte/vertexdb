@@ -54,6 +54,9 @@ Datum *PQuery_key(PQuery *self);
 void PQuery_enumerate(PQuery *self);
 int PQuery_stepDirection(PQuery *self);
 
+int PQuery_cursorMatches(PQuery *self); // private
+int PQuery_moveToNextMatch(PQuery *self); // private
+
 unsigned int PQuery_selectCount(PQuery *self);
 
 #ifdef __cplusplus

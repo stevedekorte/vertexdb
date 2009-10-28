@@ -112,7 +112,12 @@ int PQuery_setup(PQuery *self)
 		if (!Datum_isEmpty(self->before)) PNode_previous(self->node);
 	}
 	
-	self->selectCount = 0;
+	if(!PQuery_cursorMatches(self))
+	{
+		PQuery_moveToNextMatch(self);
+	}
+	
+	self->selectCount = 1;
 	
 	return 0;
 }
@@ -135,6 +140,7 @@ int PQuery_run(PQuery *self)
 	return -1;
 }
 */
+
 int PQuery_stepDirection(PQuery *self)
 {
 	if(self->before && !Datum_isEmpty(self->before))
@@ -163,26 +169,43 @@ Datum *PQuery_key(PQuery *self)
 	return PNode_key(self->node);
 }
 
+int PQuery_cursorMatches(PQuery *self)
+{
+	return !(self->hasFilter) || PNode_withId_hasKey_andValue_(self->tmpNode, 
+				PNode_value(self->node), self->whereKey, self->whereValue);
+}
+
+int PQuery_moveToNextMatch(PQuery *self) // return 1 if found, 0 if reached end
+{
+	for(;;)
+	{			
+		PQuery_step(self);
+		
+		if(!PNode_key(self->node)) break;
+
+		if (PQuery_cursorMatches(self))
+		{
+			return 1;
+		}
+	}
+	
+	return 0;
+}
+
 void PQuery_enumerate(PQuery *self)
 {
 	if (self->selectCount < self->selectCountMax)
-	{		
-		for(;;)
-		{			
-			PQuery_step(self);
-			if(!PNode_key(self->node)) break;
-
-			if (!(self->hasFilter) ||
-				PNode_withId_hasKey_andValue_(self->tmpNode, 
-					PNode_value(self->node), self->whereKey, self->whereValue))
-			{		
-				self->selectCount ++;
-				if(self->selectCount >= self->selectCountMax)
-				{
-					self->isDone = 1;
-				}
-				return;
-			}
+	{
+		
+		int found = PQuery_moveToNextMatch(self);
+		
+		if (found)
+		{
+				self->selectCount ++;	
+		}
+		else
+		{
+			self->isDone = 1;
 		}
 	}
 	else 
