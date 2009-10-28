@@ -202,14 +202,19 @@ VDBTest := UnitTest clone do(
 	
 	QueuePopToAssertion := VDBAssertion clone setAction("queuePopTo")
 	testQueuePopTo := method(
-		URL with("http://localhost:8080/?action=transaction") post(
+		u := URL with("http://localhost:8080/?action=transaction")
+		r := u post(
 "/test/queue/waiting?action=mkdir
 /test/queue/waiting/a?action=mkdir
 /test/queue/waiting/a?action=write&key=_a&value=1
 /test/queue/waiting/b?action=mkdir
 /test/queue/waiting/b?action=write&key=_a&value=2
-/test/queue/active?action=mkdir
-")
+/test/queue/active?action=mkdir")
+
+		if(u statusCode != 200,
+			Exception raise("setup transaction fails in testQueuePopTo: ", r)
+		)
+
 		QueuePopToAssertion with("first") setPath("/queue/waiting") addParams("toPath=/test/queue/active") setExpectedBody("\"a\"") assert
 		KeysAssertion with("first queuePopTo") clone setPath("/queue/active/a") setExpectedBody("""["_a","_qexpire","_qtime"]""") assert
 		
@@ -223,7 +228,8 @@ VDBTest := UnitTest clone do(
 	
 	QueueExpireToAssertion := VDBAssertion clone setAction("queueExpireTo")
 	testQueueExpireTo := method(
-		URL with("http://localhost:8080/?action=transaction") post(
+		u := URL with("http://localhost:8080/?action=transaction")
+		r := u post(
 "/test/queue/waiting?action=mkdir
 /test/queue/active?action=mkdir
 /test/queue/active/a?action=mkdir
@@ -233,8 +239,12 @@ VDBTest := UnitTest clone do(
 /test/queue/active/b?action=mkdir
 /test/queue/active/b?action=write&key=_a&value=2
 /test/queue/active/b?action=write&key=_qexpire&value=2000000000
-/test/queue/active/b?action=write&key=_qtime&value=2000000000
-")
+/test/queue/active/b?action=write&key=_qtime&value=2000000000")
+
+		if(u statusCode != 200,
+			Exception raise("setup transaction fails in testQueueExpireTo: ", r)
+		)
+
 		QueueExpireToAssertion with("first") setPath("/queue/active") addParams("toPath=/test/queue/waiting") setExpectedBody("1") assert
 		ObjectAssertion with("first queueExpireTo") clone setPath("/queue/waiting/a") setExpectedBody("""{"_a":"1"}""") assert
 		
@@ -243,7 +253,7 @@ VDBTest := UnitTest clone do(
 	)
 )
 
-//VDBTest run
+VDBTest run
 
 CollectGarbageTest := UnitTest clone do(
 	CollectGarbageAssertion := VDBAssertion clone setAction("collectGarbage")
@@ -258,4 +268,4 @@ CollectGarbageTest := UnitTest clone do(
 	)
 )
 
-CollectGarbageTest run
+//CollectGarbageTest run
