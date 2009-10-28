@@ -616,7 +616,8 @@ int VertexServer_api_queueExpireTo(VertexServer *self)
 				PNode_removeAt_(itemNode, qTimeKey);
 				PNode_removeAt_(itemNode, qExpireKey);
 				PNode_atPut_(toNode, k, pid);
-				PNode_removeAtCursor(fromNode); // the remove will go to the next item
+				//PNode_removeAtCursor(fromNode); // the remove will go to the next item
+				PNode_removeAt_(fromNode, k);
 				itemsExpired ++;
 			}
 			else

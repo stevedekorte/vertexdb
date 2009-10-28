@@ -521,9 +521,8 @@ void PNode_removeAtCursor(PNode *self)
 	}
 	else 
 	{
-		printf("Pnode warning: tcbdbcurout failed\n");
+		printf("PNode warning: tcbdbcurout failed\n");
 	}
-
 }
 
 int PNode_removeTo_(PNode *self, Datum *endKey)
