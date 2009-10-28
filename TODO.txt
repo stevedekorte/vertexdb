@@ -16,6 +16,8 @@ ToDo
 	- login?
 	- newuser? (lowest priority)
 
+- add http basic auth
+
 - make sure docs are in sync with code
 
 - add performance tests for:

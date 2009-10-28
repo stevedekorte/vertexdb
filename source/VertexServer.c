@@ -1264,7 +1264,7 @@ int VertexServer_openLog(VertexServer *self)
 void VertexServer_runEventLoop(VertexServer *self)
 {
 	event_init();
-	self->httpd = evhttp_start("0.0.0.0", 8080); 
+	self->httpd = evhttp_start("127.0.0.1", 8080);
 	 
 	if (!self->httpd)
 	{
