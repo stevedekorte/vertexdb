@@ -286,7 +286,7 @@ int PNode_decrementSize(PNode *self)
 	}
 	else
 	{
-		printf("PNode warning: attempt to decrement pnode size of zero\n");
+		printf("PNode warning: attempt to decrement pnode size of zero at pid path: %s\n", Datum_data(self->pidPath));
 	}
 	
 	return 0;
@@ -519,6 +519,11 @@ void PNode_removeAtCursor(PNode *self)
 	{
 		PNode_decrementSize(self);
 	}
+	else 
+	{
+		printf("Pnode warning: tcbdbcurout failed\n");
+	}
+
 }
 
 int PNode_removeTo_(PNode *self, Datum *endKey)
