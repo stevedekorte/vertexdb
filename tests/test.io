@@ -52,46 +52,90 @@ VDBTest := UnitTest clone do(
 		)
 	)
 	
-	testRead := method(
-		actualRead := URL with("http://localhost:8080/test/a?action=read&key=_a") fetch
-		expectedRead := "\"1\""
-		assertEquals(actualRead, expectedRead)
+	VDBAssertion := Object clone do(
+		actualBody ::= nil
+		expectedBody ::= nil
+		actualStatusCode ::= nil
+		expectedStatusCode ::= 200
 		
-		actualRead := URL with("http://localhost:8080/test/a?action=read&key=_b") fetch
-		expectedRead := "\"2\""
-		assertEquals(actualRead, expectedRead)
+		action ::= nil
+		variant ::= "default"
 		
-		actualRead := URL with("http://localhost:8080/test/a?action=read&key=_c") fetch
-		expectedRead := "\"3\""
-		assertEquals(actualRead, expectedRead)
+		baseUrl ::= "http://localhost:8080"
+		basePath ::= "/test"
+		path ::= ""
+		params ::= List clone
+		
+		with := method(aVariant,
+			self clone setVariant(aVariant)
+		)
+		
+		queryString := method(
+			str := ("?action=" .. action) asMutable
+			if(params size > 0,
+				str appendSeq("&") appendSeq(params join("&"))
+			)
+			str
+		)
+		
+		addParams := method(
+			params appendSeq(call evalArgs)
+			self
+		)
+		
+		url := method(
+			URL with(Sequence with(baseUrl, basePath, path, queryString))
+		)
+		
+		assert := method(
+			u := url
+			//writeln(u url)
+			setActualBody(u fetch)
+			setActualStatusCode(u statusCode)
+			
+			if(actualStatusCode != expectedStatusCode,
+				Exception raise(Sequence with(action, " action failed for \"", variant, "\" variant: \n", u url, "\nexpectedStatusCode ", expectedStatusCode asString, "\nactualStatusCode   ", actualStatusCode asString, "\n"))
+			)
+			
+			if(actualBody != expectedBody,
+				Exception raise(Sequence with(action, " action failed for \"", variant, "\" variant: \n", "expectedBody ", expectedBody, "\nactualBody   ", actualBody, "\n"))
+			)
+		)
 	)
+	
+	
+	
+	ReadAssertion := VDBAssertion clone do(action ::= "read")
+	testRead := method(
+		ReadAssertion clone setPath("/a") addParams("key=_a") setExpectedBody("\"1\"") assert
+		ReadAssertion clone setPath("/a") addParams("key=_b") setExpectedBody("\"2\"") assert
+		ReadAssertion clone setPath("/a") addParams("key=_c") setExpectedBody("\"3\"") assert
+		ReadAssertion with("missing key") setPath("/a") addParams("key=_d") setExpectedBody("null") assert
+		ReadAssertion with("bad path") setPath("/d") addParams("key=_d") setExpectedBody("\"path does not exist: test/d\"") setExpectedStatusCode(500) assert
+	)
+	
+	SelectAssertion := VDBAssertion clone do(
+		action ::= "select"
+		op ::= nil
+		
+		queryString := method(
+			str := resend
+			str .. "&op=" .. op
+		)
+	)
+	
+	KeysAssertion ::= SelectAssertion clone do(op ::= "keys")
 	
 	testSelectKeys := method(
-		actualKeys := URL with("http://localhost:8080/test?action=select&op=keys") fetch
-		expectedKeys := """["a","b","c"]"""
-		assertEquals(actualKeys, expectedKeys)
-		
-		actualKeysWithCount := URL with("http://localhost:8080/test?action=select&op=keys&count=1") fetch
-		expectedKeysWithCount := """["a"]"""
-		assertEquals(actualKeysWithCount, expectedKeysWithCount)
-		
-		actualKeysWithAfter := URL with("http://localhost:8080/test?action=select&op=keys&after=a") fetch
-		expectedKeysWithAfter := """["b","c"]"""
-		assertEquals(actualKeysWithAfter, expectedKeysWithAfter)
-		
-		actualKeysWithBefore := URL with("http://localhost:8080/test?action=select&op=keys&before=b") fetch
-		expectedKeysWithBefore := """["a"]"""
-		assertEquals(actualKeysWithBefore, expectedKeysWithBefore)
-		
-		actualKeysWithWhere := URL with("http://localhost:8080/test?action=select&op=keys&whereKey=_b&whereValue=5") fetch
-		expectedKeysWithWhere := """["b","c"]"""
-		assertEquals(actualKeysWithWhere, expectedKeysWithWhere)
-		
-		actualEmptyKeysWithWhere := URL with("http://localhost:8080/test?action=select&op=keys&whereKey=_a&whereValue=10") fetch
-		expectedEmptyKeysWithWhere := """[]"""
-		assertEquals(actualKeysWithWhere, expectedKeysWithWhere)
+		KeysAssertion clone setExpectedBody("""["a","b","c"]""") assert
+		KeysAssertion with("count") addParams("count=1") setExpectedBody("""["a"]""") assert
+		KeysAssertion with("after") addParams("after=a") setExpectedBody("""["b","c"]""") assert
+		KeysAssertion with("before") addParams("before=b") setExpectedBody("""["a"]""") assert
+		KeysAssertion with("where") addParams("whereKey=_b", "whereValue=5") setExpectedBody("""["b","c"]""") assert
+		KeysAssertion with("non-matching where") addParams("whereKey=_a", "whereValue=10") setExpectedBody("[]") assert
 	)
 	
+	/*
 	testSelectPairs := method(
 		actualPairs := URL with("http://localhost:8080/test?action=select&op=pairs") fetch
 		expectedPairs := """[["a",{"_a":"1","_b":"2","_c":"3"}],["b",{"_a":"4","_b":"5","_c":"6"}],["c",{"_a":"7","_b":"5","_c":"9"}]]"""
@@ -227,6 +271,7 @@ VDBTest := UnitTest clone do(
 		expectedObject := """{"_a":"1","_b":"2","_c":"3"}"""
 		assertEquals(actualObject, expectedObject)
 	)
+	*/
 )
 
 VDBTest run
