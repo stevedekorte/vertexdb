@@ -529,13 +529,15 @@ long PDB_saveMarkedNodes(PDB *self)
 		PNode_setPidLong_(outNode, (long)k);
 		PNode_first(inNode);
 		
+		savedCount ++;
+		//printf("copying key %i saved count %i\n", (int)k, (int)savedCount);
+		 
 		while(PNode_key(inNode))
 		{
 			PNode_atPut_(outNode, PNode_key(inNode), PNode_value(inNode));
 			PNode_next(inNode);
 		}
 		
-		savedCount ++;
 		
 		if(savedCount % 10000 == 0) 
 		{
@@ -618,7 +620,7 @@ unsigned int Pointer_hash2(void *p)
 
 long PDB_collectGarbage(PDB *self)
 {
-	long collectedCount = 0;
+	//long collectedCount = 0;
 	long savedCount = 0;
 
 	Log_Printf_("PDB collectGarbage, %iMB before collect:\n", (int)PDB_sizeInMB(self));
@@ -638,7 +640,7 @@ long PDB_collectGarbage(PDB *self)
 	
 	PDB_commit(self);
 	Log_Printf_("  %iMB after collect:\n", (int)PDB_sizeInMB(self));
-	return collectedCount;
+	return savedCount;
 }
 
 int PDB_hasMarked_(PDB *self, long pid)

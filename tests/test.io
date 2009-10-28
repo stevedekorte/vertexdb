@@ -251,6 +251,7 @@ CollectGarbageTest := UnitTest clone do(
 		//URL with("http://localhost:8080/?action=collectGarbage") fetch
 		URL with("http://localhost:8080/a/b?action=mkdir") fetch
 		URL with("http://localhost:8080/a/c?action=mkdir") fetch
+		URL with("http://localhost:8080/a/d?action=mkdir") fetch
 		URL with("http://localhost:8080/a?action=select&op=rm") fetch
 		//URL with("http://localhost:8080/?action=rm&key=b") fetch
 		CollectGarbageAssertion setBasePath("/") setExpectedBody("1") assert
