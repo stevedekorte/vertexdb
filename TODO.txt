@@ -3,6 +3,7 @@ ToDo
 
 - add tests to tests.io
 	- error conditions (highest priority)
+	- rm
 	- transactions
 	- collect garbage
 	- backup

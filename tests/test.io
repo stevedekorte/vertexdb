@@ -1,5 +1,60 @@
 #!/usr/local/bin/io
 
+VDBAssertion := Object clone do(
+	actualBody ::= nil
+	expectedBody ::= nil
+	actualStatusCode ::= nil
+	expectedStatusCode ::= 200
+	
+	action ::= nil
+	variant ::= "default"
+	
+	baseUrl ::= "http://localhost:8080"
+	basePath ::= "/test"
+	path ::= ""
+	params ::= List clone
+	
+	with := method(aVariant,
+		self clone setVariant(aVariant)
+	)
+	
+	init := method(
+		resend
+		params = params clone
+	)
+	
+	queryString := method(
+		str := ("?action=" .. action) asMutable
+		if(params size > 0,
+			str appendSeq("&") appendSeq(params join("&"))
+		)
+		str
+	)
+	
+	addParams := method(
+		params appendSeq(call evalArgs)
+		self
+	)
+	
+	url := method(
+		URL with(Sequence with(baseUrl, basePath, path, queryString))
+	)
+	
+	assert := method(
+		u := url
+		setActualBody(u fetch)
+		setActualStatusCode(u statusCode)
+		
+		if(actualStatusCode != expectedStatusCode,
+			Exception raise(Sequence with(action, " action failed for \"", variant, "\" variant: \n", u url, "\nexpectedStatusCode ", expectedStatusCode asString, "\nactualStatusCode   ", actualStatusCode asString, "\nactualBody         ", actualBody))
+		)
+		
+		if(actualBody != expectedBody,
+			Exception raise(Sequence with(action, " action failed for \"", variant, "\" variant: \n", u url, "\nexpectedBody ", expectedBody, "\nactualBody   ", actualBody, "\n"))
+		)
+	)
+)
+
 VDBTest := UnitTest clone do(
 	setUp := method(
 		url := URL with("http://localhost:8080/?action=transaction")
@@ -18,61 +73,6 @@ VDBTest := UnitTest clone do(
 /test/c?action=write&key=_c&value=9")
 		if(url statusCode == 500,
 			Exception raise("Error in transaction setting up VDBTest: " .. result)
-		)
-	)
-	
-	VDBAssertion := Object clone do(
-		actualBody ::= nil
-		expectedBody ::= nil
-		actualStatusCode ::= nil
-		expectedStatusCode ::= 200
-		
-		action ::= nil
-		variant ::= "default"
-		
-		baseUrl ::= "http://localhost:8080"
-		basePath ::= "/test"
-		path ::= ""
-		params ::= List clone
-		
-		with := method(aVariant,
-			self clone setVariant(aVariant)
-		)
-		
-		init := method(
-			resend
-			params = params clone
-		)
-		
-		queryString := method(
-			str := ("?action=" .. action) asMutable
-			if(params size > 0,
-				str appendSeq("&") appendSeq(params join("&"))
-			)
-			str
-		)
-		
-		addParams := method(
-			params appendSeq(call evalArgs)
-			self
-		)
-		
-		url := method(
-			URL with(Sequence with(baseUrl, basePath, path, queryString))
-		)
-		
-		assert := method(
-			u := url
-			setActualBody(u fetch)
-			setActualStatusCode(u statusCode)
-			
-			if(actualStatusCode != expectedStatusCode,
-				Exception raise(Sequence with(action, " action failed for \"", variant, "\" variant: \n", u url, "\nexpectedStatusCode ", expectedStatusCode asString, "\nactualStatusCode   ", actualStatusCode asString, "\n"))
-			)
-			
-			if(actualBody != expectedBody,
-				Exception raise(Sequence with(action, " action failed for \"", variant, "\" variant: \n", u url, "\nexpectedBody ", expectedBody, "\nactualBody   ", actualBody, "\n"))
-			)
 		)
 	)
 	
@@ -243,4 +243,19 @@ VDBTest := UnitTest clone do(
 	)
 )
 
-VDBTest run
+//VDBTest run
+
+CollectGarbageTest := UnitTest clone do(
+	CollectGarbageAssertion := VDBAssertion clone setAction("collectGarbage")
+	testCollectGarbage := method(
+		//URL with("http://localhost:8080/?action=collectGarbage") fetch
+		URL with("http://localhost:8080/a/b?action=mkdir") fetch
+		URL with("http://localhost:8080/a/c?action=mkdir") fetch
+		URL with("http://localhost:8080/a/d?action=mkdir") fetch
+		URL with("http://localhost:8080/a?action=select&op=rm") fetch
+		//URL with("http://localhost:8080/?action=rm&key=b") fetch
+		CollectGarbageAssertion setBasePath("/") setExpectedBody("1") assert
+	)
+)
+
+CollectGarbageTest run
