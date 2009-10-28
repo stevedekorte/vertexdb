@@ -62,6 +62,7 @@
 		AA955E821085614E0044CD9F /* Yajl_extras.c in Sources */ = {isa = PBXBuildFile; fileRef = AA955E801085614E0044CD9F /* Yajl_extras.c */; };
 		AA9C0F6C0EB1387F00F997D7 /* libtokyocabinet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9C0F6B0EB1387F00F997D7 /* libtokyocabinet.a */; };
 		AA9C0F720EB138C100F997D7 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9C0F710EB138C100F997D7 /* libz.a */; };
+		AADD04971098204A00F8454F /* Pointer.c in Sources */ = {isa = PBXBuildFile; fileRef = AADD04951098204900F8454F /* Pointer.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -190,6 +191,8 @@
 		AA955E811085614E0044CD9F /* Yajl_extras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Yajl_extras.h; path = source/pdb/Yajl_extras.h; sourceTree = SOURCE_ROOT; };
 		AA9C0F6B0EB1387F00F997D7 /* libtokyocabinet.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtokyocabinet.a; path = /usr/local/lib/libtokyocabinet.a; sourceTree = "<absolute>"; };
 		AA9C0F710EB138C100F997D7 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = /opt/local/lib/libz.a; sourceTree = "<absolute>"; };
+		AADD04951098204900F8454F /* Pointer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Pointer.c; path = source/pdb/Pointer.c; sourceTree = SOURCE_ROOT; };
+		AADD04961098204A00F8454F /* Pointer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pointer.h; path = source/pdb/Pointer.h; sourceTree = SOURCE_ROOT; };
 		C6A0FF2C0290799A04C91782 /* Vertex.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Vertex.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -377,6 +380,8 @@
 		AA955BF91082CE100044CD9F /* pdb */ = {
 			isa = PBXGroup;
 			children = (
+				AADD04951098204900F8454F /* Pointer.c */,
+				AADD04961098204A00F8454F /* Pointer.h */,
 				AA955E801085614E0044CD9F /* Yajl_extras.c */,
 				AA955E811085614E0044CD9F /* Yajl_extras.h */,
 				AA955BFA1082CE100044CD9F /* Datum.c */,
@@ -498,6 +503,7 @@
 				AA955C7F1082CE110044CD9F /* Pool.c in Sources */,
 				AA955C801082CE110044CD9F /* PQuery.c in Sources */,
 				AA955E821085614E0044CD9F /* Yajl_extras.c in Sources */,
+				AADD04971098204A00F8454F /* Pointer.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
