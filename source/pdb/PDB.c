@@ -530,7 +530,7 @@ long PDB_saveMarkedNodes(PDB *self)
 		PNode_first(inNode);
 		
 		savedCount ++;
-		printf("copying key %i saved count %i\n", (int)k, (int)savedCount);
+		//printf("copying key %i saved count %i\n", (int)k, (int)savedCount);
 		 
 		while(PNode_key(inNode))
 		{
