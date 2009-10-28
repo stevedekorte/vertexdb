@@ -207,7 +207,7 @@ void VertexServer_parseUri_(VertexServer *self, const char *uri)
 	Datum *uriDatum = POOL_ALLOC(self->pool, Datum);
 	Datum_setCString_(uriDatum, uri);
 	
-	if(self->debug) Log_Printf_("request: %s\n", uri);
+	if(self->debug) { Log_Printf_("request: %s\n", uri); }
 	
 	CHash_clear(self->query);
 	
@@ -227,9 +227,9 @@ void VertexServer_parseUri_(VertexServer *self, const char *uri)
 		index = Datum_from_beforeChar_into_(uriDatum, index + 1, '&', value);
 		Datum_decodeUri(value);
 		Datum_nullTerminate(value);
-		if (Datum_size(value) == 0) break;
 
 		CHash_at_put_(self->query, key, value);
+		if (Datum_size(value) == 0) break;
 	}	
 }
 
@@ -397,18 +397,22 @@ int VertexServer_api_write(VertexServer *self)
 	Datum *key   = VertexServer_queryValue_(self, "key");
 	Datum *value = VertexServer_queryValue_(self, "value");
 	
+	/*
 	if(Datum_size(value) == 0)
 	{
 		value = self->post;
 		//VertexServer_setError_(self, "empty keys not accepted");
 		//return -1;
 	}
+	*/
 	
+	/*
 	if(Datum_size(value) == 0)
 	{
 		VertexServer_setError_(self, "empty values not accepted");
 		return -1;
 	}
+	*/
 
 	if (PNode_moveToPathIfExists_(node, self->uriPath) != 0) 
 	{
