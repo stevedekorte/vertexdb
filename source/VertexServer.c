@@ -752,17 +752,15 @@ int VertexServer_api_backup(VertexServer *self)
 int VertexServer_api_collectGarbage(VertexServer *self)
 {
 	time_t t1 = time(NULL);
-	long collectedCount; 
-	
-	collectedCount = PDB_collectGarbage(self->pdb);
+	long savedCount = PDB_collectGarbage(self->pdb);
 	
 	double dt = difftime(time(NULL), t1);
 	Datum_appendCString_(self->result, "{\"saved\":");
-	Datum_appendLong_(self->result, collectedCount);
+	Datum_appendLong_(self->result, savedCount);
 	Datum_appendCString_(self->result, ",\"seconds\":");
 	Datum_appendLong_(self->result, (long)dt);
 	Datum_appendCString_(self->result, "}");
-	Log_Printf__("copy collected %i nodes in %0.2f seconds\n", (int)collectedCount, (float)dt);
+	Log_Printf__("copy saved %i nodes in %0.2f seconds\n", (int)savedCount, (float)dt);
 
 	return 0;
 }

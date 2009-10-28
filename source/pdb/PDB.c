@@ -580,7 +580,7 @@ void PDB_markReachableNodes(PDB *self)
 		long pid = (long)List_pop(self->markQueue);
 		PNode_setPidLong_(aNode, pid);
 		PNode_mark(aNode);
-		i++;
+		i ++;
 		if (i % 10000 == 0) { Log_Printf_("    %i\n", (int)i); }
 	}
 	
@@ -620,7 +620,6 @@ unsigned int Pointer_hash2(void *p)
 
 long PDB_collectGarbage(PDB *self)
 {
-	//long collectedCount = 0;
 	long savedCount = 0;
 
 	Log_Printf_("PDB collectGarbage, %iMB before collect:\n", (int)PDB_sizeInMB(self));
@@ -640,6 +639,7 @@ long PDB_collectGarbage(PDB *self)
 	
 	PDB_commit(self);
 	Log_Printf_("  %iMB after collect:\n", (int)PDB_sizeInMB(self));
+
 	return savedCount;
 }
 

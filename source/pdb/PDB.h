@@ -77,7 +77,8 @@ PNode *PDB_newNode(PDB *self); // caller responsible for freeing returned PNode
 int PDB_syncSizes(PDB *self);
 
 // garbage collection ------------
-long PDB_collectGarbage(PDB *self); // returns # of nodes collected
+
+long PDB_collectGarbage(PDB *self); // returns # of nodes kept
 int PDB_hasMarked_(PDB *self, long pid);
 void PDB_addToMarkQueue_(PDB *self, long pid);
 void PDB_warmup(PDB *self);
