@@ -207,7 +207,7 @@ void VertexServer_parseUri_(VertexServer *self, const char *uri)
 	Datum *uriDatum = POOL_ALLOC(self->pool, Datum);
 	Datum_setCString_(uriDatum, uri);
 	
-	if(self->debug) Log_Printf("request: %s", uri);
+	if(self->debug) Log_Printf_("request: %s", uri);
 	
 	CHash_clear(self->query);
 	
