@@ -421,32 +421,6 @@ int PNode_createMoveToKey_(PNode *self, Datum *key)
 	return 0;
 }
 
-/*
-int PNode_mergeTo_(PNode *self, PNode *destNode, int keysOnly)
-{	
-	// hack: we keep self->value empty and don't fetch it if keysOnly != 0
-	Datum *key;
-	
-	PNode_first(self);
-	
-	Datum_clear(self->value);
-	
-	while ((key = PNode_key(self)))
-	{
-		if (!keysOnly) PNode_value(self);
-		
-		if (PNode_atPut_(destNode, key, self->value))
-		{
-			return -1;
-		}
-		
-		PNode_next(self);
-	}
-	
-	return 0;
-}
-*/
-
 PNode *PNode_nodeAt_(PNode *self, Datum *k)
 {	
 	// hack: we keep self->value empty and don't fetch it if keysOnly != 0
@@ -485,6 +459,7 @@ PNode *PNode_newCopy(PNode *self, int keysOnly)
 	return target;
 }
 
+/*
 int PNode_mergeTo_(PNode *self, PNode *destNode, int keysOnly)
 {	
 	// hack: we keep self->value empty and don't fetch it if keysOnly != 0
@@ -512,6 +487,7 @@ int PNode_mergeTo_(PNode *self, PNode *destNode, int keysOnly)
 	
 	return 0;
 }
+*/
 
 void PNode_removeAtCursor(PNode *self)
 {	
@@ -523,25 +499,6 @@ void PNode_removeAtCursor(PNode *self)
 	{
 		printf("PNode warning: tcbdbcurout failed\n");
 	}
-}
-
-int PNode_removeTo_(PNode *self, Datum *endKey)
-{	
-	Datum *k;
-	long size = PNode_size(self);
-	long removeCount = 0;
-	
-	while ((k = PNode_key(self)))
-	{
-		PDB_willWrite(self->pdb);
-		if(!tcbdbcurout(self->cursor)) break;
-		removeCount ++;
-		if (Datum_equals_(k, endKey)) break;
-	}
-	
-	PNode_setSize_(self, size - removeCount);
-	
-	return 0;
 }
 
 int PNode_remove(PNode *self)
@@ -564,6 +521,7 @@ int PNode_remove(PNode *self)
 	return removeCount;
 }
 
+/*
 Datum *PNode_valueFromDerefKeyToPath_(PNode *self, Datum *derefPath)
 {
 	Datum *k = PNode_key(self);
@@ -584,6 +542,7 @@ Datum *PNode_valueFromDerefKeyToPath_(PNode *self, Datum *derefPath)
 	PNode_free(pn);
 	return 0x0;
 }
+*/
 
 void PNode_setToRoot(PNode *self)
 {
@@ -991,28 +950,6 @@ int PNode_op_values(PNode *self, Datum *d)
 	Datum_appendYajl_(d, self->yajl);
 	return 0; 
 }
-
-/*
-int PNode_op_rm(PNode *self, Datum *d)
-{	
-	Datum *k;
-	long size = PNode_size(self);
-	long removeCount = 0;
-	
-	while ((k = PNode_key(self)))
-	{
-		PDB_willWrite(self->pdb);
-		if(!tcbdbcurout(self->cursor)) break;
-		removeCount ++;
-		if (Datum_equals_(k, endKey)) break;
-	}
-	
-	PNode_setSize_(self, size - removeCount);
-	
-	Datum_appendLong_(d, count);
-	return 0;
-}
-*/
 
 int PNode_op_rm(PNode *self, Datum *d)
 {

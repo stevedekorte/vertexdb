@@ -555,6 +555,12 @@ long PDB_saveMarkedNodes(PDB *self)
 	
 	PDB_open(self);
 
+	if(savedCount != (long)CHash_count(self->markedPids))
+	{
+		Log_Printf__("  PDB saved count of %i does not match markedPids count of %i\n", 
+			(int)savedCount, (int)CHash_count(self->markedPids));
+	}
+		
 	return savedCount;
 }
 
@@ -613,6 +619,7 @@ unsigned int Pointer_hash2(void *p)
 long PDB_collectGarbage(PDB *self)
 {
 	long collectedCount = 0;
+	long savedCount = 0;
 
 	Log_Printf_("PDB collectGarbage, %iMB before collect:\n", (int)PDB_sizeInMB(self));
 
@@ -624,8 +631,7 @@ long PDB_collectGarbage(PDB *self)
 	self->markQueue  = List_new();
 	
 	PDB_markReachableNodes(self);
-	//collectedCount = PDB_removeUnmarkedNodes(self);
-	collectedCount = PDB_saveMarkedNodes(self);
+	savedCount = PDB_saveMarkedNodes(self);
 	
 	List_free(self->markQueue); self->markQueue = 0x0;
 	CHash_free(self->markedPids); self->markedPids = 0x0;

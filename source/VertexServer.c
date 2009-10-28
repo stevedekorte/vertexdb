@@ -616,7 +616,7 @@ int VertexServer_api_queueExpireTo(VertexServer *self)
 				PNode_removeAt_(itemNode, qTimeKey);
 				PNode_removeAt_(itemNode, qExpireKey);
 				PNode_atPut_(toNode, k, pid);
-				//PNode_removeAtCursor(fromNode); // the remove will go to the next item
+				PNode_removeAtCursor(fromNode); // the remove will go to the next item
 				PNode_removeAt_(fromNode, k);
 				itemsExpired ++;
 			}
@@ -760,21 +760,18 @@ int VertexServer_api_backup(VertexServer *self)
 
 int VertexServer_api_collectGarbage(VertexServer *self)
 {
-	//Log_Printf("collectGarbage disabled until bug fixed\n");
-
 	time_t t1 = time(NULL);
 	long collectedCount; 
 	
 	collectedCount = PDB_collectGarbage(self->pdb);
 	
 	double dt = difftime(time(NULL), t1);
-	Datum_appendCString_(self->result, "collected ");
+	Datum_appendCString_(self->result, "{\"saved\":");
 	Datum_appendLong_(self->result, collectedCount);
-	Datum_appendCString_(self->result, " in ");
+	Datum_appendCString_(self->result, ",\"seconds\":");
 	Datum_appendLong_(self->result, (long)dt);
-	Datum_appendCString_(self->result, " seconds");
-	Log_Printf__("collected %i slots in %f seconds\n", 
-		(int)collectedCount, (float)dt);
+	Datum_appendCString_(self->result, " }");
+	Log_Printf__("collected %i slots in %f seconds\n", (int)collectedCount, (float)dt);
 
 	return 0;
 }
