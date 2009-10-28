@@ -660,7 +660,6 @@ void PDB_addToMarkQueue_(PDB *self, long pid)
 /*
 void PDB_removeBackups(PDB *self)
 {
-
 }
 */
 
