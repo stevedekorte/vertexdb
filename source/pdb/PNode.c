@@ -1024,15 +1024,16 @@ int PNode_op_rm(PNode *self, Datum *d)
 		PDB_willWrite(self->pdb);
 		if(!tcbdbcurout(self->cursor)) break;
 		
-		// hack to avoid skipping a step by backing up before calling PQuery_enumerate
+		// HACK to avoid skipping a step by backing up in the reverse enum direction before calling PQuery_enumerate
 		if(PQuery_stepDirection(q) == 1)
 		{
 			tcbdbcurprev(self->cursor);
 		}
-		else 
+		/*else 
 		{
 			tcbdbcurnext(self->cursor);
 		}
+		*/
 
 		removeCount ++;
 		//count += PNode_removeAt_(self, k);
