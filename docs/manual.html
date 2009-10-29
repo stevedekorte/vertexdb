@@ -44,9 +44,11 @@ VertexDB is a high performance (20,000+ requests per second) graph database serv
 
 <h2>Integrity</h2>
 
-On startup, VertexDB makes a backup of the database (if it exists). When shut down properly, it creates a file that marks the database as being safely stored. When started, if this file is not found, the database file is replaced by it's old copy.
+On startup, VertexDB makes a backup of the database (if it exists). When shut down properly, it creates a file that marks the database as being safely stored. When started, if this file is not found, the database file is replaced by it's old copy. There is also an admin backup request that can be sent to the database to store a backup at any time.
 <p>
+<!--
 VertexDB uses TokyoCabinet in a mode where transactions are only to OS buffers and writes are cached and pushed to disk after they accumulated in order to allow the OS to minimize disk head movements for the writes.
+-->
 <br>
 <br>
 
@@ -102,6 +104,17 @@ Possible future features:
 <h1>Basics</h1>
 
 <ul>
+
+<h2>Keys, Values and Terminology</h2>
+<ul>
+
+VertexDB's is composed of nodes which are folders of key/value pairs. Key's are stored in lexical ordering and can be any string not containing a forward slash character (as these are used as path separators). 
+<p>
+Keys beginning with an underscore tell the database that the value is a string, otherwise, the value is a pointer to another node. 
+In this way, the database's garbage collector knows how to traverse the nodes. There is a root node that corresponds to the / path that serves as the root reference of garbage collection scan. Each node also tracks it's size (number of keys it contains) so this can be returned quickly. 
+</ul>
+<br>
+
 <h2>Requests</h2>
 <ul>
 The HTTP protocol is used for requests. The path part of the query specifies a path in the database's graph of nodes and the query parameters are used to specify actions on that path (read, write, search, etc). 
@@ -114,16 +127,9 @@ Responses are sent in JSON format in the HTTP content. On error, a HTTP response
 </ul>
 <br>
 
-<h2>Keys and Values</h2>
-<ul>
-	
-Node keys that hold string values......
-</ul>
-<br>
-
 <h2>URLs</h2>
 <ul>
-For brevity, the "http://host:port" parts of the request URLs fields are left out and the word "path" is used to mean any forward slash delimited path. 
+For brevity, the "http://host:port" parts of the request URLs fields below are left out and the word "path" is used to mean any forward slash delimited path. 
 </ul>
 <br>
 

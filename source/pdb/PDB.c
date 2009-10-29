@@ -214,11 +214,17 @@ int PDB_open(PDB *self)
 	{
 		File_create(self->isOpenFile);
 		
+		/*
 		if (!PDB_hasLastBackup(self)) 
 		{
 			Log_Printf("PDB: no backup found - creating one to be safe\n");
 			PDB_backup(self);
 		}
+		*/
+		
+		Log_Printf("PDB: making startup backup\n");
+		PDB_backup(self);
+
 	}
 	
 	return 0;
