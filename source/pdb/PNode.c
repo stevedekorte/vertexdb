@@ -800,10 +800,8 @@ int PNode_op_count(PNode *self, Datum *d)
 	Datum *k;
 	long count = 0;
 		
-	printf("\ncounting...\n");
 	while (k = PQuery_key(q))
 	{
-		printf("counting key '%s'\n", Datum_data(k));
 		count ++;
 		PQuery_enumerate(q);
 	}

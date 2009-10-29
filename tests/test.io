@@ -45,6 +45,7 @@ VDBAssertion := Object clone do(
 	raise := method(m,
 		URL with(baseUrl .. "?action=log") post(m)
         //Exception raise(m)
+		writeln(m)
 		Coroutine currentCoro backTraceString println
 		System exit
 	)
