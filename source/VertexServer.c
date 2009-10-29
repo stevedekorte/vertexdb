@@ -601,9 +601,15 @@ int VertexServer_api_queueExpireTo(VertexServer *self)
 		{
 			Datum *pid = PNode_value(fromNode);
 			Datum *qExpireValue;
+			long expireTime;
 			
 			PNode_setPid_(itemNode, pid);
 			qExpireValue = PNode_at_(itemNode, qExpireKey);
+			
+			if(!qExpireValue)
+			{
+				Log_Printf("WARNING: expiring a node with no _qexpire value\n");
+			}
 			
 			if(qExpireValue == 0x0 || Datum_asLong(qExpireValue) < now)
 			{
@@ -611,8 +617,8 @@ int VertexServer_api_queueExpireTo(VertexServer *self)
 				PNode_removeAt_(itemNode, qExpireKey);
 				PNode_atPut_(toNode, k, pid);
 				PNode_removeAtCursor(fromNode); // the remove will go to the next item
-				//PNode_removeAt_(fromNode, k);
 				//PNode_next(fromNode);
+				//PNode_removeAt_(fromNode, k);
 				itemsExpired ++;
 			}
 			else
@@ -793,6 +799,14 @@ int VertexServer_api_syncSizes(VertexServer *self)
 int VertexServer_api_sync(VertexServer *self)
 {
 	PDB_sync(self->pdb);
+	return 0;
+}
+
+int VertexServer_api_log(VertexServer *self)
+{
+	Log_Printf("LOG -----------------------------\n\n");
+	printf("%s\n", Datum_data(self->post));
+	printf("\n---------------------------------\n");
 	return 0;
 }
 
@@ -1017,6 +1031,7 @@ void VertexServer_setupActions(VertexServer *self)
 	VERTEX_SERVER_ADD_ACTION(view);
 	//VERTEX_SERVER_ADD_ACTION(syncSizes);
 	VERTEX_SERVER_ADD_ACTION(sync);
+	VERTEX_SERVER_ADD_ACTION(log);
 	
 	// select ops
 	VERTEX_SERVER_ADD_OP(object);

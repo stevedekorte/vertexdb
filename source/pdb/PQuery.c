@@ -104,12 +104,12 @@ int PQuery_setup(PQuery *self)
 	else if(self->after && Datum_size(self->after))
 	{
 		PNode_jump_(self->node, self->after);
-		if (!Datum_isEmpty(self->after)) PNode_next(self->node);
+		if (Datum_equals_(self->after, PNode_key(self->node))) PNode_next(self->node);
 	} 
 	else if(self->before && Datum_size(self->before))
 	{
 		PNode_jump_(self->node, self->before);
-		if (!Datum_isEmpty(self->before)) PNode_previous(self->node);
+		if (Datum_equals_(self->before, PNode_key(self->node))) PNode_previous(self->node);
 	}
 	
 	if(!PQuery_cursorMatches(self))

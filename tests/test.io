@@ -42,17 +42,26 @@ VDBAssertion := Object clone do(
         URL with(Sequence with(baseUrl, basePath, path, queryString))
     )
     
+	raise := method(m,
+		URL with(baseUrl .. "?action=log") post(m)
+        //Exception raise(m)
+		Coroutine currentCoro backTraceString println
+		System exit
+	)
+
     assert := method(
         u := url
         setActualBody(u fetch)
         setActualStatusCode(u statusCode)
         
         if(actualStatusCode != expectedStatusCode,
-            Exception raise(Sequence with(action, " action failed for \"", variant, "\" variant: \n", u url, "\nexpectedStatusCode ", expectedStatusCode asString, "\nactualStatusCode   ", actualStatusCode asString, "\nactualBody         ", actualBody))
+			m := Sequence with(action, " action failed for \"", variant, "\" variant: \n", u url, "\nexpectedStatusCode ", expectedStatusCode asString, "\nactualStatusCode   ", actualStatusCode asString, "\nactualBody         ", actualBody)
+			raise(m)
         )
         
         if(actualBody != expectedBody,
-            Exception raise(Sequence with(action, " action failed for \"", variant, "\" variant: \n", u url, "\nexpectedBody ", expectedBody, "\nactualBody   ", actualBody, "\n"))
+            m := Sequence with(action, " action failed for \"", variant, "\" variant: \n", u url, "\nexpectedBody ", expectedBody, "\nactualBody   ", actualBody, "\n")
+			raise(m)
         )
     )
 )
@@ -277,10 +286,11 @@ VDBTest := UnitTest clone do(
         if(u statusCode != 200,
             Exception raise("setup transaction fails in testQueueExpireTo: ", r)
         )
+		//System exit
 
         QueueExpireToAssertion with("first") setPath("/queue/active") addParams("toPath=/test/queue/waiting") setExpectedBody("1") assert
         ObjectAssertion with("first queueExpireTo") clone setPath("/queue/waiting/a") setExpectedBody("""{"_a":"1"}""") assert
-        
+        //System exit
         QueueExpireToAssertion with("second") setPath("/queue/active") addParams("toPath=/test/queue/waiting") setExpectedBody("0") assert
         KeysAssertion with("second queueExpireTo") clone setPath("/queue/active/b") setExpectedBody("""["_a","_qexpire","_qtime"]""") assert
     )
