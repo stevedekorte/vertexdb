@@ -9,7 +9,9 @@ VDBAssertion := Object clone do(
     action ::= nil
     variant ::= "default"
     
-    baseUrl ::= "http://localhost:8080"
+	port ::= "9523"
+	host ::= "localhost"
+    baseUrl ::= method("http://" .. host .. ":" .. port)
     basePath ::= "/test"
     path ::= ""
     params ::= List clone
@@ -57,7 +59,7 @@ VDBAssertion := Object clone do(
 
 VDBTest := UnitTest clone do(
     setUp := method(
-        url := URL with("http://localhost:8080/?action=transaction")
+        url := URL with(VDBAssertion baseUrl .. "/?action=transaction")
         result := url post("/?action=select&op=rm
 /test/a?action=mkdir
 /test/a?action=write&key=_a&value=1
@@ -135,6 +137,37 @@ VDBTest := UnitTest clone do(
         ValuesAssertion with("where") addParams("whereKey=_b", "whereValue=5") setExpectedBody("""[{"_a":"4","_b":"5","_c":"6"},{"_a":"7","_b":"5","_c":"9"}]""") assert
         ValuesAssertion with("non-matching where") addParams("whereKey=_a", "whereValue=10") setExpectedBody("[]") assert
     )
+
+	CountAssertion := SelectAssertion clone setOp("count")
+
+    testSelectCount := method(
+        CountAssertion clone setExpectedBody("3") assert
+        CountAssertion with("count") addParams("count=1") setExpectedBody("1") assert
+        CountAssertion with("after") addParams("after=a") setExpectedBody("2") assert
+        CountAssertion with("before") addParams("before=b") setExpectedBody("1") assert
+        CountAssertion with("where") addParams("whereKey=_b", "whereValue=5") setExpectedBody("2") assert
+        CountAssertion with("non-matching where") addParams("whereKey=_a", "whereValue=10") setExpectedBody("0") assert
+    )
+
+	testKnownCountFailure := method(
+		url := URL with(VDBAssertion baseUrl .. "/?action=transaction")
+        result := url post("/?action=select&op=rm
+/testKnownCountFailure/2009-10-28@19:49:54.426298?action=mkdir
+/testKnownCountFailure/2009-10-28@20:50:37.286256?action=mkdir
+/testKnownCountFailure/2009-10-28@21:50:40.701332?action=mkdir
+/testKnownCountFailure/2009-10-28@22:50:43.140329?action=mkdir
+/testKnownCountFailure/2009-10-29@04:21:29.198273?action=mkdir
+/testKnownCountFailure/2009-10-29@05:21:31.891355?action=mkdir
+/testKnownCountFailure/2009-10-29@10:34:43.125098?action=mkdir
+/testKnownCountFailure/2009-10-29@11:34:46.198658?action=mkdir
+/testKnownCountFailure/2009-10-29@16:34:57.237118?action=mkdir
+/testKnownCountFailure/2009-10-29@17:35:00.146650?action=mkdir")
+        if(url statusCode == 500,
+            Exception raise("Error in transaction setting up testKnownCountFailure: " .. result)
+        )
+
+		CountAssertion with("after") setBasePath("/testKnownCountFailure") addParams("after=2009-10-29@12:46:17.533484") setExpectedBody("2") assert
+	)
     
     SizesAssertion := SelectAssertion clone setOp("sizes")
 
@@ -202,7 +235,7 @@ VDBTest := UnitTest clone do(
     
     QueuePopToAssertion := VDBAssertion clone setAction("queuePopTo")
     testQueuePopTo := method(
-        u := URL with("http://localhost:8080/?action=transaction")
+        u := URL with(VDBAssertion baseUrl .. "/?action=transaction")
         r := u post(
 "/test/queue/waiting?action=mkdir
 /test/queue/waiting/a?action=mkdir
@@ -228,7 +261,7 @@ VDBTest := UnitTest clone do(
     
     QueueExpireToAssertion := VDBAssertion clone setAction("queueExpireTo")
     testQueueExpireTo := method(
-        u := URL with("http://localhost:8080/?action=transaction")
+        u := URL with(VDBAssertion baseUrl .. "/?action=transaction")
         r := u post(
 "/test/queue/waiting?action=mkdir
 /test/queue/active?action=mkdir
@@ -258,12 +291,12 @@ VDBTest run
 CollectGarbageTest := UnitTest clone do(
     CollectGarbageAssertion := VDBAssertion clone setAction("collectGarbage")
     testCollectGarbage := method(
-		URL with("http://localhost:8080/?action=select&op=rm") fetch
-        URL with("http://localhost:8080/?action=collectGarbage") fetch
-        URL with("http://localhost:8080/a/b?action=mkdir") fetch
-        URL with("http://localhost:8080/a/c?action=mkdir") fetch
-        URL with("http://localhost:8080/a/d?action=mkdir") fetch
-        URL with("http://localhost:8080/a?action=select&op=rm") fetch
+		URL with(VDBAssertion baseUrl .. "/?action=select&op=rm") fetch
+        URL with(VDBAssertion baseUrl .. "/?action=collectGarbage") fetch
+        URL with(VDBAssertion baseUrl .. "/a/b?action=mkdir") fetch
+        URL with(VDBAssertion baseUrl .. "/a/c?action=mkdir") fetch
+        URL with(VDBAssertion baseUrl .. "/a/d?action=mkdir") fetch
+        URL with(VDBAssertion baseUrl .. "/a?action=select&op=rm") fetch
         CollectGarbageAssertion setBasePath("/") setExpectedBody("""{"saved":2,"seconds":0}""") assert
     )
 )
