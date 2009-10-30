@@ -614,7 +614,6 @@ int VertexServer_api_queueExpireTo(VertexServer *self)
 			PNode_setPid_(itemNode, pid);
 			qExpireValue = PNode_at_(itemNode, qExpireKey);
 			
-			PNode_show(itemNode);
 
 			if(!qExpireValue)
 			{

@@ -507,7 +507,6 @@ void PNode_removeAtCursor(PNode *self)
 		PNode_next(self);
 		Datum *nk = PNode_key(self);
 		if (nk) nextKey = Datum_clone(nk);
-		printf(">>>>>>>>>>>> remove at cursor '%s'\n", Datum_data(currentKey));
 		PNode_removeAt_(self, currentKey);
 		
 		//tcbdbcurdel(self->cursor);
