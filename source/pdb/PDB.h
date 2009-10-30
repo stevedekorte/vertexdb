@@ -24,7 +24,7 @@ typedef struct
 	File *corruptFile;
 	
 	TCBDB *db;
-	Datum *unusedPid;
+	//Datum *unusedPid;
 	int inTransaction;
 	size_t writeByteCount;
 	

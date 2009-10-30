@@ -10,10 +10,6 @@ extern "C" {
 #include <sys/time.h>  
 #include <stdlib.h>  
 
-#include <err.h>  
-#include <event.h>  
-#include <evhttp.h>  
-
 #include <tcutil.h>
 #include <tcbdb.h>
 #include <stdbool.h>

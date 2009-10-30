@@ -68,7 +68,7 @@ PDB *PDB_new(void)
 	self->lastBackupFile = File_new();
 	self->newBackupFile = File_new();
 	self->corruptFile = File_new();
-	self->unusedPid = Datum_new();
+	//self->unusedPid = Datum_new();
 	self->useBackups = 1;
 	
 	srand(time(NULL)); // need to do because Datum_makePid64 uses rand 
@@ -89,7 +89,7 @@ void PDB_free(PDB *self)
 	File_free(self->lastBackupFile);
 	File_free(self->newBackupFile);
 	File_free(self->corruptFile);
-	Datum_free(self->unusedPid);
+	//Datum_free(self->unusedPid);
 	self->yajl = 0x0;
 	free(self);
 }
@@ -307,6 +307,7 @@ void PDB_willWrite(PDB *self)
 void PDB_begin(PDB *self)
 {
 	if(self->inTransaction) return;
+	printf("tcbdbtranbegin <<<<<<<<<<<<<<<<<<<<<<<<<<\n");
 	
 	#ifdef PDB_USE_TX
 	if (!tcbdbtranbegin(self->db))

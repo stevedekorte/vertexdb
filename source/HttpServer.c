@@ -4,6 +4,15 @@
 #include <stdint.h>
 #include <string.h>
 
+#include <sys/types.h>
+#include <sys/time.h>
+#include <sys/queue.h>
+#include <stdlib.h>
+#include <math.h>
+#include <limits.h>
+#include <signal.h>
+#include <unistd.h>
+
 HttpServer *HttpServer_new(void)
 {
 	HttpServer *self = calloc(1, sizeof(HttpServer));
@@ -144,5 +153,5 @@ void HttpServer_runEventLoop(HttpServer *self)
 	{
 		event_loop(EVLOOP_ONCE);
 	}
-*/
+	*/
 }
