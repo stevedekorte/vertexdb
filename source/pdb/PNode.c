@@ -489,11 +489,41 @@ int PNode_mergeTo_(PNode *self, PNode *destNode, int keysOnly)
 }
 */
 
+void PNode_jumpToCurrentKey(PNode *self)
+{
+	tcbdbcurjump(self->cursor, Datum_data(self->keyPath), (int)Datum_size(self->keyPath));
+}
+
 void PNode_removeAtCursor(PNode *self)
-{	
+{
+/*
+	Datum *k = PNode_key(self);
+	
+	if (k)
+	{
+		Datum *currentKey = Datum_clone(k);
+		Datum *nextKey;
+		
+		PNode_next(self);
+		Datum *nk = PNode_key(self);
+		if (nk) nextKey = Datum_clone(nk);
+		printf(">>>>>>>>>>>> remove at cursor '%s'\n", Datum_data(currentKey));
+		PNode_removeAt_(self, currentKey);
+		
+		tcbdbcurdel(self->cursor);
+		self->cursor = tcbdbcurnew(((PDB *)self->pdb)->db);
+		
+		if (nextKey) PNode_jump_(self, nextKey);
+		
+		Datum_free(currentKey);
+		if (nextKey) Datum_free(nextKey);
+	}
+*/
+	PDB_willWrite(self->pdb);
 	if(tcbdbcurout(self->cursor))
 	{
 		PNode_decrementSize(self);
+		PNode_jumpToCurrentKey(self);
 	}
 	else 
 	{
