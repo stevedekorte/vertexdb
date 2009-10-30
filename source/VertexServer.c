@@ -601,7 +601,6 @@ int VertexServer_api_queueExpireTo(VertexServer *self)
 		{
 			Datum *pid = PNode_value(fromNode);
 			Datum *qExpireValue;
-			long expireTime;
 			
 			PNode_setPid_(itemNode, pid);
 			qExpireValue = PNode_at_(itemNode, qExpireKey);

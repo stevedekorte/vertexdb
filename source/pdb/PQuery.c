@@ -103,13 +103,17 @@ int PQuery_setup(PQuery *self)
 	}
 	else if(self->after && Datum_size(self->after))
 	{
+		Datum *k;
 		PNode_jump_(self->node, self->after);
-		if (Datum_equals_(self->after, PNode_key(self->node))) PNode_next(self->node);
+		k = PNode_key(self->node);
+		if (k && Datum_equals_(self->after, k)) PNode_next(self->node);
 	} 
 	else if(self->before && Datum_size(self->before))
 	{
+		Datum *k;
 		PNode_jump_(self->node, self->before);
-		if (Datum_equals_(self->before, PNode_key(self->node))) PNode_previous(self->node);
+		k = PNode_key(self->node);
+		if (k && Datum_equals_(self->before, k)) PNode_previous(self->node);
 	}
 	
 	if(!PQuery_cursorMatches(self))
