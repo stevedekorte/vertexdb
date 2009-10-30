@@ -293,6 +293,7 @@ int PDB_replaceDbWithLastBackUp(PDB *self)
 void PDB_fatalError_(PDB *self, char *s)
 {
 	Log_Printf__("%s failed: %s\n", s, tcbdberrmsg(tcbdbecode(self->db)));
+	PDB_close(self);
 	exit(-1);
 }
 
@@ -515,7 +516,6 @@ long PDB_saveMarkedNodes(PDB *self)
 	
 	Log_Printf_("  PDB copying %i marked nodes to new db...\n", 
 		(int)CHash_count(self->markedPids));
-
 	
 	CHASH_FOREACH(self->markedPids, k, v, 
 		PNode_setPidLong_(inNode, (long)k);
@@ -531,10 +531,12 @@ long PDB_saveMarkedNodes(PDB *self)
 			PNode_next(inNode);
 		}
 		
-		
 		if(savedCount % 10000 == 0) 
 		{
 			Log_Printf_("    %i\n", (int)savedCount);
+			
+			// Free Datum pools periodically to avoid eating too much RAM
+			Pool_freeRefsThatHaveFreeFunc_(Pool_globalPool(), (PoolFreeFunc *)Datum_free);
 		}
 	);
 	

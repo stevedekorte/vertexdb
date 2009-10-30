@@ -24,6 +24,7 @@ void Pool_freeGlobalPool(void);
 Pool *Pool_new(void);
 void Pool_free(Pool *self);
 void Pool_freeRefs(Pool *self);
+void Pool_freeRefsThatHaveFreeFunc_(Pool *self, PoolFreeFunc *func);
 void *Pool_alllocWithNewAndFree(Pool *self, PoolNewFunc *newFunc, PoolFreeFunc *freeFunc);
 
 #define POOL_ALLOC(self, name) Pool_alllocWithNewAndFree(self, (PoolNewFunc *)name##_new, (PoolFreeFunc *)name##_free)
