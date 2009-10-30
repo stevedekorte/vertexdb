@@ -1,0 +1,10 @@
+# first install dependencies:
+# sudo port install libevent
+# sudo port install tokyocabinet
+# sudo port install libzip
+# also need to install yajl library
+ 
+# command to start:
+# ./vertexdb -db blah.db
+
+cc -lm -O0 -g -I/usr/local/include -I source/basekit/source -I source/pdb -I source/basekit/source/simd_cph/include -I PDB -L/usr/local/lib -L/opt/local/lib source/basekit/source/*.c source/pdb/*.c source/*.c  -levent -ltokyocabinet -lbz2 -lzip -lz -lyajl  -o build/vertexdb && chmod 755 build/vertexdb
