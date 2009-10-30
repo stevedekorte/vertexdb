@@ -312,6 +312,29 @@ VDBTest := UnitTest clone do(
 		SizeAssertion setPath("/active") setExpectedBody("1") assert
 		SizeAssertion setPath("/waiting") setExpectedBody("9") assert
 	)
+	
+	testQueueExpireToShouldNotEmptyToPath := method(
+		url := URL with(VDBAssertion baseUrl .. "/?action=transaction")
+        result := url post("/?action=select&op=rm
+/test/active?action=mkdir
+/test/waiting/2009-10-28@19:49:54.426298?action=mkdir
+/test/waiting/2009-10-28@20:50:37.286256?action=mkdir
+/test/waiting/2009-10-28@21:50:40.701332?action=mkdir
+/test/waiting/2009-10-28@22:50:43.140329?action=mkdir
+/test/waiting/2009-10-29@04:21:29.198273?action=mkdir
+/test/waiting/2009-10-29@05:21:31.891355?action=mkdir
+/test/waiting/2009-10-29@10:34:43.125098?action=mkdir
+/test/waiting/2009-10-29@11:34:46.198658?action=mkdir
+/test/waiting/2009-10-29@16:34:57.237118?action=mkdir
+/test/waiting/2009-10-29@17:35:00.146650?action=mkdir")
+        if(url statusCode == 500,
+            Exception raise("Error in transaction setting up testQueuePopToWithTimestamps: " .. result)
+        )
+
+	    QueueExpireToAssertion setPath("/active") addParams("toPath=/test/waiting") setExpectedBody("0") assert
+		SizeAssertion setPath("/active") setExpectedBody("0") assert
+		SizeAssertion setPath("/waiting") setExpectedBody("10") assert
+	)
 
     QueueExpireToAssertion := VDBAssertion clone setAction("queueExpireTo")
     testQueueExpireTo := method(
