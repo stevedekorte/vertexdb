@@ -38,14 +38,19 @@ pre { text-align: left; font-size: .9em; font-weight: normal; font-family: couri
 
 <ul>
 
-VertexDB is a high performance (20,000+ requests per second) graph database server that supports automatic garbage collection. It uses the HTTP protocol for requests and JSON for it's response data format and the API is inspired by the FUSE filesystem API plus a few extra methods for queries and queues.
+VertexDB is a high performance graph database server that supports automatic garbage collection. It uses the HTTP protocol for requests and JSON for it's response data format and the API is inspired by the FUSE filesystem API plus a few extra methods for queries and queues.
+<br>
+<br>
+
+<h2>Performance</h2>
+
+Requests per second are typically i/o bound and should be in the thousands on OSX, and possibly tens of thousands on Linux (on a typical PC of circa 2008).
 <br>
 <br>
 
 <h2>Integrity</h2>
 
 On startup, VertexDB makes a backup of the database (if it exists). When shut down properly, it creates a file that marks the database as being safely stored. When started, if this file is not found, the database file is replaced by it's old copy. There is also an admin backup request that can be sent to the database to store a backup at any time.
-<p>
 <!--
 VertexDB uses TokyoCabinet in a mode where transactions are only to OS buffers and writes are cached and pushed to disk after they accumulated in order to allow the OS to minimize disk head movements for the writes.
 -->

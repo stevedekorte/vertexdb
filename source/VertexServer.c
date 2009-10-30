@@ -577,7 +577,6 @@ int VertexServer_api_queueExpireTo(VertexServer *self)
 	PNode *toNode   = PDB_allocNode(self->pdb);
 	PNode *itemNode = PDB_allocNode(self->pdb);
 	Datum *toPath = VertexServer_queryValue_(self, "toPath");
-	Datum *tmpKey = Datum_new();
 	unsigned int itemsExpired = 0;
 	
 	if (PNode_moveToPathIfExists_(fromNode, self->uriPath) != 0) 
@@ -608,7 +607,6 @@ int VertexServer_api_queueExpireTo(VertexServer *self)
 		{
 			Datum *pid = PNode_value(fromNode);
 			Datum *qExpireValue;
-			Datum_copy_(tmpKey, k);
 						
 			PNode_setPid_(itemNode, pid);
 			qExpireValue = PNode_at_(itemNode, qExpireKey);
@@ -632,7 +630,7 @@ int VertexServer_api_queueExpireTo(VertexServer *self)
 				PNode_key(fromNode);
 				PNode_removeAt_(itemNode, qTimeKey);
 				PNode_removeAt_(itemNode, qExpireKey);
-				PNode_atPut_(toNode, tmpKey, pid);
+				PNode_atPut_(toNode, k, pid);
 				PNode_jumpToCurrentKey(fromNode);
 				itemsExpired ++;
 			}
@@ -648,7 +646,6 @@ int VertexServer_api_queueExpireTo(VertexServer *self)
 	
 	yajl_gen_integer(self->yajl, (long)itemsExpired);
 	Datum_appendYajl_(self->result, self->yajl);
-	Datum_free(tmpKey);
 	return 0;
 }
 
