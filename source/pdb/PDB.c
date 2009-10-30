@@ -657,5 +657,6 @@ void PDB_warmup(PDB *self)
 	BDBCUR *c = tcbdbcurnew(self->db);
 	tcbdbcurfirst(c);
 	while(tcbdbcurnext(c)) {}
+	tcbdbcurdel(c);
 }
 
