@@ -113,7 +113,8 @@ int PQuery_setup(PQuery *self)
 		Datum *k;
 		PNode_jump_(self->node, self->before);
 		k = PNode_key(self->node);
-		if (k && Datum_equals_(self->before, k)) PNode_previous(self->node);
+		PNode_previous(self->node);
+		//if (k && Datum_equals_(self->before, k)) PNode_previous(self->node);
 	}
 	
 	if(!PQuery_cursorMatches(self))
