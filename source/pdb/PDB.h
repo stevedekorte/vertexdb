@@ -35,7 +35,6 @@ typedef struct
 	
 	Datum *currentUser;
 		
-	Pool *pool;
 	yajl_gen yajl;
 } PDB;
 
@@ -45,7 +44,6 @@ void PDB_free(PDB *self);
 
 // node caching -------------
 PNode *PDB_allocNode(PDB *self);
-Datum *PDB_allocDatum(PDB *self);
 void PDB_freeNodes(PDB *self);
 
 // open/close ------------

@@ -102,7 +102,6 @@ VertexServer *VertexServer_new(void)
 	self->pdb   = PDB_new();
 	VertexServer_setupYajl(self);
 	
-	self->pool  = Pool_new();
 	
 	self->query = CHash_new();	
 	CHash_setEqualFunc_(self->query, (CHashEqualFunc *)Datum_equals_);
@@ -144,7 +143,7 @@ VertexServer *VertexServer_new(void)
 void VertexServer_free(VertexServer *self)
 {
 	PDB_free(self->pdb);
-	Pool_free(self->pool);
+	Pool_freeGlobalPool();
 	
 	CHash_free(self->actions);
 	CHash_free(self->ops);
@@ -204,7 +203,7 @@ void *CHash_atString_(CHash *self, const char *s)
 void VertexServer_parseUri_(VertexServer *self, const char *uri)
 {
 	int index;
-	Datum *uriDatum = POOL_ALLOC(self->pool, Datum);
+	Datum *uriDatum = Datum_poolNew();
 	Datum_setCString_(uriDatum, uri);
 	
 	if(self->debug) { Log_Printf_("request: %s\n", uri); }
@@ -216,8 +215,8 @@ void VertexServer_parseUri_(VertexServer *self, const char *uri)
 	
 	for (;;)
 	{
-		Datum *key   = POOL_ALLOC(self->pool, Datum);
-		Datum *value = POOL_ALLOC(self->pool, Datum);
+		Datum *key   = Datum_poolNew();
+		Datum *value = Datum_poolNew();
 		
 		index = Datum_from_beforeChar_into_(uriDatum, index + 1, '=', key);
 		Datum_decodeUri(key);
@@ -483,7 +482,7 @@ int VertexServer_api_transaction(VertexServer *self)
 		
 		VertexServer_parseUri_(self, Datum_data(uri));
 		error = VertexServer_process(self);
-		Pool_freeRefs(self->pool);
+		Pool_globalPoolFreeRefs();
 	} while ((r != -1) && (!error));
 	
 	if (error)
@@ -1077,7 +1076,6 @@ int VertexServer_process(VertexServer *self)
 	{
 		return VertexServer_api_view(self);
 	}
-
 	
 	Datum_appendCString_(self->error, "invalid action");
 
@@ -1187,8 +1185,7 @@ void VertexServer_requestHandler(struct evhttp_request *req, void *arg)
 	}
 
 	self->requestCount ++;
-	Pool_freeRefs(self->pool);
-	PDB_freeNodes(self->pdb);
+	Pool_globalPoolFreeRefs();
 }
 
 int VertexServer_api_shutdown(VertexServer *self)

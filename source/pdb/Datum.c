@@ -5,6 +5,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "Pool.h"
+
+Datum *Datum_poolNew(void)
+{
+	return GLOBAL_POOL_ALLOC(Datum)
+}
 
 Datum *Datum_new(void)
 {

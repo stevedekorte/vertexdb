@@ -16,6 +16,8 @@ typedef struct
 
 #define DATUM_STACKALLOCATED(name, string) Datum _##name; Datum *name = &_##name; name->data = (char *)string; name->size = strlen(string);
 
+Datum *Datum_poolNew(void);
+
 Datum *Datum_new(void);
 Datum *Datum_newWithCString_(const char *s);
 Datum *Datum_clone(Datum *d);

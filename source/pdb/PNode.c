@@ -15,6 +15,13 @@
 
 #define PNODE_ID_LENGTH 9
 
+#include "Pool.h"
+
+PNode *PNode_poolNew(void)
+{
+	return GLOBAL_POOL_ALLOC(PNode)
+}
+
 PNode *PNode_new(void)
 {
 	PNode *self = calloc(1, sizeof(PNode));
@@ -1051,7 +1058,7 @@ int PNode_op_html(PNode *self, Datum *d)
 
 Datum *PNode_metaSlotFor_(PNode *self, Datum *key)
 {
-	Datum *d = PDB_allocDatum(self->pdb);
+	Datum *d = Datum_poolNew();
 	Datum_copy_(d, self->pid);
 	Datum_appendCString_(d, "/m/");
 	Datum_append_(d, key);
@@ -1080,7 +1087,7 @@ Datum *PNode_metaAt_(PNode *self, Datum *d)
 		
 		if (v)
 		{
-			Datum *value = PDB_allocDatum(self->pdb);
+			Datum *value = Datum_poolNew();
 			Datum_setData_size_(value, v, vSize);
 			return value;
 		}

@@ -70,7 +70,6 @@ PDB *PDB_new(void)
 	self->corruptFile = File_new();
 	self->unusedPid = Datum_new();
 	self->useBackups = 1;
-	self->pool = Pool_new();
 	
 	srand(time(NULL)); // need to do because Datum_makePid64 uses rand 
 	
@@ -83,9 +82,7 @@ void PDB_setYajl_(PDB *self, yajl_gen y)
 }
 
 void PDB_free(PDB *self)
-{
-	PDB_freeNodes(self);
-	
+{	
 	PDB_close(self);
 	File_free(self->dbFile);
 	File_free(self->isOpenFile);
@@ -93,7 +90,6 @@ void PDB_free(PDB *self)
 	File_free(self->newBackupFile);
 	File_free(self->corruptFile);
 	Datum_free(self->unusedPid);
-	Pool_free(self->pool);
 	self->yajl = 0x0;
 	free(self);
 }
@@ -102,22 +98,11 @@ void PDB_free(PDB *self)
 
 PNode *PDB_allocNode(PDB *self)
 {
-	PNode *node = POOL_ALLOC(self->pool, PNode);
+	PNode *node = PNode_poolNew();
 	PNode_setPdb_(node, self);
 	PNode_setToRoot(node);
-	assert(self->yajl);
 	PNode_setYajl_(node, self->yajl);
 	return node;
-}
-
-Datum *PDB_allocDatum(PDB *self)
-{
-	return POOL_ALLOC(self->pool, Datum);
-}
-
-void PDB_freeNodes(PDB *self)
-{
-	Pool_freeRefs(self->pool);
 }
 
 // open/close ------------

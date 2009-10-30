@@ -5,6 +5,32 @@
 #include <stdlib.h>
 #include <time.h>
 
+static Pool *globalPool = 0x0;
+
+Pool *Pool_globalPool(void)
+{
+	if(!globalPool) 
+	{
+		globalPool = Pool_new();
+	}
+	
+	return globalPool;
+}
+
+void Pool_globalPoolFreeRefs(void)
+{
+	Pool_freeRefs(Pool_globalPool());
+}
+
+void Pool_freeGlobalPool(void)
+{
+	if(globalPool)
+	{
+		Pool_free(globalPool);
+		globalPool = 0x0;
+	}
+}
+
 Pool *Pool_new(void)
 {
 	Pool *self = calloc(1, sizeof(Pool));
