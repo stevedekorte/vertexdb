@@ -104,7 +104,7 @@ VDBTest := UnitTest clone do(
     testSize := method(
         SizeAssertion clone setExpectedBody("3") assert
     )
-    
+    */
     SelectAssertion := VDBAssertion clone do(
         action ::= "select"
         op ::= nil
@@ -116,7 +116,7 @@ VDBTest := UnitTest clone do(
     )
     
     KeysAssertion := SelectAssertion clone setOp("keys")
-    
+    /*
     testSelectKeys := method(
         KeysAssertion clone setExpectedBody("""["a","b","c"]""") assert
         KeysAssertion with("count") addParams("count=1") setExpectedBody("""["a"]""") assert
@@ -287,11 +287,9 @@ VDBTest := UnitTest clone do(
         if(u statusCode != 200,
             Exception raise("setup transaction fails in testQueueExpireTo: ", r)
         )
-		//System exit
 
         QueueExpireToAssertion with("first") setPath("/queue/active") addParams("toPath=/test/queue/waiting") setExpectedBody("1") assert
         ObjectAssertion with("first queueExpireTo") clone setPath("/queue/waiting/a") setExpectedBody("""{"_a":"1"}""") assert
-        //System exit
         QueueExpireToAssertion with("second") setPath("/queue/active") addParams("toPath=/test/queue/waiting") setExpectedBody("0") assert
         KeysAssertion with("second queueExpireTo") clone setPath("/queue/active/b") setExpectedBody("""["_a","_qexpire","_qtime"]""") assert
     )
@@ -312,4 +310,4 @@ CollectGarbageTest := UnitTest clone do(
     )
 )
 
-CollectGarbageTest run
+//CollectGarbageTest run

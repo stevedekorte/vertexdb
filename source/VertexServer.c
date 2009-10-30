@@ -578,6 +578,7 @@ int VertexServer_api_queueExpireTo(VertexServer *self)
 	PNode *toNode   = PDB_allocNode(self->pdb);
 	PNode *itemNode = PDB_allocNode(self->pdb);
 	Datum *toPath = VertexServer_queryValue_(self, "toPath");
+	Datum *tmpKey = Datum_new();
 	unsigned int itemsExpired = 0;
 	
 	if (PNode_moveToPathIfExists_(fromNode, self->uriPath) != 0) 
@@ -587,7 +588,14 @@ int VertexServer_api_queueExpireTo(VertexServer *self)
 		return -1;
 	}
 	
-	PNode_moveToPath_(toNode, toPath);
+	//PNode_moveToPath_(toNode, toPath);
+	if (PNode_moveToPathIfExists_(toNode, toPath) != 0) 
+	{
+		VertexServer_setError_(self, "to path does not exist: ");
+		VertexServer_appendErrorDatum_(self, toPath);
+		return -1;
+	}
+	
 	
 	PNode_first(fromNode);
 	
@@ -601,23 +609,33 @@ int VertexServer_api_queueExpireTo(VertexServer *self)
 		{
 			Datum *pid = PNode_value(fromNode);
 			Datum *qExpireValue;
-			
+			Datum_copy_(tmpKey, k);
+						
 			PNode_setPid_(itemNode, pid);
 			qExpireValue = PNode_at_(itemNode, qExpireKey);
 			
+			PNode_show(itemNode);
+
 			if(!qExpireValue)
 			{
-				Log_Printf("WARNING: expiring a node with no _qexpire value\n");
+				Log_Printf("WARNING: attempt to expire a node with no _qexpire value\n");
+ 
+				if(PNode_at_(itemNode, qTimeKey) == 0x0)
+				{
+					Log_Printf("WARNING: node also missing _qtime value\n");
+				}
+				
+				break;
 			}
 			
 			if(qExpireValue == 0x0 || Datum_asLong(qExpireValue) < now)
 			{
+				PNode_removeAtCursor(fromNode); // the remove will go to the next item
+				PNode_key(fromNode);
 				PNode_removeAt_(itemNode, qTimeKey);
 				PNode_removeAt_(itemNode, qExpireKey);
-				PNode_atPut_(toNode, k, pid);
-				PNode_removeAtCursor(fromNode); // the remove will go to the next item
-				//PNode_next(fromNode);
-				//PNode_removeAt_(fromNode, k);
+				PNode_atPut_(toNode, tmpKey, pid);
+				PNode_jumpToCurrentKey(fromNode);
 				itemsExpired ++;
 			}
 			else
@@ -632,7 +650,7 @@ int VertexServer_api_queueExpireTo(VertexServer *self)
 	
 	yajl_gen_integer(self->yajl, (long)itemsExpired);
 	Datum_appendYajl_(self->result, self->yajl);
-	
+	Datum_free(tmpKey);
 	return 0;
 }
 
@@ -1139,6 +1157,12 @@ void VertexServer_requestHandler(struct evhttp_request *req, void *arg)
 				Datum_setYajl_(self->error, self->yajl);
 				
 				evbuffer_add_printf(buf, "%s", Datum_data(self->error));
+				
+				if(self->debug) 
+				{
+					Log_Printf_("REQUEST ERROR: %s\n", Datum_data(self->error));
+				}
+				
 				Datum_setSize_(self->error, 0);
 			}
 			else

@@ -496,13 +496,13 @@ void PNode_jumpToCurrentKey(PNode *self)
 
 void PNode_removeAtCursor(PNode *self)
 {
-/*
 	Datum *k = PNode_key(self);
+	PDB_willWrite(self->pdb);
 	
 	if (k)
 	{
 		Datum *currentKey = Datum_clone(k);
-		Datum *nextKey;
+		Datum *nextKey = 0x0;
 		
 		PNode_next(self);
 		Datum *nk = PNode_key(self);
@@ -510,16 +510,18 @@ void PNode_removeAtCursor(PNode *self)
 		printf(">>>>>>>>>>>> remove at cursor '%s'\n", Datum_data(currentKey));
 		PNode_removeAt_(self, currentKey);
 		
-		tcbdbcurdel(self->cursor);
-		self->cursor = tcbdbcurnew(((PDB *)self->pdb)->db);
+		//tcbdbcurdel(self->cursor);
+		//self->cursor = tcbdbcurnew(((PDB *)self->pdb)->db);
 		
 		if (nextKey) PNode_jump_(self, nextKey);
 		
 		Datum_free(currentKey);
 		if (nextKey) Datum_free(nextKey);
 	}
-*/
+
+/*
 	PDB_willWrite(self->pdb);
+	
 	if(tcbdbcurout(self->cursor))
 	{
 		PNode_decrementSize(self);
@@ -529,6 +531,7 @@ void PNode_removeAtCursor(PNode *self)
 	{
 		printf("PNode warning: tcbdbcurout failed\n");
 	}
+*/
 }
 
 int PNode_remove(PNode *self)
@@ -1174,5 +1177,24 @@ int PNode_appendableByUser_(PNode *self, Datum *user)
 	return PNode_hasOwner_(self, user) || PNode_isPublicAppendable(self);
 }
 
+// debugging
+
+void PNode_show(PNode *self)
+{
+	Datum *k;
+	
+	printf("PNode pid %s\n", 
+		Datum_data(PNode_pid(self)));
+	
+	PNode_first(self);
+	
+	while ((k = PNode_key(self)))
+	{
+		printf("	'%s' '%s'\n", 
+			Datum_data(PNode_key(self)), 
+			Datum_data(PNode_value(self)));
+		PNode_next(self);
+	}
+}
 
 
