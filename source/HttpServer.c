@@ -27,24 +27,26 @@ void HttpServer_setRequestCallback_(HttpServer *self, HttpServerRequestCallback 
 }
 
 
-/*
-void VertexServer_readAnyPostData(VertexServer *self)  
+void HttpServer_readAnyPostData(HttpServer *self)  
 {
+/*
 	struct evbuffer *evb = self->request->input_buffer;
 	Datum_setData_size_(self->post, (const char *)EVBUFFER_DATA(evb), EVBUFFER_LENGTH(evb));
+*/
 }
 
-
+void HttpServer_handleRequest(HttpServer *self)  
 {  
-	VertexServer *self = arg;
+/*
+	HttpServer *self = arg;
 	const char *uri = evhttp_request_uri(req);
 	int result;
 	struct evbuffer *buf = evbuffer_new();
 	
 	self->request = req;
-	VertexServer_setupYajl(self); 
+	HttpServer_setupYajl(self); 
 	
-	VertexServer_readAnyPostData(self);
+	HttpServer_readAnyPostData(self);
 			
 	if (strcmp(uri, "/favicon.ico") == 0)
 	{
@@ -52,11 +54,11 @@ void VertexServer_readAnyPostData(VertexServer *self)
 	}
 	else
 	{
-		VertexServer_parseUri_(self, uri);
+		HttpServer_parseUri_(self, uri);
 
 		Datum_clear(self->result);
 		self->isHtml = 0;
-		result = VertexServer_process(self);
+		result = HttpServer_process(self);
 
 		if (result == 0)
 		{
@@ -107,7 +109,7 @@ void VertexServer_readAnyPostData(VertexServer *self)
 	evbuffer_free(buf);
 	
 	#ifdef COMMIT_PERIODICALLY
-	VertexServer_commitIfNeeded(self);
+	HttpServer_commitIfNeeded(self);
 	#endif
 	
 	if(self->requestCount % self->requestsPerSample == 0)
@@ -119,10 +121,12 @@ void VertexServer_readAnyPostData(VertexServer *self)
 	self->requestCount ++;
 	Pool_freeRefs(self->pool);
 	PDB_freeNodes(self->pdb);
+*/
 }
 
-void VertexServer_runEventLoop(VertexServer *self)
+void HttpServer_runEventLoop(HttpServer *self)
 {
+/*
 	event_init();
 	self->httpd = evhttp_start("127.0.0.1", self->port);
 	 
@@ -133,12 +137,12 @@ void VertexServer_runEventLoop(VertexServer *self)
 	}
 	
 	evhttp_set_timeout(self->httpd, 180);
-	evhttp_set_gencb(self->httpd, VertexServer_requestHandler, self);  
+	evhttp_set_gencb(self->httpd, HttpServer_requestHandler, self);  
 	//Log_Printf_("libevent using: %s\n", event_get_action());
 	
 	while (!self->shutdown)
 	{
 		event_loop(EVLOOP_ONCE);
 	}
-}
 */
+}

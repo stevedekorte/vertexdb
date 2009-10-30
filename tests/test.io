@@ -87,7 +87,7 @@ VDBTest := UnitTest clone do(
             Exception raise("Error in transaction setting up VDBTest: " .. result)
         )
     )
-    /*
+
     //reads
     ReadAssertion := VDBAssertion clone setAction("read")
     
@@ -104,7 +104,7 @@ VDBTest := UnitTest clone do(
     testSize := method(
         SizeAssertion clone setExpectedBody("3") assert
     )
-    */
+
     SelectAssertion := VDBAssertion clone do(
         action ::= "select"
         op ::= nil
@@ -116,7 +116,8 @@ VDBTest := UnitTest clone do(
     )
     
     KeysAssertion := SelectAssertion clone setOp("keys")
-    /*
+
+
     testSelectKeys := method(
         KeysAssertion clone setExpectedBody("""["a","b","c"]""") assert
         KeysAssertion with("count") addParams("count=1") setExpectedBody("""["a"]""") assert
@@ -216,9 +217,9 @@ VDBTest := UnitTest clone do(
         RmAssertion with("non-matching where") addParams("whereKey=_a", "whereValue=10") setExpectedBody("0") assert
         PairsAssertion with("rm non-matching where") setExpectedBody("""[["a",{"_a":"1","_b":"2","_c":"3"}],["b",{"_a":"4","_b":"5","_c":"6"}],["c",{"_a":"7","_b":"5","_c":"9"}]]""") assert
     )
-    */
+
     ObjectAssertion := SelectAssertion clone setOp("object")
-    /*
+
     testSelectObject := method(
         ObjectAssertion clone setPath("/a") setExpectedBody("""{"_a":"1","_b":"2","_c":"3"}""") assert
     )
@@ -268,7 +269,7 @@ VDBTest := UnitTest clone do(
         SizeAssertion with("third queuePopTo waiting") clone setPath("/queue/waiting") setExpectedBody("0") assert
         SizeAssertion with("third queuePopTo active") clone setPath("/queue/active") setExpectedBody("2") assert
     )
-    */
+
     QueueExpireToAssertion := VDBAssertion clone setAction("queueExpireTo")
     testQueueExpireTo := method(
         u := URL with(VDBAssertion baseUrl .. "/?action=transaction")
@@ -310,4 +311,4 @@ CollectGarbageTest := UnitTest clone do(
     )
 )
 
-//CollectGarbageTest run
+CollectGarbageTest run
