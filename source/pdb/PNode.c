@@ -27,9 +27,7 @@ PNode *PNode_new(void)
 	PNode *self = calloc(1, sizeof(PNode));
 	self->pid           = Datum_new(); // pid
 	self->pidPath       = Datum_new(); // pid/m/
-	self->key           = Datum_new(); // key
 	self->keyPath       = Datum_new(); // pid/m/key
-	self->value         = Datum_new();
 	self->sizePath      = Datum_new();
 	self->parentPid     = Datum_new();
 	
@@ -46,9 +44,7 @@ void PNode_free(PNode *self)
 	PNode_close(self);
 	Datum_free(self->pid);
 	Datum_free(self->pidPath);
-	Datum_free(self->key);
 	Datum_free(self->keyPath);
-	Datum_free(self->value);
 	Datum_free(self->sizePath);
 	Datum_free(self->parentPid);
 	
@@ -142,24 +138,20 @@ Datum *PNode_at_(PNode *self, Datum *k)
 Datum *PNode_atCString_(PNode *self, const char *k)
 {
 	int size;
-	void *value;
+	void *v;
 	
 	Datum_copy_(self->keyPath, self->pidPath);
 	Datum_appendCString_(self->keyPath, k);
 	 
-	value = PDB_at_(self->pdb, Datum_data(self->keyPath), (int)Datum_size(self->keyPath), &size);
+	v = PDB_at_(self->pdb, Datum_data(self->keyPath), (int)Datum_size(self->keyPath), &size);
 	
-	
-	if (value != 0x0)
+	if (v != 0x0)
 	{
-		Datum_setData_size_(self->value, value, size);
-		free(value);
-		//printf("key = '%s' value = '%s'\n", Datum_data(self->keyPath), Datum_data(self->value));
-		return self->value;
+		Datum *value = Datum_poolNewWithData_size_(v, size);
+		free(v);
+		return value;
 	}
-	
-	//printf("key = '%s' value = %p\n", Datum_data(self->keyPath), (void *)value);
-	
+		
 	return 0x0;
 }
 
@@ -250,9 +242,7 @@ long PNode_size(PNode *self)
 	if (value)
 	{
 		long sizeValue = atoi(value);
-		//Datum_setData_size_(self->value, value, size);
 		free(value);
-		//printf("%s = %i\n", Datum_data(self->sizePath), sizeValue);
 		return sizeValue;
 	}
 
@@ -346,9 +336,9 @@ Datum *PNode_key(PNode *self)
 	if(Datum_isBeginningOfCString_(self->pidPath, ks)) 
 	{
 	   const char *subpath = ks + Datum_size(self->pidPath);
-	   Datum_setCString_(self->key, subpath);
+	   Datum *key = Datum_poolNewWithCString_(subpath);
 	   free(ks);
-	   return self->key;
+	   return key;
 	}
    
 	free(ks);
@@ -362,9 +352,9 @@ Datum *PNode_value(PNode *self)
 	
 	if (v) 
 	{
-		Datum_setData_size_(self->value, v, size);
+		Datum *value = Datum_poolNewWithData_size_(v, size);
 		free(v);
-		return self->value;
+		return value;
 	}
 	
 	return 0x0;
@@ -430,7 +420,6 @@ int PNode_createMoveToKey_(PNode *self, Datum *key)
 
 PNode *PNode_nodeAt_(PNode *self, Datum *k)
 {	
-	// hack: we keep self->value empty and don't fetch it if keysOnly != 0
 	Datum *v = PNode_at_(self, k);
 	
 	if (v)
@@ -444,32 +433,30 @@ PNode *PNode_nodeAt_(PNode *self, Datum *k)
 	return 0x0;
 }
 
+/*
 PNode *PNode_newCopy(PNode *self, int keysOnly)
 {	
-	// hack: we keep self->value empty and don't fetch it if keysOnly != 0
 	Datum *key;
 	PNode *target = PNode_new();
 
 	PNode_setPdb_(target, self->pdb);
 	PNode_create(target);
 	PNode_first(self);
-	
-	Datum_clear(self->value);
-	
+		
 	while ((key = PNode_key(self)))
 	{
 		if (!keysOnly) PNode_value(self);
-		PNode_atPut_(target, key, self->value);
+		PNode_atPut_(target, key, PNode_value(self));
 		PNode_next(self);
 	}
 	
 	return target;
 }
+*/
 
 /*
 int PNode_mergeTo_(PNode *self, PNode *destNode, int keysOnly)
 {	
-	// hack: we keep self->value empty and don't fetch it if keysOnly != 0
 	Datum *key;
 	
 	PNode_first(self);
@@ -559,29 +546,6 @@ int PNode_remove(PNode *self)
 	
 	return removeCount;
 }
-
-/*
-Datum *PNode_valueFromDerefKeyToPath_(PNode *self, Datum *derefPath)
-{
-	Datum *k = PNode_key(self);
-	PNode *pn = PNode_new();
-
-	PNode_setPdb_(pn, self->pdb);
-
-	if (!k) goto done;
-	
-	PNode_moveToPath_(pn, derefPath);
-	k = PNode_at_(pn, k);
-	if (!k) goto done;
-	
-	Datum_copy_(self->value, k);
-	return self->value;
-	
-	done:
-	PNode_free(pn);
-	return 0x0;
-}
-*/
 
 void PNode_setToRoot(PNode *self)
 {

@@ -30,9 +30,7 @@ typedef struct
 	
 	Datum *pid;
 	Datum *pidPath;
-	Datum *key;
 	Datum *keyPath;
-	Datum *value;
 	
 	Datum *sizePath;
 	Datum *parentPid;
