@@ -209,11 +209,7 @@ VDBTest := UnitTest clone do(
 	testSelectCountWithBeforeAndAfter := method(
 		url := URL with(VDBAssertion baseUrl .. "/?action=transaction")
 		result := url post("/?action=select&op=rm
-/test/2009-10-31@07:03:54.641231?action=mkdir
-/test/2009-10-31@07:03:54.662697?action=mkdir
-/test/2009-10-31@07:03:54.688068?action=mkdir
-/test/2009-10-31@07:03:54.709236?action=mkdir
-/test/2009-10-31@07:03:54.731257?action=mkdir")
+/test/2009-10-31@07:03:54.641231?action=mkdir")
 		if(url statusCode == 500,
 		    Exception raise("Error in transaction setting up testSelectCountWithBeforeAndAfter: " .. result)
 		)
