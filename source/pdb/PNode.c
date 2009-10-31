@@ -7,12 +7,6 @@
 #include <sys/queue.h>
 #include <stdlib.h>  
 
-#include <tcutil.h>
-#include <tcbdb.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <string.h>
-
 #define PNODE_ID_LENGTH 9
 
 #include "Pool.h"
@@ -90,15 +84,18 @@ void PNode_setPdb_(PNode *self, void *pdb)
 
 void PNode_open(PNode *self)
 {
-	self->cursor = tcbdbcurnew(((PDB *)self->pdb)->db);
+	PDB *pdb = (PDB *)self->pdb;
+	self->storeCursor = StoreCursor_new();
+	StoreCursor_setStore_(self->storeCursor, ((PDB *)self->pdb)->store);
+	StoreCursor_open(self->storeCursor);
 }
 
 void PNode_close(PNode *self)
 {
-	if (self->cursor)
+	if (self->storeCursor)
 	{
-		tcbdbcurdel(self->cursor);
-		self->cursor = 0x0;
+		StoreCursor_free(self->storeCursor);
+		self->storeCursor = 0x0;
 	}
 }
 
@@ -291,11 +288,11 @@ int PNode_decrementSize(PNode *self)
 
 void PNode_first(PNode *self) // returns 0 when at end
 {
-	tcbdbcurjump(self->cursor, Datum_data(self->pidPath), (int)Datum_size(self->pidPath));
+	StoreCursor_jump(self->storeCursor, Datum_data(self->pidPath), (int)Datum_size(self->pidPath));
 	
 	if(!PNode_key(self))
 	{
-		tcbdbcurnext(self->cursor);
+		StoreCursor_next(self->storeCursor);
 	}
 }
 
@@ -303,18 +300,18 @@ void PNode_jump_(PNode *self, Datum *k)
 {
 	Datum_copy_(self->keyPath, self->pidPath);
 	Datum_append_(self->keyPath, k);
-	tcbdbcurjump(self->cursor, Datum_data(self->keyPath), (int)Datum_size(self->keyPath));
+	StoreCursor_jump(self->storeCursor, Datum_data(self->keyPath), (int)Datum_size(self->keyPath));
 }
 
 int PNode_next(PNode *self) // returns 0 when at end
 {
-	tcbdbcurnext(self->cursor);
+	StoreCursor_next(self->storeCursor);
 	return PNode_key(self) != 0;
 }
 
 int PNode_previous(PNode *self)
 {
-	tcbdbcurprev(self->cursor);
+	StoreCursor_previous(self->storeCursor);
 	return PNode_key(self) != 0;
 }
 
@@ -328,7 +325,7 @@ void PNode_setKey_(PNode *self, Datum *d)
 Datum *PNode_key(PNode *self)
 {
 	int size;
-	char *ks = tcbdbcurkey(self->cursor, &size);
+	char *ks = StoreCursor_key(self->storeCursor, &size);
       
 	//if (ks == 0x0 || size == 0) return 0x0;
 	if (ks == 0x0) return 0x0;
@@ -348,7 +345,7 @@ Datum *PNode_key(PNode *self)
 Datum *PNode_value(PNode *self)
 {
 	int size;
-	char *v = tcbdbcurval(self->cursor, &size);
+	char *v = StoreCursor_value(self->storeCursor, &size);
 	
 	if (v) 
 	{
@@ -362,7 +359,7 @@ Datum *PNode_value(PNode *self)
 
 int PNode_doesExist(PNode *self)
 {
-	tcbdbcurjump(self->cursor, Datum_data(self->pid), (int)Datum_size(self->pid));
+	StoreCursor_jump(self->storeCursor, Datum_data(self->pid), (int)Datum_size(self->pid));
 	return PNode_key(self) != 0x0;
 }
 
@@ -485,7 +482,7 @@ int PNode_mergeTo_(PNode *self, PNode *destNode, int keysOnly)
 
 void PNode_jumpToCurrentKey(PNode *self)
 {
-	tcbdbcurjump(self->cursor, Datum_data(self->keyPath), (int)Datum_size(self->keyPath));
+	StoreCursor_jump(self->storeCursor, Datum_data(self->keyPath), (int)Datum_size(self->keyPath));
 }
 
 void PNode_removeAtCursor(PNode *self)
@@ -503,8 +500,7 @@ void PNode_removeAtCursor(PNode *self)
 		if (nk) nextKey = Datum_clone(nk);
 		PNode_removeAt_(self, currentKey);
 		
-		//tcbdbcurdel(self->cursor);
-		//self->cursor = tcbdbcurnew(((PDB *)self->pdb)->db);
+		//StoreCursor_remove(self->storeCursor);
 		
 		if (nextKey) PNode_jump_(self, nextKey);
 		
@@ -515,14 +511,14 @@ void PNode_removeAtCursor(PNode *self)
 /*
 	PDB_willWrite(self->pdb);
 	
-	if(tcbdbcurout(self->cursor))
+	if(StoreCursor_remove(self->storeCursor))
 	{
 		PNode_decrementSize(self);
 		PNode_jumpToCurrentKey(self);
 	}
 	else 
 	{
-		printf("PNode warning: tcbdbcurout failed\n");
+		printf("PNode warning: remove failed\n");
 	}
 */
 }
@@ -535,7 +531,7 @@ int PNode_remove(PNode *self)
 	while ((k = PNode_key(self)))
 	{
 		PDB_willWrite(self->pdb);
-		if(!tcbdbcurout(self->cursor)) break;
+		if(!StoreCursor_remove(self->storeCursor)) break;
 		removeCount ++;
 	}
 	
@@ -686,7 +682,7 @@ int PNode_takePidFromCursor(PNode *self) // returns 0 on success
 {
 	//long currentPid = Datum_asLong(self->pid);
 	int size;
-	char *ks = tcbdbcurkey(self->cursor, &size);
+	char *ks = StoreCursor_key(self->storeCursor, &size);
 	
 	if (ks == 0x0) return -1;
 
@@ -720,7 +716,7 @@ int PNode_moveToNextNode(PNode *self) // returns slot count or a negative number
 	
 	for(;;)
 	{
-		if(!tcbdbcurnext(self->cursor)) return -1;
+		if(!StoreCursor_next(self->storeCursor)) return -1;
 		if (PNode_key(self) == 0) break;
 	}
 	
@@ -966,18 +962,13 @@ int PNode_op_rm(PNode *self, Datum *d)
 	while (k = PQuery_key(q))
 	{
 		PDB_willWrite(self->pdb);
-		if(!tcbdbcurout(self->cursor)) break;
+		if(!StoreCursor_remove(self->storeCursor)) break;
 		
 		// HACK to avoid skipping a step by backing up in the reverse enum direction before calling PQuery_enumerate
 		if(PQuery_stepDirection(q) == 1)
 		{
-			tcbdbcurprev(self->cursor);
+			StoreCursor_previous(self->storeCursor);
 		}
-		/*else 
-		{
-			tcbdbcurnext(self->cursor);
-		}
-		*/
 
 		removeCount ++;
 		//count += PNode_removeAt_(self, k);

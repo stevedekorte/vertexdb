@@ -3,12 +3,6 @@
 	See http://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html 
 	for valid response headers
 
-bool tcbdbput(TCBDB *bdb, const void *kbuf, int ksiz, const void *vbuf, int vsiz);
-bool tcbdbputcat(TCBDB *bdb, const void *kbuf, int ksiz, const void *vbuf, int vsiz);
-bool tcbdbout(TCBDB *bdb, const void *kbuf, int ksiz);
-void *tcbdbget(TCBDB *bdb, const void *kbuf, int ksiz, int *sp);
-int tcbdbvsiz(TCBDB *bdb, const void *kbuf, int ksiz);
-
 struct fuse_operations {
     int (*mkdir) (const char *, mode_t);
     int (*rmdir) (const char *);
@@ -543,17 +537,15 @@ int VertexServer_api_queuePopTo(VertexServer *self)
 			{
 				long now = time(NULL);
 				
-				Datum *timeKey   = Datum_newWithCString_("_qtime");
-				Datum *timeValue = Datum_new();
+				Datum *timeKey   = Datum_poolNewWithCString_("_qtime");
+				Datum *timeValue = Datum_poolNew();
+				
 				Datum_fromLong_(timeValue, now);
 				PNode_atPut_(toNode, timeKey, timeValue);
 				
 				Datum_setCString_(timeKey, "_qexpire");
 				Datum_fromLong_(timeValue, now + (ttl == 0 ? 3600 : ttl));
 				PNode_atPut_(toNode, timeKey, timeValue);
-
-				Datum_free(timeKey);
-				Datum_free(timeValue);
 			}
 			
 			//printf("queueing key %s\n", Datum_data(k));

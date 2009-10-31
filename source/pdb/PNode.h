@@ -10,12 +10,7 @@ extern "C" {
 #include <sys/time.h>  
 #include <stdlib.h>  
 
-#include <err.h>  
-#include <event.h>  
-#include <evhttp.h>  
-
-#include <tcutil.h>
-#include <tcbdb.h>
+#include "Store.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
@@ -26,7 +21,7 @@ extern "C" {
 typedef struct
 {
 	void *pdb;
-	BDBCUR *cursor;
+	StoreCursor *storeCursor;
 	
 	Datum *pid;
 	Datum *pidPath;

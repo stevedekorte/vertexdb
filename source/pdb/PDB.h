@@ -14,6 +14,7 @@ extern "C" {
 #include "CHash.h"
 #include "Pool.h"
 #include "Yajl_extras.h"
+#include "Store.h"
 
 typedef struct
 {
@@ -23,8 +24,8 @@ typedef struct
 	File *newBackupFile;
 	File *corruptFile;
 	
-	TCBDB *db;
-	Datum *unusedPid;
+	Store *store;
+
 	int inTransaction;
 	size_t writeByteCount;
 	
@@ -78,7 +79,7 @@ int PDB_syncSizes(PDB *self);
 long PDB_collectGarbage(PDB *self); // returns # of nodes kept
 int PDB_hasMarked_(PDB *self, long pid);
 void PDB_addToMarkQueue_(PDB *self, long pid);
-void PDB_warmup(PDB *self);
+//void PDB_warmup(PDB *self);
 int PDB_sync(PDB *self);
 
 

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		8DD76FB00486AB0100D96B5E /* Vertex.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6A0FF2C0290799A04C91782 /* Vertex.1 */; };
 		9F087BBA1083105900211163 /* libyajl_s.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F087BB91083105900211163 /* libyajl_s.a */; };
+		AA11CDED109BA4C30032D6B9 /* Store.c in Sources */ = {isa = PBXBuildFile; fileRef = AA11CDE9109BA4C30032D6B9 /* Store.c */; };
+		AA11CDEE109BA4C30032D6B9 /* StoreCursor.c in Sources */ = {isa = PBXBuildFile; fileRef = AA11CDEB109BA4C30032D6B9 /* StoreCursor.c */; };
 		AA33042C10829584007AD6CA /* libevent_extra.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA33042A10829584007AD6CA /* libevent_extra.a */; };
 		AA33042D10829584007AD6CA /* libevent.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA33042B10829584007AD6CA /* libevent.a */; };
 		AA9559491082A9130044CD9F /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = AA9559411082A9130044CD9F /* main.c */; };
@@ -82,6 +84,10 @@
 /* Begin PBXFileReference section */
 		8DD76FB20486AB0100D96B5E /* Vertex */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Vertex; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F087BB91083105900211163 /* libyajl_s.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libyajl_s.a; path = /usr/local/lib/libyajl_s.a; sourceTree = "<absolute>"; };
+		AA11CDE9109BA4C30032D6B9 /* Store.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Store.c; path = source/Store.c; sourceTree = SOURCE_ROOT; };
+		AA11CDEA109BA4C30032D6B9 /* Store.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Store.h; path = source/Store.h; sourceTree = SOURCE_ROOT; };
+		AA11CDEB109BA4C30032D6B9 /* StoreCursor.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = StoreCursor.c; path = source/StoreCursor.c; sourceTree = SOURCE_ROOT; };
+		AA11CDEC109BA4C30032D6B9 /* StoreCursor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoreCursor.h; path = source/StoreCursor.h; sourceTree = SOURCE_ROOT; };
 		AA33042A10829584007AD6CA /* libevent_extra.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libevent_extra.a; path = /opt/local/lib/libevent_extra.a; sourceTree = "<absolute>"; };
 		AA33042B10829584007AD6CA /* libevent.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libevent.a; path = /opt/local/lib/libevent.a; sourceTree = "<absolute>"; };
 		AA9559411082A9130044CD9F /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = source/main.c; sourceTree = SOURCE_ROOT; };
@@ -249,6 +255,10 @@
 		AA9559401082A9130044CD9F /* source */ = {
 			isa = PBXGroup;
 			children = (
+				AA11CDE9109BA4C30032D6B9 /* Store.c */,
+				AA11CDEA109BA4C30032D6B9 /* Store.h */,
+				AA11CDEB109BA4C30032D6B9 /* StoreCursor.c */,
+				AA11CDEC109BA4C30032D6B9 /* StoreCursor.h */,
 				AAD92927109A7FFC0048592C /* HttpServer.c */,
 				AAD92928109A7FFC0048592C /* HttpServer.h */,
 				AA9559BB1082CE100044CD9F /* basekit */,
@@ -510,6 +520,8 @@
 				AA955E821085614E0044CD9F /* Yajl_extras.c in Sources */,
 				AADD04971098204A00F8454F /* Pointer.c in Sources */,
 				AAD92929109A7FFC0048592C /* HttpServer.c in Sources */,
+				AA11CDED109BA4C30032D6B9 /* Store.c in Sources */,
+				AA11CDEE109BA4C30032D6B9 /* StoreCursor.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

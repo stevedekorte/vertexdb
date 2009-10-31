@@ -10,9 +10,17 @@ extern "C" {
 #include "Date.h"
 
 typedef void  (HttpServerRequestCallback)(void *);
+typedef void  (HttpServerWriteMethod)(void *);
 
 typedef struct
 {
+	/*
+	HttpServerWriteMethod *write;
+	HttpServerWriteMethod *readQuery;
+	HttpServerWriteMethod *readPost;
+	HttpServerWriteMethod *readPost;
+	*/
+
 	void *delegate;
 	HttpServerRequestCallback *requestCallback;
 } HttpServer;
@@ -22,7 +30,6 @@ void HttpServer_free(HttpServer *self);
 
 void HttpServer_setDelegate_(HttpServer *self, void *d);
 void HttpServer_setRequestCallback_(HttpServer *self, HttpServerRequestCallback *f);
-
 
 // UNFISHED - THIS WILL ABSTRACT OVER libevent SO WE CAN SWAP IT WITH libev
 
