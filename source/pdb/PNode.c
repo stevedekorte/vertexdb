@@ -84,7 +84,7 @@ void PNode_setPdb_(PNode *self, void *pdb)
 
 void PNode_open(PNode *self)
 {
-	PDB *pdb = (PDB *)self->pdb;
+	//PDB *pdb = (PDB *)self->pdb;
 	self->storeCursor = StoreCursor_new();
 	StoreCursor_setStore_(self->storeCursor, ((PDB *)self->pdb)->store);
 	StoreCursor_open(self->storeCursor);
