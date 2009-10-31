@@ -43,6 +43,11 @@ int main(int argc, char **argv)
 			a ++;
 			VertexServer_setDebug_(server, 1);
 		}
+		else if (strcmp(argv[a], "-hardsync") == 0)
+		{
+			a ++;
+			VertexServer_setHardSync_(server, 1);
+		}
 	}
 	
 	VertexServer_run(server);

@@ -1224,6 +1224,11 @@ void VertexServer_setDebug_(VertexServer *self, int aBool)
 	self->debug = aBool;
 }
 
+void VertexServer_setHardSync_(VertexServer *self, int aBool)
+{
+	self->hardSync = 1;
+}
+
 void VertexServer_writePidFile(VertexServer *self)
 {
 	FILE *pidFile = fopen(self->pidPath, "w");
@@ -1331,6 +1336,8 @@ int VertexServer_run(VertexServer *self)
 	
 	//VertexServer_setStaticPath_(self, ".");
 	VertexServer_registerSignals(self);
+	
+	PDB_setHardSync_(self->pdb, self->hardSync);
 	
 	if (PDB_open(self->pdb)) 
 	{ 
