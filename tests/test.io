@@ -55,16 +55,23 @@ VDBAssertion := Object clone do(
         setActualBody(u fetch)
         setActualStatusCode(u statusCode)
         
-        if(actualStatusCode != expectedStatusCode,
+		assertStatusCode
+		assertBody
+    )
+
+	assertStatusCode := method(
+		if(actualStatusCode != expectedStatusCode,
 			m := Sequence with(action, " action failed for \"", variant, "\" variant: \n", u url, "\nexpectedStatusCode ", expectedStatusCode asString, "\nactualStatusCode   ", actualStatusCode asString, "\nactualBody         ", actualBody)
 			raise(m)
         )
-        
-        if(actualBody != expectedBody,
+	)
+	
+	assertBody := method(
+		if(actualBody != expectedBody,
             m := Sequence with(action, " action failed for \"", variant, "\" variant: \n", u url, "\nexpectedBody ", expectedBody, "\nactualBody   ", actualBody, "\n")
 			raise(m)
         )
-    )
+	)
 )
 
 VDBTest := UnitTest clone do(
@@ -365,7 +372,16 @@ VDBTest := UnitTest clone do(
 VDBTest run
 
 CollectGarbageTest := UnitTest clone do(
-    CollectGarbageAssertion := VDBAssertion clone setAction("collectGarbage")
+    CollectGarbageAssertion := VDBAssertion clone setAction("collectGarbage") do(
+		expectedBodyPrefix ::= nil
+		
+    	assertBody := method(
+    		if(actualBody beginsWithSeq(expectedBodyPrefix) not,
+	            m := Sequence with(action, " action failed for \"", variant, "\" variant: \n", url url, "\nexpectedBodyPrefix ", expectedBodyPrefix, "\nactualBody         ", actualBody, "\n")
+				raise(m)
+	        )
+    	)
+    )
     testCollectGarbage := method(
 		URL with(VDBAssertion baseUrl .. "/?action=select&op=rm") fetch
         URL with(VDBAssertion baseUrl .. "/?action=collectGarbage") fetch
@@ -373,7 +389,7 @@ CollectGarbageTest := UnitTest clone do(
         URL with(VDBAssertion baseUrl .. "/a/c?action=mkdir") fetch
         URL with(VDBAssertion baseUrl .. "/a/d?action=mkdir") fetch
         URL with(VDBAssertion baseUrl .. "/a?action=select&op=rm") fetch
-        CollectGarbageAssertion setBasePath("/") setExpectedBody("""{"saved":2,"seconds":0}""") assert
+        CollectGarbageAssertion setBasePath("/") setExpectedBodyPrefix("""{"saved":2,"seconds":""") assert
     )
 )
 
