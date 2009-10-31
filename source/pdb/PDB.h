@@ -38,6 +38,7 @@ typedef struct
 		
 	yajl_gen yajl;
 	int isClosing;
+	int hardSync;
 } PDB;
 
 PDB *PDB_new(void);
@@ -52,6 +53,8 @@ void PDB_freeNodes(PDB *self);
 void PDB_setPathCString_(PDB *self, const char *path);
 int PDB_open(PDB *self);
 void PDB_close(PDB *self);
+
+void PDB_setHardSync_(PDB *self, int aBool);
 
 // clean shutdown ------------
 void PDB_setUseBackups_(PDB *self, int aBool);

@@ -23,12 +23,14 @@ typedef struct
 	char *path;
 	void *compareFunc;
 	void *db;
+	int hardSync;
 } Store;
 
 Store *Store_new(void);
 void Store_free(Store *self);
 
 void Store_setCompareFunction_(Store *self, void *func);
+void Store_setHardSync_(Store *self, int aBool);
 
 void Store_setPath_(Store *self, const char *p);
 const char *Store_path(Store *self);

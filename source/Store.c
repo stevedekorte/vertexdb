@@ -39,6 +39,12 @@ void Store_setCompareFunction_(Store *self, void *func)
 	self->compareFunc = func;
 }
 
+void Store_setHardSync_(Store *self, int aBool)
+{
+	self->hardSync = aBool;
+}
+
+
 int Store_open(Store *self)
 {
 	self->db = tcbdbnew();
@@ -67,7 +73,13 @@ int Store_open(Store *self)
 	}
 
 	{
-		int flags = BDBOWRITER | BDBOCREAT | BDBONOLCK; //BDBOTSYNC
+		int flags = BDBOWRITER | BDBOCREAT | BDBONOLCK;
+		
+		if (self->hardSync) 
+		{
+			printf("Store: hard disk syncing enabled\n");
+			flags |= BDBOTSYNC;
+		}
 		
 		if (!tcbdbopen(self->db, self->path, flags))
 		{
