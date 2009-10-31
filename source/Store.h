@@ -30,21 +30,26 @@ void Store_free(Store *self);
 
 void Store_setCompareFunction_(Store *self, void *func);
 
-void Store_setPath_(Store *self, char *p);
-char *Store_path(Store *self);
+void Store_setPath_(Store *self, const char *p);
+const char *Store_path(Store *self);
 
 int Store_open(Store *self);
 int Store_close(Store *self);
+int Store_backup(Store *self, const char *backupPath);
 
 const char *Store_error(Store *self);
 
-char *Store_read(Store *self, char *k, size_t ksize, int *vsize);
-int Store_write(Store *self, char *k, size_t ksize, char *v, size_t vsize);
-int Store_append(Store *self, char *k, size_t ksize, char *v, size_t vsize);
+char *Store_read(Store *self, const char *k, size_t ksize, int *vsize);
+int Store_write(Store *self, const char *k, size_t ksize, const char *v, size_t vsize);
+int Store_append(Store *self, const char *k, size_t ksize, const char *v, size_t vsize);
+int Store_remove(Store *self, const char *k, size_t ksize);
+int Store_sync(Store *self);
 
 int Store_begin(Store *self);
 int Store_abort(Store *self);
 int Store_commit(Store *self);
+
+int Store_size(Store *self);
 
 //StoreCursor *Store_newCursor(Store *self);
 

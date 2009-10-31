@@ -3,12 +3,6 @@
 	See http://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html 
 	for valid response headers
 
-bool tcbdbput(TCBDB *bdb, const void *kbuf, int ksiz, const void *vbuf, int vsiz);
-bool tcbdbputcat(TCBDB *bdb, const void *kbuf, int ksiz, const void *vbuf, int vsiz);
-bool tcbdbout(TCBDB *bdb, const void *kbuf, int ksiz);
-void *tcbdbget(TCBDB *bdb, const void *kbuf, int ksiz, int *sp);
-int tcbdbvsiz(TCBDB *bdb, const void *kbuf, int ksiz);
-
 struct fuse_operations {
     int (*mkdir) (const char *, mode_t);
     int (*rmdir) (const char *);

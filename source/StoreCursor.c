@@ -1,4 +1,5 @@
 #include "StoreCursor.h"
+#include "Store.h"
 
 #include <tcutil.h>
 #include <tcbdb.h>
@@ -15,43 +16,48 @@ StoreCursor *StoreCursor_new(void)
 
 void StoreCursor_free(StoreCursor *self)
 {
+	StoreCursor_close(self);
 	free(self);
 }
 
-void StoreCursor_setDb_(StoreCursor *self, void *db)
+void StoreCursor_setStore_(StoreCursor *self, void *store)
 {
-	self->db = db;
+	self->store = store;
 }
 
 
 void StoreCursor_open(StoreCursor *self)
 {
-	self->cursor = tcbdbcurnew(self->db);
+	self->cursor = tcbdbcurnew(((Store *)self->store)->db);
 }
 
 void StoreCursor_close(StoreCursor *self)
 {
-	tcbdbcurdel(self->cursor);
+	if(self->cursor)
+	{
+		tcbdbcurdel(self->cursor);
+		self->cursor = 0x0;
+	}
 }
 
-void StoreCursor_next(StoreCursor *self)
+int StoreCursor_next(StoreCursor *self)
 {
-	tcbdbcurnext(self->cursor);
+	return tcbdbcurnext(self->cursor);
 }
 
-void StoreCursor_previous(StoreCursor *self)
+int StoreCursor_previous(StoreCursor *self)
 {
-	tcbdbcurprev(self->cursor);
+	return tcbdbcurprev(self->cursor);
 }
 
-void StoreCursor_jump(StoreCursor *self, char *k, size_t ksize)
+void StoreCursor_jump(StoreCursor *self, const char *k, size_t ksize)
 {
 	tcbdbcurjump(self->cursor, k, ksize);
 }
 
-void StoreCursor_remove(StoreCursor *self)
+int StoreCursor_remove(StoreCursor *self)
 {
-	tcbdbcurout(self->cursor);
+	return tcbdbcurout(self->cursor);
 }
 
 char *StoreCursor_key(StoreCursor *self, int *size)
