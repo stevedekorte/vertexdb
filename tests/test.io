@@ -38,8 +38,8 @@ VDBAssertion := Object clone do(
         self
     )
     
-    url := method(
-        URL with(Sequence with(baseUrl, basePath, path, queryString))
+    url ::= method(
+        setUrl(URL with(Sequence with(baseUrl, basePath, path, queryString))) url
     )
     
 	raise := method(m,
@@ -51,9 +51,8 @@ VDBAssertion := Object clone do(
 	)
 
     assert := method(
-        u := url
-        setActualBody(u fetch)
-        setActualStatusCode(u statusCode)
+        setActualBody(url fetch)
+        setActualStatusCode(url statusCode)
         
 		assertStatusCode
 		assertBody
@@ -61,14 +60,14 @@ VDBAssertion := Object clone do(
 
 	assertStatusCode := method(
 		if(actualStatusCode != expectedStatusCode,
-			m := Sequence with(action, " action failed for \"", variant, "\" variant: \n", u url, "\nexpectedStatusCode ", expectedStatusCode asString, "\nactualStatusCode   ", actualStatusCode asString, "\nactualBody         ", actualBody)
+			m := Sequence with(action, " action failed for \"", variant, "\" variant: \n", url url, "\nexpectedStatusCode ", expectedStatusCode asString, "\nactualStatusCode   ", actualStatusCode asString, "\nactualBody         ", actualBody)
 			raise(m)
         )
 	)
 	
 	assertBody := method(
 		if(actualBody != expectedBody,
-            m := Sequence with(action, " action failed for \"", variant, "\" variant: \n", u url, "\nexpectedBody ", expectedBody, "\nactualBody   ", actualBody, "\n")
+            m := Sequence with(action, " action failed for \"", variant, "\" variant: \n", url url, "\nexpectedBody ", expectedBody, "\nactualBody   ", actualBody, "\n")
 			raise(m)
         )
 	)
@@ -205,6 +204,21 @@ VDBTest := UnitTest clone do(
         )
 
 		CountAssertion with("after") addParams("after=2009-10-29@12:46:17.533484") setExpectedBody("2") assert
+	)
+	
+	testSelectCountWithBeforeAndAfter := method(
+		url := URL with(VDBAssertion baseUrl .. "/?action=transaction")
+		result := url post("/?action=select&op=rm
+/test/2009-10-31@07:03:54.641231?action=mkdir
+/test/2009-10-31@07:03:54.662697?action=mkdir
+/test/2009-10-31@07:03:54.688068?action=mkdir
+/test/2009-10-31@07:03:54.709236?action=mkdir
+/test/2009-10-31@07:03:54.731257?action=mkdir")
+		if(url statusCode == 500,
+		    Exception raise("Error in transaction setting up testSelectCountWithBeforeAndAfter: " .. result)
+		)
+		
+		CountAssertion addParams("after=2009-10-17@07:14:11.547574", "before=2009-10-31@06:44:11.547646") setExpectedBody("0") assert
 	)
     
     SizesAssertion := SelectAssertion clone setOp("sizes")
