@@ -1,4 +1,6 @@
 #include "Yajl_extras.h"
+#include <stdio.h>
+#include <string.h>
 
 void yajl_gen_cstring(yajl_gen self, const char *s)
 {

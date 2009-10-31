@@ -5,6 +5,26 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "Pool.h"
+
+Datum *Datum_poolNew(void)
+{
+	return GLOBAL_POOL_ALLOC(Datum)
+}
+
+Datum *Datum_poolNewWithCString_(const char *s)
+{
+	Datum *self = Datum_poolNew();
+	Datum_setCString_(self, s);
+	return self;
+}
+
+Datum *Datum_poolNewWithData_size_(const char *data, size_t size)
+{
+	Datum *self = Datum_poolNew();
+	Datum_setData_size_(self, data, size);
+	return self;
+}
 
 Datum *Datum_new(void)
 {

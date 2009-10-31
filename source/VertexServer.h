@@ -15,7 +15,6 @@
 typedef struct
 {
 	PDB *pdb;
-	Pool *pool;
 	
 	struct evhttp *httpd;
 	struct evhttp_request *request;

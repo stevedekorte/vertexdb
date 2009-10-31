@@ -7,22 +7,21 @@
 #include <sys/queue.h>
 #include <stdlib.h>  
 
-#include <tcutil.h>
-#include <tcbdb.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <string.h>
-
 #define PNODE_ID_LENGTH 9
+
+#include "Pool.h"
+
+PNode *PNode_poolNew(void)
+{
+	return GLOBAL_POOL_ALLOC(PNode)
+}
 
 PNode *PNode_new(void)
 {
 	PNode *self = calloc(1, sizeof(PNode));
 	self->pid           = Datum_new(); // pid
 	self->pidPath       = Datum_new(); // pid/m/
-	self->key           = Datum_new(); // key
 	self->keyPath       = Datum_new(); // pid/m/key
-	self->value         = Datum_new();
 	self->sizePath      = Datum_new();
 	self->parentPid     = Datum_new();
 	
@@ -39,9 +38,7 @@ void PNode_free(PNode *self)
 	PNode_close(self);
 	Datum_free(self->pid);
 	Datum_free(self->pidPath);
-	Datum_free(self->key);
 	Datum_free(self->keyPath);
-	Datum_free(self->value);
 	Datum_free(self->sizePath);
 	Datum_free(self->parentPid);
 	
@@ -87,15 +84,18 @@ void PNode_setPdb_(PNode *self, void *pdb)
 
 void PNode_open(PNode *self)
 {
-	self->cursor = tcbdbcurnew(((PDB *)self->pdb)->db);
+	//PDB *pdb = (PDB *)self->pdb;
+	self->storeCursor = StoreCursor_new();
+	StoreCursor_setStore_(self->storeCursor, ((PDB *)self->pdb)->store);
+	StoreCursor_open(self->storeCursor);
 }
 
 void PNode_close(PNode *self)
 {
-	if (self->cursor)
+	if (self->storeCursor)
 	{
-		tcbdbcurdel(self->cursor);
-		self->cursor = 0x0;
+		StoreCursor_free(self->storeCursor);
+		self->storeCursor = 0x0;
 	}
 }
 
@@ -135,24 +135,20 @@ Datum *PNode_at_(PNode *self, Datum *k)
 Datum *PNode_atCString_(PNode *self, const char *k)
 {
 	int size;
-	void *value;
+	void *v;
 	
 	Datum_copy_(self->keyPath, self->pidPath);
 	Datum_appendCString_(self->keyPath, k);
 	 
-	value = PDB_at_(self->pdb, Datum_data(self->keyPath), (int)Datum_size(self->keyPath), &size);
+	v = PDB_at_(self->pdb, Datum_data(self->keyPath), (int)Datum_size(self->keyPath), &size);
 	
-	
-	if (value != 0x0)
+	if (v != 0x0)
 	{
-		Datum_setData_size_(self->value, value, size);
-		free(value);
-		//printf("key = '%s' value = '%s'\n", Datum_data(self->keyPath), Datum_data(self->value));
-		return self->value;
+		Datum *value = Datum_poolNewWithData_size_(v, size);
+		free(v);
+		return value;
 	}
-	
-	//printf("key = '%s' value = %p\n", Datum_data(self->keyPath), (void *)value);
-	
+		
 	return 0x0;
 }
 
@@ -243,9 +239,7 @@ long PNode_size(PNode *self)
 	if (value)
 	{
 		long sizeValue = atoi(value);
-		//Datum_setData_size_(self->value, value, size);
 		free(value);
-		//printf("%s = %i\n", Datum_data(self->sizePath), sizeValue);
 		return sizeValue;
 	}
 
@@ -294,11 +288,11 @@ int PNode_decrementSize(PNode *self)
 
 void PNode_first(PNode *self) // returns 0 when at end
 {
-	tcbdbcurjump(self->cursor, Datum_data(self->pidPath), (int)Datum_size(self->pidPath));
+	StoreCursor_jump(self->storeCursor, Datum_data(self->pidPath), (int)Datum_size(self->pidPath));
 	
 	if(!PNode_key(self))
 	{
-		tcbdbcurnext(self->cursor);
+		StoreCursor_next(self->storeCursor);
 	}
 }
 
@@ -306,18 +300,18 @@ void PNode_jump_(PNode *self, Datum *k)
 {
 	Datum_copy_(self->keyPath, self->pidPath);
 	Datum_append_(self->keyPath, k);
-	tcbdbcurjump(self->cursor, Datum_data(self->keyPath), (int)Datum_size(self->keyPath));
+	StoreCursor_jump(self->storeCursor, Datum_data(self->keyPath), (int)Datum_size(self->keyPath));
 }
 
 int PNode_next(PNode *self) // returns 0 when at end
 {
-	tcbdbcurnext(self->cursor);
+	StoreCursor_next(self->storeCursor);
 	return PNode_key(self) != 0;
 }
 
 int PNode_previous(PNode *self)
 {
-	tcbdbcurprev(self->cursor);
+	StoreCursor_previous(self->storeCursor);
 	return PNode_key(self) != 0;
 }
 
@@ -331,7 +325,7 @@ void PNode_setKey_(PNode *self, Datum *d)
 Datum *PNode_key(PNode *self)
 {
 	int size;
-	char *ks = tcbdbcurkey(self->cursor, &size);
+	char *ks = StoreCursor_key(self->storeCursor, &size);
       
 	//if (ks == 0x0 || size == 0) return 0x0;
 	if (ks == 0x0) return 0x0;
@@ -339,9 +333,9 @@ Datum *PNode_key(PNode *self)
 	if(Datum_isBeginningOfCString_(self->pidPath, ks)) 
 	{
 	   const char *subpath = ks + Datum_size(self->pidPath);
-	   Datum_setCString_(self->key, subpath);
+	   Datum *key = Datum_poolNewWithCString_(subpath);
 	   free(ks);
-	   return self->key;
+	   return key;
 	}
    
 	free(ks);
@@ -351,13 +345,13 @@ Datum *PNode_key(PNode *self)
 Datum *PNode_value(PNode *self)
 {
 	int size;
-	char *v = tcbdbcurval(self->cursor, &size);
+	char *v = StoreCursor_value(self->storeCursor, &size);
 	
 	if (v) 
 	{
-		Datum_setData_size_(self->value, v, size);
+		Datum *value = Datum_poolNewWithData_size_(v, size);
 		free(v);
-		return self->value;
+		return value;
 	}
 	
 	return 0x0;
@@ -365,7 +359,7 @@ Datum *PNode_value(PNode *self)
 
 int PNode_doesExist(PNode *self)
 {
-	tcbdbcurjump(self->cursor, Datum_data(self->pid), (int)Datum_size(self->pid));
+	StoreCursor_jump(self->storeCursor, Datum_data(self->pid), (int)Datum_size(self->pid));
 	return PNode_key(self) != 0x0;
 }
 
@@ -423,7 +417,6 @@ int PNode_createMoveToKey_(PNode *self, Datum *key)
 
 PNode *PNode_nodeAt_(PNode *self, Datum *k)
 {	
-	// hack: we keep self->value empty and don't fetch it if keysOnly != 0
 	Datum *v = PNode_at_(self, k);
 	
 	if (v)
@@ -437,32 +430,30 @@ PNode *PNode_nodeAt_(PNode *self, Datum *k)
 	return 0x0;
 }
 
+/*
 PNode *PNode_newCopy(PNode *self, int keysOnly)
 {	
-	// hack: we keep self->value empty and don't fetch it if keysOnly != 0
 	Datum *key;
 	PNode *target = PNode_new();
 
 	PNode_setPdb_(target, self->pdb);
 	PNode_create(target);
 	PNode_first(self);
-	
-	Datum_clear(self->value);
-	
+		
 	while ((key = PNode_key(self)))
 	{
 		if (!keysOnly) PNode_value(self);
-		PNode_atPut_(target, key, self->value);
+		PNode_atPut_(target, key, PNode_value(self));
 		PNode_next(self);
 	}
 	
 	return target;
 }
+*/
 
 /*
 int PNode_mergeTo_(PNode *self, PNode *destNode, int keysOnly)
 {	
-	// hack: we keep self->value empty and don't fetch it if keysOnly != 0
 	Datum *key;
 	
 	PNode_first(self);
@@ -491,7 +482,7 @@ int PNode_mergeTo_(PNode *self, PNode *destNode, int keysOnly)
 
 void PNode_jumpToCurrentKey(PNode *self)
 {
-	tcbdbcurjump(self->cursor, Datum_data(self->keyPath), (int)Datum_size(self->keyPath));
+	StoreCursor_jump(self->storeCursor, Datum_data(self->keyPath), (int)Datum_size(self->keyPath));
 }
 
 void PNode_removeAtCursor(PNode *self)
@@ -509,8 +500,7 @@ void PNode_removeAtCursor(PNode *self)
 		if (nk) nextKey = Datum_clone(nk);
 		PNode_removeAt_(self, currentKey);
 		
-		//tcbdbcurdel(self->cursor);
-		//self->cursor = tcbdbcurnew(((PDB *)self->pdb)->db);
+		//StoreCursor_remove(self->storeCursor);
 		
 		if (nextKey) PNode_jump_(self, nextKey);
 		
@@ -521,14 +511,14 @@ void PNode_removeAtCursor(PNode *self)
 /*
 	PDB_willWrite(self->pdb);
 	
-	if(tcbdbcurout(self->cursor))
+	if(StoreCursor_remove(self->storeCursor))
 	{
 		PNode_decrementSize(self);
 		PNode_jumpToCurrentKey(self);
 	}
 	else 
 	{
-		printf("PNode warning: tcbdbcurout failed\n");
+		printf("PNode warning: remove failed\n");
 	}
 */
 }
@@ -541,7 +531,7 @@ int PNode_remove(PNode *self)
 	while ((k = PNode_key(self)))
 	{
 		PDB_willWrite(self->pdb);
-		if(!tcbdbcurout(self->cursor)) break;
+		if(!StoreCursor_remove(self->storeCursor)) break;
 		removeCount ++;
 	}
 	
@@ -552,29 +542,6 @@ int PNode_remove(PNode *self)
 	
 	return removeCount;
 }
-
-/*
-Datum *PNode_valueFromDerefKeyToPath_(PNode *self, Datum *derefPath)
-{
-	Datum *k = PNode_key(self);
-	PNode *pn = PNode_new();
-
-	PNode_setPdb_(pn, self->pdb);
-
-	if (!k) goto done;
-	
-	PNode_moveToPath_(pn, derefPath);
-	k = PNode_at_(pn, k);
-	if (!k) goto done;
-	
-	Datum_copy_(self->value, k);
-	return self->value;
-	
-	done:
-	PNode_free(pn);
-	return 0x0;
-}
-*/
 
 void PNode_setToRoot(PNode *self)
 {
@@ -715,7 +682,7 @@ int PNode_takePidFromCursor(PNode *self) // returns 0 on success
 {
 	//long currentPid = Datum_asLong(self->pid);
 	int size;
-	char *ks = tcbdbcurkey(self->cursor, &size);
+	char *ks = StoreCursor_key(self->storeCursor, &size);
 	
 	if (ks == 0x0) return -1;
 
@@ -749,7 +716,7 @@ int PNode_moveToNextNode(PNode *self) // returns slot count or a negative number
 	
 	for(;;)
 	{
-		if(!tcbdbcurnext(self->cursor)) return -1;
+		if(!StoreCursor_next(self->storeCursor)) return -1;
 		if (PNode_key(self) == 0) break;
 	}
 	
@@ -995,18 +962,13 @@ int PNode_op_rm(PNode *self, Datum *d)
 	while (k = PQuery_key(q))
 	{
 		PDB_willWrite(self->pdb);
-		if(!tcbdbcurout(self->cursor)) break;
+		if(!StoreCursor_remove(self->storeCursor)) break;
 		
 		// HACK to avoid skipping a step by backing up in the reverse enum direction before calling PQuery_enumerate
 		if(PQuery_stepDirection(q) == 1)
 		{
-			tcbdbcurprev(self->cursor);
+			StoreCursor_previous(self->storeCursor);
 		}
-		/*else 
-		{
-			tcbdbcurnext(self->cursor);
-		}
-		*/
 
 		removeCount ++;
 		//count += PNode_removeAt_(self, k);
@@ -1051,7 +1013,7 @@ int PNode_op_html(PNode *self, Datum *d)
 
 Datum *PNode_metaSlotFor_(PNode *self, Datum *key)
 {
-	Datum *d = PDB_allocDatum(self->pdb);
+	Datum *d = Datum_poolNew();
 	Datum_copy_(d, self->pid);
 	Datum_appendCString_(d, "/m/");
 	Datum_append_(d, key);
@@ -1080,7 +1042,7 @@ Datum *PNode_metaAt_(PNode *self, Datum *d)
 		
 		if (v)
 		{
-			Datum *value = PDB_allocDatum(self->pdb);
+			Datum *value = Datum_poolNew();
 			Datum_setData_size_(value, v, vSize);
 			return value;
 		}
