@@ -37,6 +37,7 @@ typedef struct
 	Datum *currentUser;
 		
 	yajl_gen yajl;
+	int isClosing;
 } PDB;
 
 PDB *PDB_new(void);

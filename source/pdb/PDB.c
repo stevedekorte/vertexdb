@@ -185,7 +185,9 @@ int PDB_open(PDB *self)
 void PDB_close(PDB *self)
 {
 	//if (self->store)
+	if(!self->isClosing)
 	{
+		self->isClosing = 1;
 		PDB_commit(self); // right thing to do?
 		//PDB_abort(self);
 		Log_Printf("PDB: closing...\n");
@@ -193,6 +195,7 @@ void PDB_close(PDB *self)
 		Log_Printf("PDB: closed\n");
 		//self->store = 0x0;		
 		if (self->useBackups) File_remove(self->isOpenFile);
+		self->isClosing = 0;
 	}
 }
 
