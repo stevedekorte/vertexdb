@@ -1,60 +1,31 @@
 #include "PDB.h"
 #include "List.h"
-#include <err.h>
-#include <event.h>
-#include <evhttp.h>
-#include "RunningStat.h"
 #include "CHash.h"
 #include "Pool.h"
 #include "Yajl_extras.h"
-
-#define HTTP_SERVERERROR 500
-#define HTTP_SERVERERROR_MESSAGE "Internal Server Error"
-#define HTTP_OK_MESSAGE	"OK"
+#include "HttpServer.h"
 
 typedef struct
 {
 	PDB *pdb;
 	
-	struct evhttp *httpd;
-	struct evhttp_request *request;
-	int port;
+	HttpServer *httpServer;
+	HttpRequest *httpRequest;
+	HttpResponse *httpResponse;
+
+	yajl_gen yajl;
 
 	int isDaemon;
 	const char *logPath;
 	const char *pidPath;
-	
-	//Datum *staticPath;
-	
+		
 	CHash *actions;
-	CHash *query;
 	CHash *ops;
 	
-	Datum *emptyDatum;
-	Datum *uriPath;
-	
-	Datum *cookie;
-	Datum *userPath;
-	Datum *userId;
-
-	Datum *post;
-	
-	size_t requestCount;
-	size_t writesPerCommit;
 	time_t lastBackupTime;
-	time_t lastStatsUpdateTime;
 	
-	int shutdown;
-	Datum *error;
-	Datum *result;
-	int isHtml;
-	
-	RunningStat *rstat;
-	size_t requestsPerSample;
-	yajl_gen yajl;
-	
+	Datum *result;	
 	int debug;
-	int hardSync;
 } VertexServer;
 
 typedef int (VertexAction)(VertexServer *);
@@ -62,6 +33,7 @@ typedef int (VertexAction)(VertexServer *);
 VertexServer *VertexServer_new(void);
 void VertexServer_free(VertexServer *self);
 
+// command line options
 void VertexServer_setPort_(VertexServer *self, int port);
 void VertexServer_setDbPath_(VertexServer *self, char *path);
 void VertexServer_setLogPath_(VertexServer *self, const char *path);
@@ -70,9 +42,12 @@ void VertexServer_setIsDaemon_(VertexServer *self, int isDaemon);
 void VertexServer_setDebug_(VertexServer *self, int aBool);
 void VertexServer_setHardSync_(VertexServer *self, int aBool);
 
+// request processing
 int VertexServer_process(VertexServer *self);
 int VertexServer_run(VertexServer *self);
 int VertexServer_shutdown(VertexServer *self);
-
+void VertexServer_requestHandler(void *arg);
+ 
+// apis
 int VertexServer_api_collectGarbage(VertexServer *self);
 int VertexServer_api_shutdown(VertexServer *self);

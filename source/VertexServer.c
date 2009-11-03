@@ -49,10 +49,6 @@ struct fuse_operations {
 #include <signal.h>
 #include <unistd.h>
 
-#include <err.h>
-#include <event.h>
-#include <evhttp.h>
-
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
@@ -65,15 +61,6 @@ struct fuse_operations {
 //#define COMMIT_PERIODICALLY 1
 
 static VertexServer *globalVertexServer = 0x0;
-
-// ---------------------------------------------------------
-
-void Datum_decodeUri(Datum *self)
-{
-	char *k = evhttp_decode_uri(Datum_data(self));
-	Datum_setCString_(self, k);
-	free(k);
-}
 
 // ----------------------------------------------------------
 
@@ -90,17 +77,19 @@ VertexServer *VertexServer_new(void)
 {
 	VertexServer *self = calloc(1, sizeof(VertexServer));
 	globalVertexServer = self;
-	self->port = 8080;
 	srand((clock() % INT_MAX));
 	
 	self->pdb   = PDB_new();
 	VertexServer_setupYajl(self);
-	
-	
-	self->query = CHash_new();	
-	CHash_setEqualFunc_(self->query, (CHashEqualFunc *)Datum_equals_);
-	CHash_setHash1Func_(self->query, (CHashHashFunc *)Datum_hash1);
-	CHash_setHash2Func_(self->query, (CHashHashFunc *)Datum_hash2);
+	self->httpServer = HttpServer_new();
+	HttpServer_setPort_(self->httpServer, 8080);
+	HttpServer_setHost_(self->httpServer, "127.0.0.1");
+	HttpServer_setDelegate_(self->httpServer, self);
+	HttpServer_setRequestCallback_(self->httpServer, VertexServer_requestHandler);
+
+	self->httpRequest = HttpServer_request(self->httpServer);
+	self->httpResponse = HttpServer_response(self->httpServer);
+	self->result = HttpResponse_content(self->httpResponse);
 
 	self->actions = CHash_new();
 	CHash_setEqualFunc_(self->actions, (CHashEqualFunc *)Datum_equals_);
@@ -111,145 +100,64 @@ VertexServer *VertexServer_new(void)
 	CHash_setEqualFunc_(self->ops, (CHashEqualFunc *)Datum_equals_);
 	CHash_setHash1Func_(self->ops, (CHashHashFunc *)Datum_hash1);
 	CHash_setHash2Func_(self->ops, (CHashHashFunc *)Datum_hash2);
-
-	self->emptyDatum = Datum_new();
-	self->uriPath    = Datum_new(); 
-	//self->staticPath = Datum_new(); 
-
-	self->cookie     = Datum_new(); 
-	self->userPath   = Datum_new(); 
-	self->userId     = Datum_new(); 
-	
-	self->post       = Datum_new(); 
-		
-	self->writesPerCommit   = 1000;
-	self->requestsPerSample = 10000;
-	self->rstat = RunningStat_new();
+			
 	self->lastBackupTime = time(NULL);
-
-	self->error = Datum_new(); 
-	self->result = Datum_new(); 
-
-
 	return self;
 }
 
 void VertexServer_free(VertexServer *self)
 {
 	PDB_free(self->pdb);
+	HttpServer_free(self->httpServer);
 	Pool_freeGlobalPool();
 	
 	CHash_free(self->actions);
 	CHash_free(self->ops);
-	CHash_free(self->query);
-	Datum_free(self->emptyDatum);
-	Datum_free(self->uriPath);
-	//Datum_free(self->staticPath);
-
-	Datum_free(self->cookie);
-	Datum_free(self->userPath);
-	Datum_free(self->userId);
-	Datum_free(self->error);
 	
-	Datum_free(self->post);
-	Datum_free(self->error);
-	Datum_free(self->result);
-	RunningStat_free(self->rstat);
-
-	if(self->yajl) 	yajl_gen_free(self->yajl);
-
+	if (self->yajl)
+	{
+		yajl_gen_free(self->yajl);
+	}
+	
 	free(self);
 }
 
-void VertexServer_setError_(VertexServer *self, const char *s)
-{
-	Datum_setCString_(self->error, s);
-}
-
-void VertexServer_appendErrorDatum_(VertexServer *self, Datum *d)
-{
-	Datum_append_(self->error, d);
-}
 
 void VertexServer_setPort_(VertexServer *self, int port)
 {
-	self->port = port;
+	HttpServer_setPort_(self->httpServer, port);
 }
+
+void VertexServer_setErrorCString_(VertexServer *self, const char *s)
+{
+	HttpResponse_setContentCString_(self->httpResponse, s);
+	HttpResponse_setStatusCode_(self->httpResponse, 500);
+}
+
+void VertexServer_appendError_(VertexServer *self, Datum *d)
+{
+	HttpResponse_appendContent_(self->httpResponse, d);
+}
+
 
 /*
-void VertexServer_setStaticPath_(VertexServer *self, char *path)
-{
-	Datum_setCString_(self->staticPath, path);
-}
-
 void VertexServer_showUri(VertexServer *self)
 {
-	printf("request: '%s'\n", Datum_data(self->uriPath));
+	printf("request: '%s'\n", Datum_data(HttpRequest_uriPath(self->httpRequest)));
 }
 */
 
-void *CHash_atString_(CHash *self, const char *s)
-{
-	DATUM_STACKALLOCATED(k, s);
-	return CHash_at_(self, k);
-}
-
-void VertexServer_parseUri_(VertexServer *self, const char *uri)
-{
-	int index;
-	Datum *uriDatum = Datum_poolNew();
-	Datum_setCString_(uriDatum, uri);
-	
-	if(self->debug) { Log_Printf_("request: %s\n", uri); }
-	
-	CHash_clear(self->query);
-	
-	Datum_setSize_(self->uriPath, 0);
-	index = Datum_from_beforeChar_into_(uriDatum, 1, '?', self->uriPath);
-	
-	for (;;)
-	{
-		Datum *key   = Datum_poolNew();
-		Datum *value = Datum_poolNew();
-		
-		index = Datum_from_beforeChar_into_(uriDatum, index + 1, '=', key);
-		Datum_decodeUri(key);
-		Datum_nullTerminate(key);
-		if (Datum_size(key) == 0) break;
-		
-		index = Datum_from_beforeChar_into_(uriDatum, index + 1, '&', value);
-		Datum_decodeUri(value);
-		Datum_nullTerminate(value);
-
-		CHash_at_put_(self->query, key, value);
-		if (Datum_size(value) == 0) break;
-	}	
-}
-
-Datum *VertexServer_queryValue_(VertexServer *self, const char *key)
-{
-	Datum *value = CHash_atString_(self->query, key);
-	return value ? value : self->emptyDatum;
-}
-
-void VertexServer_vendCookie(VertexServer *self)
-{
-	Datum_setCString_(self->cookie, "userId=");
-	Datum_append_(self->cookie, self->userId);
-	Datum_appendCString_(self->cookie, "; expires=Fri, 31-Dec-2200 12:00:00 GMT; path=/;");
-	evhttp_add_header(self->request->output_headers, "Set-Cookie", Datum_data(self->cookie));
-}
 
 // --- API -------------------------------------------------------------
 
 int VertexServer_api_setCursorPathOnNode_(VertexServer *self, PNode *node)
 {	
-	int r = PNode_moveToPathIfExists_(node, self->uriPath);
+	int r = PNode_moveToPathIfExists_(node, HttpRequest_uriPath(self->httpRequest));
 	
 	if (r)
 	{
-		VertexServer_setError_(self, "path does not exist: ");
-		VertexServer_appendErrorDatum_(self, self->uriPath);
+		VertexServer_setErrorCString_(self, "path does not exist: ");
+		VertexServer_appendError_(self, HttpRequest_uriPath(self->httpRequest));
 	}
 	
 	return r;
@@ -260,38 +168,31 @@ int VertexServer_api_setCursorPathOnNode_(VertexServer *self, PNode *node)
 int VertexServer_api_size(VertexServer *self)
 {
 	PNode *node = PDB_allocNode(self->pdb);
-	//Datum *value = VertexServer_queryValue_(self, "mode");
-
-	if (VertexServer_api_setCursorPathOnNode_(self, node)) return 2;
-	
+	if (VertexServer_api_setCursorPathOnNode_(self, node)) return 2;	
 	Datum_appendLong_(self->result, (long)PNode_size(node));
-
 	return 0;
 }
 
 int VertexServer_api_chmod(VertexServer *self)
 {
 	PNode *node = PDB_allocNode(self->pdb);
-	//Datum *value = VertexServer_queryValue_(self, "mode");
-
+	//Datum *value = HttpRequest_queryValue_(self->httpRequest, "mode");
 	if (VertexServer_api_setCursorPathOnNode_(self, node)) return 2;
-	
 	//PNode_atPut_(node, key, value);
-
 	return 0;
 }
 
 int VertexServer_api_chown(VertexServer *self)
 {
 	PNode *node = PDB_allocNode(self->pdb);
-	//Datum *owner = VertexServer_queryValue_(self, "owner");
+	//Datum *owner = HttpRequest_queryValue_(self->httpRequest, "owner");
 	
 	if (VertexServer_api_setCursorPathOnNode_(self, node)) return 2;
 	
 	/*
 	if(!PNode_hasOwner_(node, VertexServer_user(self))
 	{
-		Datum_appendCString_(self->error, "only the owner can change this node's owner");
+		 "only the owner can change this node's owner"
 		return -1;
 	}
 	*/
@@ -303,14 +204,21 @@ int VertexServer_api_chown(VertexServer *self)
 
 void VertexServer_setupPQuery_(VertexServer *self, PQuery *q)
 {
-	PQuery_setId_(q, VertexServer_queryValue_(self, "id"));
-	PQuery_setAfter_(q, VertexServer_queryValue_(self, "after"));
-	PQuery_setBefore_(q, VertexServer_queryValue_(self, "before"));
-	PQuery_setSelectCountMax_(q, Datum_asInt(VertexServer_queryValue_(self, "count")));
-	PQuery_setWhereKey_(q, VertexServer_queryValue_(self, "whereKey"));
-	PQuery_setWhereValue_(q, VertexServer_queryValue_(self, "whereValue"));
-	PQuery_setAttribute_(q, VertexServer_queryValue_(self, "attribute"));
-	//PQuery_setMode_(q, VertexServer_queryValue_(self, "mode"));
+	PQuery_setId_(q, 
+		HttpRequest_queryValue_(self->httpRequest, "id"));
+	PQuery_setAfter_(q, 
+		HttpRequest_queryValue_(self->httpRequest, "after"));
+	PQuery_setBefore_(q, 
+		HttpRequest_queryValue_(self->httpRequest, "before"));
+	PQuery_setSelectCountMax_(q, 
+		Datum_asInt(HttpRequest_queryValue_(self->httpRequest, "count")));
+	PQuery_setWhereKey_(q, 
+		HttpRequest_queryValue_(self->httpRequest, "whereKey"));
+	PQuery_setWhereValue_(q, 
+		HttpRequest_queryValue_(self->httpRequest, "whereValue"));
+	PQuery_setAttribute_(q, 
+		HttpRequest_queryValue_(self->httpRequest, "attribute"));
+	//PQuery_setMode_(q, HttpRequest_queryValue_(self->httpRequest, "mode"));
 }
 
 int VertexServer_api_select(VertexServer *self)
@@ -322,7 +230,7 @@ int VertexServer_api_select(VertexServer *self)
 	
 	if (VertexServer_api_setCursorPathOnNode_(self, node)) return 2;
 	
-	opName = (Datum *)CHash_atString_(self->query, "op");
+	opName = HttpRequest_queryValue_(self->httpRequest, "op");
 
 	if (opName)
 	{ 
@@ -334,7 +242,7 @@ int VertexServer_api_select(VertexServer *self)
 		}
 	}
 
-	Datum_appendCString_(self->error, "invalid node op");
+	VertexServer_setErrorCString_(self, "invalid node op");
 	
 	return -1;
 }
@@ -342,19 +250,15 @@ int VertexServer_api_select(VertexServer *self)
 int VertexServer_api_show(VertexServer *self)
 {
 	PNode *node = PDB_allocNode(self->pdb);
-	//Datum *value = VertexServer_queryValue_(self, "mode");
-
 	if (VertexServer_api_setCursorPathOnNode_(self, node)) return 2;
-	
 	Datum_appendLong_(self->result, (long)PNode_size(node));
-
 	return 0;
 }
 
 int VertexServer_api_rm(VertexServer *self)
 {
 	PNode *node = PDB_allocNode(self->pdb);
-	Datum *key = VertexServer_queryValue_(self, "key");	
+	Datum *key = HttpRequest_queryValue_(self->httpRequest, "key");	
 	if (VertexServer_api_setCursorPathOnNode_(self, node)) return 0; // ignore if it doesn't exist
 	PNode_removeAt_(node, key);
 	return 0;
@@ -363,7 +267,7 @@ int VertexServer_api_rm(VertexServer *self)
 int VertexServer_api_read(VertexServer *self)
 {
 	PNode *node = PDB_allocNode(self->pdb);
-	Datum *key = VertexServer_queryValue_(self, "key");	
+	Datum *key = HttpRequest_queryValue_(self->httpRequest, "key");	
 	Datum *value;
 	
 	if (VertexServer_api_setCursorPathOnNode_(self, node)) return 2;
@@ -386,15 +290,15 @@ int VertexServer_api_read(VertexServer *self)
 int VertexServer_api_write(VertexServer *self)
 {
 	PNode *node = PDB_allocNode(self->pdb);
-	Datum *mode  = VertexServer_queryValue_(self, "mode");
-	Datum *key   = VertexServer_queryValue_(self, "key");
-	Datum *value = VertexServer_queryValue_(self, "value");
+	Datum *mode  = HttpRequest_queryValue_(self->httpRequest, "mode");
+	Datum *key   = HttpRequest_queryValue_(self->httpRequest, "key");
+	Datum *value = HttpRequest_queryValue_(self->httpRequest, "value");
 	
 	/*
 	if(Datum_size(value) == 0)
 	{
 		value = self->post;
-		//VertexServer_setError_(self, "empty keys not accepted");
+		//VertexServer_setErrorCString_(self, "empty keys not accepted");
 		//return -1;
 	}
 	*/
@@ -402,15 +306,15 @@ int VertexServer_api_write(VertexServer *self)
 	/*
 	if(Datum_size(value) == 0)
 	{
-		VertexServer_setError_(self, "empty values not accepted");
+		VertexServer_setErrorCString_(self, "empty values not accepted");
 		return -1;
 	}
 	*/
 
-	if (PNode_moveToPathIfExists_(node, self->uriPath) != 0) 
+	if (PNode_moveToPathIfExists_(node, HttpRequest_uriPath(self->httpRequest)) != 0) 
 	{
-		VertexServer_setError_(self, "write path does not exist: ");
-		VertexServer_appendErrorDatum_(self, self->uriPath);
+		VertexServer_setErrorCString_(self, "write path does not exist: ");
+		VertexServer_appendError_(self, HttpRequest_uriPath(self->httpRequest));
 		return -1;
 	}	
 	
@@ -431,21 +335,21 @@ int VertexServer_api_link(VertexServer *self)
 	PNode *toNode   = PDB_allocNode(self->pdb);
 	PNode *fromNode = PDB_allocNode(self->pdb);
 	
-	Datum *key      = VertexServer_queryValue_(self, "key");
-	Datum *fromPath = self->uriPath;
-	Datum *toPath   = VertexServer_queryValue_(self, "toPath");
+	Datum *key      = HttpRequest_queryValue_(self->httpRequest, "key");
+	Datum *fromPath = HttpRequest_uriPath(self->httpRequest);
+	Datum *toPath   = HttpRequest_queryValue_(self->httpRequest, "toPath");
 
 	if (PNode_moveToPathIfExists_(toNode, toPath) != 0) 
 	{
-		VertexServer_setError_(self, "to path does not exist: ");
-		VertexServer_appendErrorDatum_(self, toPath);
+		VertexServer_setErrorCString_(self, "to path does not exist: ");
+		VertexServer_appendError_(self, toPath);
 		return -1;
 	}
 		
 	if (PNode_moveToPathIfExists_(fromNode, fromPath) != 0) 
 	{
-		VertexServer_setError_(self, "from path does not exist: ");
-		VertexServer_appendErrorDatum_(self, fromPath);
+		VertexServer_setErrorCString_(self, "from path does not exist: ");
+		VertexServer_appendError_(self, fromPath);
 		return -1;
 	}	
 
@@ -457,24 +361,27 @@ int VertexServer_api_link(VertexServer *self)
 int VertexServer_api_transaction(VertexServer *self)
 {
 	Datum *uri = Datum_new();
+	Datum *post = Datum_new();
 	int error = 0;
 	int r, result;
 	
 	PDB_commit(self->pdb);
 	
+	Datum_copy_(post, HttpRequest_postData(self->httpRequest));
+	
 	do
 	{
-		Datum_copy_(uri, self->post);
-		r = Datum_sepOnChars_with_(uri, "\n", self->post);
+		Datum_copy_(uri, post);
+		r = Datum_sepOnChars_with_(uri, "\n", post);
 
 		if (Datum_size(uri) == 0) 
 		{
-			VertexServer_setError_(self, "empty line in transaction");
+			VertexServer_setErrorCString_(self, "empty line in transaction");
 			error = 1;
 			break;
 		}
 		
-		VertexServer_parseUri_(self, Datum_data(uri));
+		HttpRequest_parseUri_(self->httpRequest, Datum_data(uri));
 		error = VertexServer_process(self);
 		Pool_globalPoolFreeRefs();
 	} while ((r != -1) && (!error));
@@ -496,7 +403,7 @@ int VertexServer_api_transaction(VertexServer *self)
 
 int VertexServer_api_mkdir(VertexServer *self)
 {
-	PNode_moveToPath_(PDB_allocNode(self->pdb), self->uriPath);
+	PNode_moveToPath_(PDB_allocNode(self->pdb), HttpRequest_uriPath(self->httpRequest));
 	return 0;
 }
 
@@ -504,14 +411,14 @@ int VertexServer_api_queuePopTo(VertexServer *self)
 {
 	PNode *fromNode = PDB_allocNode(self->pdb);
 	PNode *toNode   = PDB_allocNode(self->pdb);
-	Datum *toPath   = VertexServer_queryValue_(self, "toPath");
+	Datum *toPath   = HttpRequest_queryValue_(self->httpRequest, "toPath");
 	
-	long ttl = Datum_asLong(VertexServer_queryValue_(self, "ttl"));
+	long ttl = Datum_asLong(HttpRequest_queryValue_(self->httpRequest, "ttl"));
 	
-	if (PNode_moveToPathIfExists_(fromNode, self->uriPath) != 0) 
+	if (PNode_moveToPathIfExists_(fromNode, HttpRequest_uriPath(self->httpRequest)) != 0) 
 	{
-		VertexServer_setError_(self, "from path does not exist: ");
-		VertexServer_appendErrorDatum_(self, self->uriPath);
+		VertexServer_setErrorCString_(self, "from path does not exist: ");
+		VertexServer_appendError_(self, HttpRequest_uriPath(self->httpRequest));
 		return -1;
 	}
 
@@ -568,21 +475,21 @@ int VertexServer_api_queueExpireTo(VertexServer *self)
 	PNode *fromNode = PDB_allocNode(self->pdb);
 	PNode *toNode   = PDB_allocNode(self->pdb);
 	PNode *itemNode = PDB_allocNode(self->pdb);
-	Datum *toPath = VertexServer_queryValue_(self, "toPath");
+	Datum *toPath = HttpRequest_queryValue_(self->httpRequest, "toPath");
 	unsigned int itemsExpired = 0;
 	
-	if (PNode_moveToPathIfExists_(fromNode, self->uriPath) != 0) 
+	if (PNode_moveToPathIfExists_(fromNode, HttpRequest_uriPath(self->httpRequest)) != 0) 
 	{
-		VertexServer_setError_(self, "from path does not exist: ");
-		VertexServer_appendErrorDatum_(self, self->uriPath);
+		VertexServer_setErrorCString_(self, "from path does not exist: ");
+		VertexServer_appendError_(self, HttpRequest_uriPath(self->httpRequest));
 		return -1;
 	}
 	
 	//PNode_moveToPath_(toNode, toPath);
 	if (PNode_moveToPathIfExists_(toNode, toPath) != 0) 
 	{
-		VertexServer_setError_(self, "to path does not exist: ");
-		VertexServer_appendErrorDatum_(self, toPath);
+		VertexServer_setErrorCString_(self, "to path does not exist: ");
+		VertexServer_appendError_(self, toPath);
 		return -1;
 	}
 	
@@ -641,61 +548,6 @@ int VertexServer_api_queueExpireTo(VertexServer *self)
 	return 0;
 }
 
-int VertexServer_api_newUser(VertexServer *self)
-{	
-	PNode *userNode = PDB_allocNode(self->pdb);
-	PNode *node = PDB_allocNode(self->pdb);
-	
-	PNode_moveToPathCString_(node, "users");
-	
-	do
-	{
-		Datum_makePidOfLength_(self->userId, USER_ID_LENGTH);
-	} while (PNode_at_(node, self->userId));
-	
-	PNode_create(userNode);
-	PNode_atPut_(node, self->userId, PNode_pid(userNode));
-		
-	VertexServer_vendCookie(self);
-	Datum_append_(self->result, self->userId);
-
-	return 0;
-}
-
-int VertexServer_api_login(VertexServer *self)
-{
-	Datum *email = VertexServer_queryValue_(self, "email");
-	Datum *inputPassword = VertexServer_queryValue_(self, "password");
-	Datum *v;
-	PNode *node = PDB_allocNode(self->pdb);
-	
-	PNode_moveToPathCString_(node, "indexes/user/email");
-	v = PNode_at_(node, email);
-	
-	if (!v)
-	{
-		VertexServer_setError_(self, "unknown user email address");
-		VertexServer_appendErrorDatum_(self, email);
-		return 2;
-	}
-	
-	Datum_copy_(self->userId, v);
-	Datum_setCString_(self->userPath, "users/");
-	Datum_append_(self->userPath, self->userId);
-	PNode_moveToPathIfExists_(node, self->userPath);
-	{
-		Datum *password = PNode_atCString_(node, "_password");
-		
-		if (!password || !Datum_equals_(password, inputPassword))
-		{
-			VertexServer_setError_(self, "wrong password");
-			return 2; // why 2?
-		}
-	}
-	
-	VertexServer_vendCookie(self);
-	return 0;
-}
 
 int VertexServer_backup(VertexServer *self)
 {
@@ -716,6 +568,7 @@ int VertexServer_backup(VertexServer *self)
 	return result;
 }
 
+/*
 void VertexServer_backupIfNeeded(VertexServer *self)
 {
 	if (self->requestCount % 10000 == 0) // so we don't call time() on every request
@@ -732,7 +585,9 @@ void VertexServer_backupIfNeeded(VertexServer *self)
 		}
 	}
 }
+*/
 
+/*
 void VertexServer_commitIfNeeded(VertexServer *self)
 {
 	size_t writeByteCount = PDB_bytesWaitingToCommit(self->pdb);
@@ -744,6 +599,7 @@ void VertexServer_commitIfNeeded(VertexServer *self)
 			(int)writeByteCount);
 	}
 }
+*/
 
 int VertexServer_api_backup(VertexServer *self)
 {
@@ -784,13 +640,6 @@ int VertexServer_api_collectGarbage(VertexServer *self)
 
 int VertexServer_api_showStats(VertexServer *self)
 {
-	/*
-	evbuffer_add_printf(self->buf, "runTimeInSeconds: %i\n", (int)(Date_secondsSinceNow(self->rstat->startDate)));
-	evbuffer_add_printf(self->buf, "requestsSinceStartup: %i\n", self->requestCount);
-	evbuffer_add_printf(self->buf, "aveMicrosecondsPerRequest: %i\n", (int)(1000000.0*RunningStat_aveTime(self->rstat)));
-	evbuffer_add_printf(self->buf, "samplesAveragedOver: %i\n", RunningStat_sampleCount(self->rstat) );
-	evbuffer_add_printf(self->buf, "requestPerSample: %i\n", self->requestsPerSample);
-	*/
 	return 0;
 }
 
@@ -809,28 +658,28 @@ int VertexServer_api_sync(VertexServer *self)
 int VertexServer_api_log(VertexServer *self)
 {
 	Log_Printf("LOG -----------------------------\n\n");
-	printf("%s\n", Datum_data(self->post));
+	printf("%s\n", Datum_data(HttpRequest_postData(self->httpRequest)));
 	printf("\n---------------------------------\n");
 	return 0;
 }
 
 int VertexServer_api_view(VertexServer *self)
 {
-	Datum *before = VertexServer_queryValue_(self, "before");
-	Datum *after = VertexServer_queryValue_(self, "after");
+	Datum *before = HttpRequest_queryValue_(self->httpRequest, "before");
+	Datum *after = HttpRequest_queryValue_(self->httpRequest, "after");
 	PNode *node = PDB_allocNode(self->pdb);
 	Datum *d = self->result;
 	int maxCount = 200;
 	
-	if (PNode_moveToPathIfExists_(node, self->uriPath) != 0) 
+	if (PNode_moveToPathIfExists_(node, HttpRequest_uriPath(self->httpRequest)) != 0) 
 	{
-		VertexServer_setError_(self, "path does not exist: ");
-		VertexServer_appendErrorDatum_(self, self->uriPath);
+		VertexServer_setErrorCString_(self, "path does not exist: ");
+		VertexServer_appendError_(self, HttpRequest_uriPath(self->httpRequest));
 		return -1;
 	}
 		Datum_appendCString_(d, "<html>");
 		Datum_appendCString_(d, "<title>");
-		Datum_append_(d, self->uriPath);
+		Datum_append_(d, HttpRequest_uriPath(self->httpRequest));
 		Datum_appendCString_(d, "</title>");
 		Datum_appendCString_(d, "<style>");
 		Datum_appendCString_(d, "body { font-family: sans; margin-top:2em; margin-left:2em; }");
@@ -845,7 +694,7 @@ int VertexServer_api_view(VertexServer *self)
 		Datum_appendCString_(d, "<body>\n");
 	
 	/*
-	if(Datum_size(self->uriPath) == 0)
+	if(Datum_size(HttpRequest_uriPath(self->httpRequest)) == 0)
 	{
 	Datum_appendCString_(d, "/");
 	}
@@ -854,7 +703,7 @@ int VertexServer_api_view(VertexServer *self)
 	*/
 		Datum_appendCString_(d, "<font class=path>");
 		Datum_appendCString_(d, "/");
-		Datum_append_(d, self->uriPath);
+		Datum_append_(d, HttpRequest_uriPath(self->httpRequest));
 		Datum_appendCString_(d, "</font>");
 		Datum_appendCString_(d, "<br>\n");
 	//}
@@ -881,7 +730,7 @@ int VertexServer_api_view(VertexServer *self)
 	if (Datum_size(after) && PNode_key(node))
 	{
 		Datum_appendCString_(d, "<a href=/");
-		Datum_append_(d, self->uriPath);
+		Datum_append_(d, HttpRequest_uriPath(self->httpRequest));
 		Datum_appendCString_(d, "?before=");
 		Datum_append_(d, PNode_key(node));
 		Datum_appendCString_(d, ">previous</a>");
@@ -926,8 +775,8 @@ int VertexServer_api_view(VertexServer *self)
 				
 				Datum_appendCString_(d, "<td style=\"line-height:1.5em\">");
 				Datum_appendCString_(d, "&nbsp;&nbsp;<a href=");
-				if(Datum_size(self->uriPath) != 0) Datum_appendCString_(d, "/");
-				Datum_append_(d, self->uriPath);
+				if(Datum_size(HttpRequest_uriPath(self->httpRequest)) != 0) Datum_appendCString_(d, "/");
+				Datum_append_(d, HttpRequest_uriPath(self->httpRequest));
 				Datum_appendCString_(d, "/");
 				Datum_append_(d, k);
 				Datum_appendCString_(d, "> ↠ ");
@@ -948,7 +797,7 @@ int VertexServer_api_view(VertexServer *self)
 	if(PNode_key(node))
 	{
 		Datum_appendCString_(d, "<a href=/");
-		Datum_append_(d, self->uriPath);
+		Datum_append_(d, HttpRequest_uriPath(self->httpRequest));
 		Datum_appendCString_(d, "?after=");
 		Datum_append_(d, PNode_key(node));
 		Datum_appendCString_(d, ">next</a><br>");
@@ -956,7 +805,7 @@ int VertexServer_api_view(VertexServer *self)
 	
 	Datum_appendCString_(d, "</body>\n");
 
-	self->isHtml = 1;
+	HttpResponse_setContentType_(self->httpResponse, "text/html;charset=utf-8");
 	return 0;
 }
 
@@ -1020,8 +869,8 @@ void VertexServer_setupActions(VertexServer *self)
 	VERTEX_SERVER_ADD_ACTION(transaction);
 	
 	// users / permissions
-	VERTEX_SERVER_ADD_ACTION(login);
-	VERTEX_SERVER_ADD_ACTION(newUser);
+	//VERTEX_SERVER_ADD_ACTION(login);
+	//VERTEX_SERVER_ADD_ACTION(newUser);
 	
 	VERTEX_SERVER_ADD_ACTION(chmod);
 	VERTEX_SERVER_ADD_ACTION(chown);
@@ -1050,9 +899,9 @@ void VertexServer_setupActions(VertexServer *self)
 
 int VertexServer_process(VertexServer *self)
 {	
-	Datum *actionName = (Datum *)CHash_atString_(self->query, "action");
+	Datum *actionName = (Datum *)HttpRequest_queryValue_(self->httpRequest, "action");
 
-	if (actionName)
+	if (Datum_size(actionName))
 	{ 
 		VertexAction *action = (VertexAction *)CHash_at_(self->actions, actionName);
 		
@@ -1066,121 +915,48 @@ int VertexServer_process(VertexServer *self)
 		return VertexServer_api_view(self);
 	}
 	
-	Datum_appendCString_(self->error, "invalid action");
+	VertexServer_setErrorCString_(self, "invalid action");
 
 	return -1;
 }
 
-void VertexServer_readAnyPostData(VertexServer *self)  
-{
-	struct evbuffer *evb = self->request->input_buffer;
-	Datum_setData_size_(self->post, (const char *)EVBUFFER_DATA(evb), EVBUFFER_LENGTH(evb));
-}
-
-void VertexServer_requestHandler(struct evhttp_request *req, void *arg)  
+void VertexServer_requestHandler(void *arg)  
 {  
-	VertexServer *self = arg;
-	const char *uri = evhttp_request_uri(req);
-	int result;
-	struct evbuffer *buf = evbuffer_new();
-	
-	self->request = req;
+	VertexServer *self = (VertexServer *)arg;
 	VertexServer_setupYajl(self); 
 	
-	VertexServer_readAnyPostData(self);
-			
-	if (strcmp(uri, "/favicon.ico") == 0)
-	{
-		evhttp_send_reply(self->request, HTTP_OK, HTTP_OK_MESSAGE, buf);
-	}
-	else
-	/*
-	if (strcmp(uri, "/") == 0)
-	{
-		VertexServer_serveFile_(self, "index.html");
-		goto done;
-	}
-	else
-	if (strstr(uri, "/static/") == uri)
-	{
-		VertexServer_serveFile_(self, uri + strlen("/static/"));
-		goto done;
-	}
-	else
-	*/
-	{
-		VertexServer_parseUri_(self, uri);
+	HttpResponse_setContentType_(self->httpResponse, "application/json;charset=utf-8");
 
-		Datum_clear(self->result);
-		self->isHtml = 0;
-		result = VertexServer_process(self);
-
-		if (result == 0)
+	int result = VertexServer_process(self);
+	Datum *content = HttpResponse_content(self->httpResponse);
+	
+	if (result == 0)
+	{
+		if (!Datum_size(content)) 
 		{
-			if (Datum_size(self->result))
-			{
-				Datum_nullTerminate(self->result);
-				evbuffer_add_printf(buf, "%s", Datum_data(self->result));
-			}
-			else
-			{
-				evbuffer_add_printf(buf, "null");
-			}
-
-			evhttp_add_header(self->request->output_headers, "Content-Type", self->isHtml ? "text/html;charset=utf-8" : "application/json;charset=utf-8");
-			
-			evhttp_send_reply(self->request, HTTP_OK, HTTP_OK_MESSAGE, buf);
+			Datum_setCString_(content, "null");
 		}
-		else
-		{
-			evhttp_add_header(self->request->output_headers, "Content-Type", "application/json;charset=utf-8");
-			if (Datum_size(self->error))
-			{
-				Datum_nullTerminate(self->error); 
-				
-				yajl_gen_clear(self->yajl);
-				yajl_gen_datum(self->yajl, self->error);
-				Datum_setYajl_(self->error, self->yajl);
-				
-				evbuffer_add_printf(buf, "%s", Datum_data(self->error));
-				
-				if(self->debug) 
-				{
-					Log_Printf_("REQUEST ERROR: %s\n", Datum_data(self->error));
-				}
-				
-				Datum_setSize_(self->error, 0);
-			}
-			else
-			{
-				evbuffer_add_printf(buf, "\"unknown error\"");
-			}
-			
-			evhttp_send_reply(self->request, HTTP_SERVERERROR, HTTP_SERVERERROR_MESSAGE, buf);		
-		}
+		Datum_nullTerminate(content); 
 	}
-	
-	evhttp_send_reply_end(self->request);
-	evbuffer_free(buf);
-	
-	#ifdef COMMIT_PERIODICALLY
-	VertexServer_commitIfNeeded(self);
-	#endif
-	
-	if(self->requestCount % self->requestsPerSample == 0)
+	else
 	{
-		Log_Printf__("STATS: %i requests, %i bytes to write\n", 
-			(int)self->requestCount, (int)PDB_bytesWaitingToCommit(self->pdb));
+		if (!Datum_size(content)) 
+		{
+			Datum_setCString_(content, "\"unknown error\"");
+		}
+		Datum_nullTerminate(content); 
+		
+		yajl_gen_clear(self->yajl);
+		yajl_gen_datum(self->yajl, content);
+		Datum_setYajl_(content, self->yajl);
+				
+		if(self->debug) { Log_Printf_("REQUEST ERROR: %s\n", Datum_data(content)); }
 	}
-
-	self->requestCount ++;
-	Pool_globalPoolFreeRefs();
 }
 
 int VertexServer_api_shutdown(VertexServer *self)
 {
-	globalVertexServer->shutdown = 1;
-	event_loopbreak();
+	HttpServer_shutdown(self->httpServer);
 	return 0;
 }
 
@@ -1226,7 +1002,7 @@ void VertexServer_setDebug_(VertexServer *self, int aBool)
 
 void VertexServer_setHardSync_(VertexServer *self, int aBool)
 {
-	self->hardSync = 1;
+	PDB_setHardSync_(self->pdb, aBool);
 }
 
 void VertexServer_writePidFile(VertexServer *self)
@@ -1289,34 +1065,12 @@ int VertexServer_openLog(VertexServer *self)
 	return 0;
 }
 
-void VertexServer_runEventLoop(VertexServer *self)
-{
-	event_init();
-	self->httpd = evhttp_start("127.0.0.1", self->port);
-	 
-	if (!self->httpd)
-	{
-		Log_Printf("evhttp_start failed - is another copy running on the same port?\n");
-		exit(-1);
-	}
-	
-	evhttp_set_timeout(self->httpd, 180);
-	evhttp_set_gencb(self->httpd, VertexServer_requestHandler, self);  
-	//Log_Printf_("libevent using: %s\n", event_get_action());
-	
-	while (!self->shutdown)
-	{
-		event_loop(EVLOOP_ONCE);
-	}
-}
-
 int VertexServer_run(VertexServer *self)
 {  	
 	Socket_SetDescriptorLimitToMax();
 	VertexServer_setupActions(self);
 	VertexServer_openLog(self);
 	Log_Printf("VertexServer_run\n");
-	
 	
 	if (self->isDaemon)
 	{
@@ -1334,23 +1088,18 @@ int VertexServer_run(VertexServer *self)
 		}
 	}
 	
-	//VertexServer_setStaticPath_(self, ".");
 	VertexServer_registerSignals(self);
-	
-	PDB_setHardSync_(self->pdb, self->hardSync);
-	
+		
 	if (PDB_open(self->pdb)) 
 	{ 
 		Log_Printf("unable to open database file\n");
 		return -1; 
 	}
 
-	VertexServer_runEventLoop(self);
+	HttpServer_run(self->httpServer);
 	
 	PDB_commit(self->pdb);
-	evhttp_free(self->httpd);
 	PDB_close(self->pdb);
-	PDB_free(self->pdb);
 	
 	VertexServer_removePidFile(self);
 	
@@ -1358,3 +1107,74 @@ int VertexServer_run(VertexServer *self)
 	Log_close();
 	return 0;  
 }
+
+/*
+void VertexServer_vendCookie(VertexServer *self)
+{
+	Datum *cookie = Datum_poolNew();
+	Datum_setCString_(cookie, "userId=");
+	Datum_append_(cookie, self->userId);
+	Datum_appendCString_(cookie, "; expires=Fri, 31-Dec-2200 12:00:00 GMT; path=/;");
+	HttpResponse_setCookie_(self->httpResponse, cookie);
+}
+
+int VertexServer_api_newUser(VertexServer *self)
+{	
+	PNode *userNode = PDB_allocNode(self->pdb);
+	PNode *node = PDB_allocNode(self->pdb);
+	
+	PNode_moveToPathCString_(node, "users");
+	
+	do
+	{
+		Datum_makePidOfLength_(self->userId, USER_ID_LENGTH);
+	} while (PNode_at_(node, self->userId));
+	
+	PNode_create(userNode);
+	PNode_atPut_(node, self->userId, PNode_pid(userNode));
+		
+	VertexServer_vendCookie(self);
+	Datum_append_(self->result, self->userId);
+
+	return 0;
+}
+
+int VertexServer_api_login(VertexServer *self)
+{
+	Datum *userPath = Datum_poolNew();
+	Datum *userId = Datum_poolNew();
+	
+	Datum *email = HttpRequest_queryValue_(self->httpRequest, "email");
+	Datum *inputPassword = HttpRequest_queryValue_(self->httpRequest, "password");
+	Datum *v;
+	PNode *node = PDB_allocNode(self->pdb);
+	
+	PNode_moveToPathCString_(node, "indexes/user/email");
+	v = PNode_at_(node, email);
+	
+	if (!v)
+	{
+		VertexServer_setErrorCString_(self, "unknown user email address");
+		VertexServer_appendError_(self, email);
+		return 2;
+	}
+	
+	Datum_copy_(self->userId, v);
+	Datum_setCString_(userPath, "users/");
+	Datum_append_(userPath, userId);
+	PNode_moveToPathIfExists_(node, userPath);
+	{
+		Datum *password = PNode_atCString_(node, "_password");
+		
+		if (!password || !Datum_equals_(password, inputPassword))
+		{
+			VertexServer_setErrorCString_(self, "wrong password");
+			return 2; // why 2?
+		}
+	}
+	
+	VertexServer_vendCookie(self);
+	return 0;
+}
+*/
+
