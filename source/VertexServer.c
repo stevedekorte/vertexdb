@@ -901,6 +901,8 @@ int VertexServer_process(VertexServer *self)
 {	
 	Datum *actionName = (Datum *)HttpRequest_queryValue_(self->httpRequest, "action");
 
+	//if(self->debug) { Log_Printf_("REQUEST ERROR: %s\n", HttpRequest_uri(self->httpRequest)); }
+
 	if (Datum_size(actionName))
 	{ 
 		VertexAction *action = (VertexAction *)CHash_at_(self->actions, actionName);

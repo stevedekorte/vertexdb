@@ -48,6 +48,7 @@ void Datum_appendLong_(Datum *self, long n);
 
 int Datum_equals_(Datum *self, Datum *other);
 int Datum_equalsCString_(Datum *self, const char *s);
+int Datum_compare_(Datum *self, Datum *other);
 
 unsigned int Datum_hash1(Datum *self);
 unsigned int Datum_hash2(Datum *self);
