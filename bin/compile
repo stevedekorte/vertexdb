@@ -25,4 +25,3 @@ gcc -lm -O0 -g \
 	-levent -ltokyocabinet -lbz2 -lzip -lz -lyajl \
 	-o build/vertexdb && chmod 755 build/vertexdb
 
-#-lzip
