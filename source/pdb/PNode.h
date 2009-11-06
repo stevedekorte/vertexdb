@@ -119,6 +119,7 @@ int PNode_op_pairs(PNode *self, Datum *d);
 int PNode_op_values(PNode *self, Datum *d);
 int PNode_op_rm(PNode *self, Datum *d);
 int PNode_op_html(PNode *self, Datum *d);
+int PNode_asHtmlRow(PNode *self, Datum *d);
 
 // permissions
 Datum *PNode_op_owner(PNode *self);

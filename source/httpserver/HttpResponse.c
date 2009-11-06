@@ -33,6 +33,7 @@ void HttpResponse_setContentType_(HttpResponse *self, const char *v)
 
 void HttpResponse_setHeader_to_(HttpResponse *self, const char *k, const char *v)
 {
+	evhttp_remove_header(self->request->output_headers, k);
 	evhttp_add_header(self->request->output_headers, k, v);
 }
 

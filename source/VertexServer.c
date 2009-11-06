@@ -667,6 +667,7 @@ int VertexServer_api_view(VertexServer *self)
 {
 	Datum *before = HttpRequest_queryValue_(self->httpRequest, "before");
 	Datum *after = HttpRequest_queryValue_(self->httpRequest, "after");
+	Datum *mode = HttpRequest_queryValue_(self->httpRequest, "mode");
 	PNode *node = PDB_allocNode(self->pdb);
 	Datum *d = self->result;
 	int maxCount = 200;
@@ -746,10 +747,10 @@ int VertexServer_api_view(VertexServer *self)
 		
 		while ((k = PNode_key(node)) && count < maxCount)
 		{
-			Datum_appendCString_(d, "<tr>");
 			
 			if (Datum_beginsWithCString_(k , "_"))
 			{
+				Datum_appendCString_(d, "<tr>");
 				Datum_appendCString_(d, "<td align=right style=\"line-height:1.5em\">");
 				Datum_appendCString_(d, "<font class=key>");
 				Datum_append_(d, k);
@@ -763,30 +764,38 @@ int VertexServer_api_view(VertexServer *self)
 				Datum_appendCString_(d, "</span>");
 				Datum_appendCString_(d, "<br>\n");
 				Datum_appendCString_(d, "</td>");
+				Datum_appendCString_(d, "</tr>");
 			}
 			else
 			{
-				
-				Datum_appendCString_(d, "<td align=right>");
-				Datum_appendCString_(d, "<font class=key>");
-				Datum_append_(d, k);
-				Datum_appendCString_(d, "</font><br>\n");			
-				Datum_appendCString_(d, "</td>");
-				
-				Datum_appendCString_(d, "<td style=\"line-height:1.5em\">");
-				Datum_appendCString_(d, "&nbsp;&nbsp;<a href=");
-				if(Datum_size(HttpRequest_uriPath(self->httpRequest)) != 0) Datum_appendCString_(d, "/");
-				Datum_append_(d, HttpRequest_uriPath(self->httpRequest));
-				Datum_appendCString_(d, "/");
-				Datum_append_(d, k);
-				Datum_appendCString_(d, "> ↠ ");
-				Datum_appendLong_(d, PNode_nodeSizeAtCursor(node));
-				Datum_appendCString_(d, "</a> ");
-				Datum_appendCString_(d, "<font class=value>");
-				Datum_appendCString_(d, "</td>");
+				if(Datum_equalsCString_(mode, "table"))
+				{
+					PNode_asHtmlRow(node, d);
+				}
+				else 
+				{
+					Datum_appendCString_(d, "<tr>");
+					Datum_appendCString_(d, "<td align=right>");
+					Datum_appendCString_(d, "<font class=key>");
+					Datum_append_(d, k);
+					Datum_appendCString_(d, "</font><br>\n");			
+					Datum_appendCString_(d, "</td>");
+					
+					Datum_appendCString_(d, "<td style=\"line-height:1.5em\">");
+					Datum_appendCString_(d, "&nbsp;&nbsp;<a href=");
+					if(Datum_size(HttpRequest_uriPath(self->httpRequest)) != 0) Datum_appendCString_(d, "/");
+					Datum_append_(d, HttpRequest_uriPath(self->httpRequest));
+					Datum_appendCString_(d, "/");
+					Datum_append_(d, k);
+					Datum_appendCString_(d, "> ↠ ");
+					Datum_appendLong_(d, PNode_nodeSizeAtCursor(node));
+					Datum_appendCString_(d, "</a> ");
+					Datum_appendCString_(d, "<font class=value>");
+					Datum_appendCString_(d, "</td>");
+					Datum_appendCString_(d, "</tr>");
+				}
 			}
 			
-			Datum_appendCString_(d, "</tr>");
 			PNode_next(node);
 			count ++;
 		}
