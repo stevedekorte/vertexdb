@@ -7,24 +7,26 @@
 
 typedef struct
 {
+	// the database
 	PDB *pdb;
 	
+	// the http server
 	HttpServer *httpServer;
 	HttpRequest *httpRequest;
 	HttpResponse *httpResponse;
+	Datum *result; // used for composing the response string
 
+	// the global json generator
 	yajl_gen yajl;
-
-	int isDaemon;
-	const char *logPath;
-	const char *pidPath;
-		
+	
+	// hash table of VertextServer action function pointers
 	CHash *actions;
+	// hash table of PNode op function pointers
 	CHash *ops;
 	
-	time_t lastBackupTime;
-	
-	Datum *result;	
+	// daemon related
+	int isDaemon;
+	const char *pidPath;
 	int debug;
 } VertexServer;
 

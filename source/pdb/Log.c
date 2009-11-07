@@ -22,8 +22,11 @@ const char *Log_TimeString(void)
 
 void Log_init(void)
 {
-	globalLog = calloc(1, sizeof(Log));
-	globalLog->file = stderr;
+	if(!globalLog)
+	{
+		globalLog = calloc(1, sizeof(Log));
+		globalLog->file = stderr;
+	}
 }
 
 void Log_setPath_(const char *path)
@@ -45,18 +48,28 @@ int Log_close(void)
 
 int Log_open(void)
 {
-	FILE *file;
-	
+	const char *path = globalLog->path;	
 	Log_close();
 	
-	file = fopen(globalLog->path, "a");
-	if(file)
+	if(path == 0x0) 
 	{
-		globalLog->file = file;
+		Log_Printf("Logging to stderr\n");
 		return 0;
 	}
-	else
+
 	{
-		return 1;
+		FILE *file = fopen(path, "a");
+		
+		if(file)
+		{
+			globalLog->file = file;
+			Log_Printf_("Logging to %s\n", path);
+			return 0;
+		}
+		else
+		{
+			Log_Printf_("Unable to open log file for writing: %s\n", path);
+			return 1;
+		}
 	}
 }

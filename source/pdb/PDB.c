@@ -239,6 +239,7 @@ int PDB_backup(PDB *self) // returns "true" if successful
 	result = Store_backup(self->store, path);
 	File_symbolicallyLinkTo_(self->newBackupFile, self->lastBackupFile);
 	Log_Printf("PDB done creating backup\n");
+	self->lastBackupTime = time(NULL);
 	return !result;
 }
 

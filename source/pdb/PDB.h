@@ -39,6 +39,8 @@ typedef struct
 	yajl_gen yajl;
 	int isClosing;
 	int hardSync;
+
+	time_t lastBackupTime;
 } PDB;
 
 PDB *PDB_new(void);

@@ -101,7 +101,6 @@ VertexServer *VertexServer_new(void)
 	CHash_setHash1Func_(self->ops, (CHashHashFunc *)Datum_hash1);
 	CHash_setHash2Func_(self->ops, (CHashHashFunc *)Datum_hash2);
 			
-	self->lastBackupTime = time(NULL);
 	return self;
 }
 
@@ -563,8 +562,6 @@ int VertexServer_backup(VertexServer *self)
 	Log_Printf__("backup %s and took %i seconds\n", 
 		result ? "failed" : "successful", (int)difftime(time(NULL), now));
 				
-	self->lastBackupTime = now;
-
 	return result;
 }
 
@@ -993,7 +990,7 @@ void VertexServer_registerSignals(VertexServer *self)
 
 void VertexServer_setLogPath_(VertexServer *self, const char *path)
 {
-	self->logPath = path;
+	Log_setPath_(path);
 }
 
 void VertexServer_setPidPath_(VertexServer *self, const char *path)
@@ -1055,24 +1052,7 @@ void VertexServer_removePidFile(VertexServer *self)
 int VertexServer_openLog(VertexServer *self)
 {
 	Log_init();
-
-	if (self->logPath)
-	{
-		Log_setPath_(self->logPath);
-		
-		if (Log_open())
-		{
-			Log_Printf_("Unable to open log file for writing: %s\n", self->logPath);
-			exit(-1);
-		}
-		
-		Log_Printf_("Logging to %s\n", self->logPath);
-	}
-	else
-	{
-		Log_Printf("Logging to stderr\n");
-	}
-	
+	Log_open();
 	return 0;
 }
 
