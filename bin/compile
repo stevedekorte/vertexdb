@@ -7,6 +7,8 @@
 # command to start:
 # ./vertexdb -db blah.db
 
+mkdir build
+
 gcc -lm -O0 -g \
 	-I/usr/local/include \
 	-I/opt/local/include \
