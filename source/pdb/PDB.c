@@ -10,7 +10,6 @@
 #include <assert.h>
 
 #define PDB_USE_TX 1
-//#define PDB_USE_SYNC 1
 
 static int pathCompareBase(const char *p1, int len1, const char *p2, int len2, void *optionalOpaqueValue)
 {
@@ -119,6 +118,11 @@ void PDB_setPathCString_(PDB *self, const char *path)
 	Datum_appendCString_(File_path(self->corruptFile), ".corrupt");
 }
 
+void PDB_setHardSync_(PDB *self, int aBool)
+{
+	self->hardSync = aBool;
+}
+
 void PDB_createRootIfNeeded(PDB *self)
 {
 	int size;
@@ -134,8 +138,8 @@ void PDB_createRootIfNeeded(PDB *self)
 	
 int PDB_open(PDB *self)
 {
-
 	Store_setCompareFunction_(self->store, pathCompare);
+	Store_setHardSync_(self->store, self->hardSync);
 	
 	if (Datum_isEmpty(File_path(self->dbFile)))
 	{

@@ -54,6 +54,7 @@ typedef struct
 	yajl_gen yajl;
 	
 	int debug;
+	int hardSync;
 } VertexServer;
 
 typedef int (VertexAction)(VertexServer *);
@@ -67,6 +68,7 @@ void VertexServer_setLogPath_(VertexServer *self, const char *path);
 void VertexServer_setPidPath_(VertexServer *self, const char *path);
 void VertexServer_setIsDaemon_(VertexServer *self, int isDaemon);
 void VertexServer_setDebug_(VertexServer *self, int aBool);
+void VertexServer_setHardSync_(VertexServer *self, int aBool);
 
 int VertexServer_process(VertexServer *self);
 int VertexServer_run(VertexServer *self);
