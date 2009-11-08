@@ -199,6 +199,12 @@ int Datum_equalsCString_(Datum *self, const char *s)
 		(memcmp(self->data, s, self->size) == 0);
 }
 
+int Datum_compare_(Datum *self, Datum *other)
+{
+	int min = Datum_size(self) < Datum_size(other) ? Datum_size(self) : Datum_size(other);
+	return strncmp(self->data, other->data, min);
+}
+
 unsigned int Datum_hash1(Datum *self)
 {
 	return MurmurHash2((const void *)self->data, (int)self->size, 0);

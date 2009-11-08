@@ -27,6 +27,8 @@ typedef struct
 	unsigned int selectCount;
 	unsigned int selectCountMax;
 	unsigned int hasFilter;
+	unsigned int hasRange;
+	int stepDirection;
 	int isDone;
 } PQuery;
 
@@ -56,6 +58,7 @@ int PQuery_stepDirection(PQuery *self);
 
 int PQuery_cursorMatches(PQuery *self); // private
 int PQuery_moveToNextMatch(PQuery *self); // private
+int PQuery_isInRange(PQuery *self); // private
 
 unsigned int PQuery_selectCount(PQuery *self);
 

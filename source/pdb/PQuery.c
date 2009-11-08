@@ -89,6 +89,7 @@ int PQuery_setup(PQuery *self)
 	PDB *pdb = PNode_pdb(self->node);
 	self->tmpNode = PDB_allocNode(pdb);
 	self->isDone = 0;
+	self->stepDirection = 1;
 	
 	self->hasFilter = self->whereKey && self->whereValue && 
 		(!Datum_isEmpty(self->whereKey)) && (!Datum_isEmpty(self->whereValue));
@@ -107,6 +108,7 @@ int PQuery_setup(PQuery *self)
 		PNode_jump_(self->node, self->after);
 		k = PNode_key(self->node);
 		if (k && Datum_equals_(self->after, k)) PNode_next(self->node);
+		self->stepDirection = 1;
 	} 
 	else if(self->before && Datum_size(self->before))
 	{
@@ -114,8 +116,19 @@ int PQuery_setup(PQuery *self)
 		PNode_jump_(self->node, self->before);
 		k = PNode_key(self->node);
 		PNode_previous(self->node);
+		self->stepDirection = -1;
 		//if (k && Datum_equals_(self->before, k)) PNode_previous(self->node);
 	}
+	
+	self->hasRange = (self->after && Datum_size(self->after) && self->before && Datum_size(self->before));
+	
+	if(self->hasRange)
+	{
+		self->stepDirection = 1;
+	}
+	
+	if(!PQuery_isInRange(self)) self->isDone = 1;
+
 	
 	if(!PQuery_cursorMatches(self))
 	{
@@ -175,9 +188,29 @@ Datum *PQuery_key(PQuery *self)
 }
 
 int PQuery_cursorMatches(PQuery *self)
-{
-	return !(self->hasFilter) || PNode_withId_hasKey_andValue_(self->tmpNode, 
-				PNode_value(self->node), self->whereKey, self->whereValue);
+{	
+	int match = (!self->hasFilter) || PNode_withId_hasKey_andValue_(self->tmpNode, 
+				PNode_value(self->node), 
+				self->whereKey, 
+				self->whereValue);
+	
+	return match;
+}
+
+int PQuery_isInRange(PQuery *self)
+{	
+	if(self->hasRange)
+	{
+		Datum *k = PNode_key(self->node);
+		int c = Datum_compare_(self->before, k);
+		
+		if (k && c < 0)
+		{
+			return 0;
+		}
+	}
+	
+	return 1;
 }
 
 int PQuery_moveToNextMatch(PQuery *self) // return 1 if found, 0 if reached end
@@ -187,7 +220,8 @@ int PQuery_moveToNextMatch(PQuery *self) // return 1 if found, 0 if reached end
 		PQuery_step(self);
 		
 		if(!PNode_key(self->node)) break;
-
+		if(!PQuery_isInRange(self)) break;
+	
 		if (PQuery_cursorMatches(self))
 		{
 			return 1;

@@ -9,12 +9,14 @@
 /* Begin PBXBuildFile section */
 		8DD76FB00486AB0100D96B5E /* Vertex.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6A0FF2C0290799A04C91782 /* Vertex.1 */; };
 		9F087BBA1083105900211163 /* libyajl_s.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F087BB91083105900211163 /* libyajl_s.a */; };
-		AA11CDED109BA4C30032D6B9 /* Store.c in Sources */ = {isa = PBXBuildFile; fileRef = AA11CDE9109BA4C30032D6B9 /* Store.c */; };
-		AA11CDEE109BA4C30032D6B9 /* StoreCursor.c in Sources */ = {isa = PBXBuildFile; fileRef = AA11CDEB109BA4C30032D6B9 /* StoreCursor.c */; };
+		AA11CFC7109D1C9A0032D6B9 /* HttpRequest.c in Sources */ = {isa = PBXBuildFile; fileRef = AA11CFC1109D1C9A0032D6B9 /* HttpRequest.c */; };
+		AA11CFC8109D1C9A0032D6B9 /* HttpResponse.c in Sources */ = {isa = PBXBuildFile; fileRef = AA11CFC3109D1C9A0032D6B9 /* HttpResponse.c */; };
+		AA11CFC9109D1C9A0032D6B9 /* HttpServer.c in Sources */ = {isa = PBXBuildFile; fileRef = AA11CFC5109D1C9A0032D6B9 /* HttpServer.c */; };
+		AA11D285109FF7520032D6B9 /* Store.c in Sources */ = {isa = PBXBuildFile; fileRef = AA11D281109FF7520032D6B9 /* Store.c */; };
+		AA11D286109FF7520032D6B9 /* StoreCursor.c in Sources */ = {isa = PBXBuildFile; fileRef = AA11D283109FF7520032D6B9 /* StoreCursor.c */; };
 		AA33042C10829584007AD6CA /* libevent_extra.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA33042A10829584007AD6CA /* libevent_extra.a */; };
 		AA33042D10829584007AD6CA /* libevent.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA33042B10829584007AD6CA /* libevent.a */; };
 		AA9559491082A9130044CD9F /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = AA9559411082A9130044CD9F /* main.c */; };
-		AA95594A1082A9130044CD9F /* RunningStat.c in Sources */ = {isa = PBXBuildFile; fileRef = AA9559421082A9130044CD9F /* RunningStat.c */; };
 		AA95594B1082A9130044CD9F /* Socket.c in Sources */ = {isa = PBXBuildFile; fileRef = AA9559441082A9130044CD9F /* Socket.c */; };
 		AA95594C1082A9130044CD9F /* VertexServer.c in Sources */ = {isa = PBXBuildFile; fileRef = AA9559461082A9130044CD9F /* VertexServer.c */; };
 		AA95594D1082A9130044CD9F /* VertexServer_extra.c in Sources */ = {isa = PBXBuildFile; fileRef = AA9559481082A9130044CD9F /* VertexServer_extra.c */; };
@@ -64,7 +66,6 @@
 		AA955E821085614E0044CD9F /* Yajl_extras.c in Sources */ = {isa = PBXBuildFile; fileRef = AA955E801085614E0044CD9F /* Yajl_extras.c */; };
 		AA9C0F6C0EB1387F00F997D7 /* libtokyocabinet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9C0F6B0EB1387F00F997D7 /* libtokyocabinet.a */; };
 		AA9C0F720EB138C100F997D7 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9C0F710EB138C100F997D7 /* libz.a */; };
-		AAD92929109A7FFC0048592C /* HttpServer.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD92927109A7FFC0048592C /* HttpServer.c */; };
 		AADD04971098204A00F8454F /* Pointer.c in Sources */ = {isa = PBXBuildFile; fileRef = AADD04951098204900F8454F /* Pointer.c */; };
 /* End PBXBuildFile section */
 
@@ -84,15 +85,19 @@
 /* Begin PBXFileReference section */
 		8DD76FB20486AB0100D96B5E /* Vertex */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Vertex; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F087BB91083105900211163 /* libyajl_s.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libyajl_s.a; path = /usr/local/lib/libyajl_s.a; sourceTree = "<absolute>"; };
-		AA11CDE9109BA4C30032D6B9 /* Store.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Store.c; path = source/Store.c; sourceTree = SOURCE_ROOT; };
-		AA11CDEA109BA4C30032D6B9 /* Store.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Store.h; path = source/Store.h; sourceTree = SOURCE_ROOT; };
-		AA11CDEB109BA4C30032D6B9 /* StoreCursor.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = StoreCursor.c; path = source/StoreCursor.c; sourceTree = SOURCE_ROOT; };
-		AA11CDEC109BA4C30032D6B9 /* StoreCursor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoreCursor.h; path = source/StoreCursor.h; sourceTree = SOURCE_ROOT; };
+		AA11CFC1109D1C9A0032D6B9 /* HttpRequest.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = HttpRequest.c; path = source/httpserver/HttpRequest.c; sourceTree = SOURCE_ROOT; };
+		AA11CFC2109D1C9A0032D6B9 /* HttpRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HttpRequest.h; path = source/httpserver/HttpRequest.h; sourceTree = SOURCE_ROOT; };
+		AA11CFC3109D1C9A0032D6B9 /* HttpResponse.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = HttpResponse.c; path = source/httpserver/HttpResponse.c; sourceTree = SOURCE_ROOT; };
+		AA11CFC4109D1C9A0032D6B9 /* HttpResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HttpResponse.h; path = source/httpserver/HttpResponse.h; sourceTree = SOURCE_ROOT; };
+		AA11CFC5109D1C9A0032D6B9 /* HttpServer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = HttpServer.c; path = source/httpserver/HttpServer.c; sourceTree = SOURCE_ROOT; };
+		AA11CFC6109D1C9A0032D6B9 /* HttpServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HttpServer.h; path = source/httpserver/HttpServer.h; sourceTree = SOURCE_ROOT; };
+		AA11D281109FF7520032D6B9 /* Store.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Store.c; path = source/store/Store.c; sourceTree = SOURCE_ROOT; };
+		AA11D282109FF7520032D6B9 /* Store.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Store.h; path = source/store/Store.h; sourceTree = SOURCE_ROOT; };
+		AA11D283109FF7520032D6B9 /* StoreCursor.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = StoreCursor.c; path = source/store/StoreCursor.c; sourceTree = SOURCE_ROOT; };
+		AA11D284109FF7520032D6B9 /* StoreCursor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoreCursor.h; path = source/store/StoreCursor.h; sourceTree = SOURCE_ROOT; };
 		AA33042A10829584007AD6CA /* libevent_extra.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libevent_extra.a; path = /opt/local/lib/libevent_extra.a; sourceTree = "<absolute>"; };
 		AA33042B10829584007AD6CA /* libevent.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libevent.a; path = /opt/local/lib/libevent.a; sourceTree = "<absolute>"; };
 		AA9559411082A9130044CD9F /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = source/main.c; sourceTree = SOURCE_ROOT; };
-		AA9559421082A9130044CD9F /* RunningStat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = RunningStat.c; path = source/RunningStat.c; sourceTree = SOURCE_ROOT; };
-		AA9559431082A9130044CD9F /* RunningStat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RunningStat.h; path = source/RunningStat.h; sourceTree = SOURCE_ROOT; };
 		AA9559441082A9130044CD9F /* Socket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Socket.c; path = source/Socket.c; sourceTree = SOURCE_ROOT; };
 		AA9559451082A9130044CD9F /* Socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Socket.h; path = source/Socket.h; sourceTree = SOURCE_ROOT; };
 		AA9559461082A9130044CD9F /* VertexServer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = VertexServer.c; path = source/VertexServer.c; sourceTree = SOURCE_ROOT; };
@@ -198,8 +203,6 @@
 		AA955E811085614E0044CD9F /* Yajl_extras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Yajl_extras.h; path = source/pdb/Yajl_extras.h; sourceTree = SOURCE_ROOT; };
 		AA9C0F6B0EB1387F00F997D7 /* libtokyocabinet.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtokyocabinet.a; path = /usr/local/lib/libtokyocabinet.a; sourceTree = "<absolute>"; };
 		AA9C0F710EB138C100F997D7 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = /opt/local/lib/libz.a; sourceTree = "<absolute>"; };
-		AAD92927109A7FFC0048592C /* HttpServer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = HttpServer.c; path = source/HttpServer.c; sourceTree = SOURCE_ROOT; };
-		AAD92928109A7FFC0048592C /* HttpServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HttpServer.h; path = source/HttpServer.h; sourceTree = SOURCE_ROOT; };
 		AADD04951098204900F8454F /* Pointer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Pointer.c; path = source/pdb/Pointer.c; sourceTree = SOURCE_ROOT; };
 		AADD04961098204A00F8454F /* Pointer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pointer.h; path = source/pdb/Pointer.h; sourceTree = SOURCE_ROOT; };
 		C6A0FF2C0290799A04C91782 /* Vertex.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Vertex.1; sourceTree = "<group>"; };
@@ -252,20 +255,40 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		AA11CFC0109D1C9A0032D6B9 /* httpserver */ = {
+			isa = PBXGroup;
+			children = (
+				AA11CFC1109D1C9A0032D6B9 /* HttpRequest.c */,
+				AA11CFC2109D1C9A0032D6B9 /* HttpRequest.h */,
+				AA11CFC3109D1C9A0032D6B9 /* HttpResponse.c */,
+				AA11CFC4109D1C9A0032D6B9 /* HttpResponse.h */,
+				AA11CFC5109D1C9A0032D6B9 /* HttpServer.c */,
+				AA11CFC6109D1C9A0032D6B9 /* HttpServer.h */,
+			);
+			name = httpserver;
+			path = source/httpserver;
+			sourceTree = SOURCE_ROOT;
+		};
+		AA11D280109FF7520032D6B9 /* store */ = {
+			isa = PBXGroup;
+			children = (
+				AA11D281109FF7520032D6B9 /* Store.c */,
+				AA11D282109FF7520032D6B9 /* Store.h */,
+				AA11D283109FF7520032D6B9 /* StoreCursor.c */,
+				AA11D284109FF7520032D6B9 /* StoreCursor.h */,
+			);
+			name = store;
+			path = source/store;
+			sourceTree = SOURCE_ROOT;
+		};
 		AA9559401082A9130044CD9F /* source */ = {
 			isa = PBXGroup;
 			children = (
-				AA11CDE9109BA4C30032D6B9 /* Store.c */,
-				AA11CDEA109BA4C30032D6B9 /* Store.h */,
-				AA11CDEB109BA4C30032D6B9 /* StoreCursor.c */,
-				AA11CDEC109BA4C30032D6B9 /* StoreCursor.h */,
-				AAD92927109A7FFC0048592C /* HttpServer.c */,
-				AAD92928109A7FFC0048592C /* HttpServer.h */,
+				AA11D280109FF7520032D6B9 /* store */,
+				AA11CFC0109D1C9A0032D6B9 /* httpserver */,
 				AA9559BB1082CE100044CD9F /* basekit */,
 				AA955BF91082CE100044CD9F /* pdb */,
 				AA9559411082A9130044CD9F /* main.c */,
-				AA9559421082A9130044CD9F /* RunningStat.c */,
-				AA9559431082A9130044CD9F /* RunningStat.h */,
 				AA9559441082A9130044CD9F /* Socket.c */,
 				AA9559451082A9130044CD9F /* Socket.h */,
 				AA9559461082A9130044CD9F /* VertexServer.c */,
@@ -470,7 +493,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA9559491082A9130044CD9F /* main.c in Sources */,
-				AA95594A1082A9130044CD9F /* RunningStat.c in Sources */,
 				AA95594B1082A9130044CD9F /* Socket.c in Sources */,
 				AA95594C1082A9130044CD9F /* VertexServer.c in Sources */,
 				AA95594D1082A9130044CD9F /* VertexServer_extra.c in Sources */,
@@ -519,9 +541,11 @@
 				AA955C801082CE110044CD9F /* PQuery.c in Sources */,
 				AA955E821085614E0044CD9F /* Yajl_extras.c in Sources */,
 				AADD04971098204A00F8454F /* Pointer.c in Sources */,
-				AAD92929109A7FFC0048592C /* HttpServer.c in Sources */,
-				AA11CDED109BA4C30032D6B9 /* Store.c in Sources */,
-				AA11CDEE109BA4C30032D6B9 /* StoreCursor.c in Sources */,
+				AA11CFC7109D1C9A0032D6B9 /* HttpRequest.c in Sources */,
+				AA11CFC8109D1C9A0032D6B9 /* HttpResponse.c in Sources */,
+				AA11CFC9109D1C9A0032D6B9 /* HttpServer.c in Sources */,
+				AA11D285109FF7520032D6B9 /* Store.c in Sources */,
+				AA11D286109FF7520032D6B9 /* StoreCursor.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -532,7 +556,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(NATIVE_ARCH)";
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;

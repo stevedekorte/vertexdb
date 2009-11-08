@@ -984,30 +984,29 @@ int PNode_op_rm(PNode *self, Datum *d)
 	return 0;  
 }
 
-/*
-int PNode_op_html(PNode *self, Datum *d)
+int PNode_asHtmlRow(PNode *self, Datum *d)
 {	
 	PQuery *q = PNode_startQuery(self);
-	//PNode *tmpNode = PDB_allocNode(self->pdb);
 	Datum *k;
 	
-	Datum_append_(d, self->keyPath);
-	Datum_appendCString_(d, "<hr>");
+	Datum_appendCString_(d, "<tr>");
 	
-	while (k = PNode_key(self))
+	while (k = PQuery_key(q))
 	{		
-		Datum_append_(d, k);
-		Datum_appendCString_(d, "<br>");
+		if(Datum_beginsWithCString_(k, "_"))
+		{
+			Datum *v = PNode_value(self);
+			Datum_appendCString_(d, "<td>");
+			if(v) Datum_append_(d, v);
+			Datum_appendCString_(d, "</td>");
+		}
 
-				
 		PQuery_enumerate(q);
-		//if (PNode_key(self)) Datum_appendCString_(d, ",");
 	}
 	
-	Datum_appendCString_(d, "<hr>");
+	Datum_appendCString_(d, "</tr>");
 	return 0; 
 }
-*/
 
 // meta slots ----------------------------------------------------
 
