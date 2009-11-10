@@ -9,7 +9,7 @@ VDBAssertion := Object clone do(
     action ::= nil
     variant ::= "default"
     
-	port ::= "9523"
+	port ::= "8080"
 	host ::= "localhost"
     baseUrl ::= method("http://" .. host .. ":" .. port)
     basePath ::= "/test"
@@ -373,7 +373,7 @@ VDBTest := UnitTest clone do(
         if(u statusCode != 200,
             Exception raise("setup transaction fails in testQueueExpireTo: ", r)
         )
-		//assert(URL with("http://localhost:9523/test/active?action=queueExpireTo&toPath=/test/waiting") fetch == "1")
+		//assert(URL with("http://localhost:8080/test/active?action=queueExpireTo&toPath=/test/waiting") fetch == "1")
         QueueExpireToAssertion with("first") setPath("/queue/active") addParams("toPath=/test/queue/waiting") setExpectedBody("1") assert
         ObjectAssertion with("first queueExpireTo") setPath("/queue/waiting/a") setExpectedBody("""{"_a":"1"}""") assert
         QueueExpireToAssertion with("second") setPath("/queue/active") addParams("toPath=/test/queue/waiting") setExpectedBody("0") assert
