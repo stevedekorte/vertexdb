@@ -678,7 +678,10 @@ int VertexServer_api_view(VertexServer *self)
 	}
 		Datum_appendCString_(d, "<!DOCTYPE html>\n");
 		Datum_appendCString_(d, "<html>\n");
+<<<<<<< HEAD
 		Datum_appendCString_(d, "<head>\n");
+=======
+>>>>>>> a9938764458c24c885c42a5e41ee977f3ea3ae9b
 		Datum_appendCString_(d, "<title>");
 		Datum_append_(d, HttpRequest_uriPath(self->httpRequest));
 		Datum_appendCString_(d, "</title>\n");
