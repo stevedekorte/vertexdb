@@ -9,7 +9,7 @@ VDBAssertion := Object clone do(
     action ::= nil
     variant ::= "default"
     
-	port ::= "9523"
+	port ::= "8080"
 	host ::= "localhost"
     baseUrl ::= method("http://" .. host .. ":" .. port)
     basePath ::= "/test"

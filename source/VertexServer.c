@@ -666,6 +666,7 @@ int VertexServer_api_view(VertexServer *self)
 	Datum *after = HttpRequest_queryValue_(self->httpRequest, "after");
 	Datum *mode = HttpRequest_queryValue_(self->httpRequest, "mode");
 	PNode *node = PDB_allocNode(self->pdb);
+	PNode *tmpNode = PDB_allocNode(self->pdb);
 	Datum *d = self->result;
 	int maxCount = 200;
 	
@@ -675,14 +676,17 @@ int VertexServer_api_view(VertexServer *self)
 		VertexServer_appendError_(self, HttpRequest_uriPath(self->httpRequest));
 		return -1;
 	}
-		Datum_appendCString_(d, "<html>");
+		Datum_appendCString_(d, "<!DOCTYPE html>\n");
+		Datum_appendCString_(d, "<html>\n");
+		Datum_appendCString_(d, "<head>\n");
 		Datum_appendCString_(d, "<title>");
 		Datum_append_(d, HttpRequest_uriPath(self->httpRequest));
-		Datum_appendCString_(d, "</title>");
+		Datum_appendCString_(d, "</title>\n");
+		Datum_appendCString_(d, "<meta charset=\"utf-8\">\n");
 		Datum_appendCString_(d, "<style>");
-		Datum_appendCString_(d, "body { font-family: sans; margin-top:2em; margin-left:2em; }");
-		Datum_appendCString_(d, ".path { font-size: 1em; font-weight: normal; font-family: sans; }");
-		Datum_appendCString_(d, ".note { color:#aaaaaa; font-size: 1em; font-weight: normal; font-family: sans;  }");
+		Datum_appendCString_(d, "body, td { font-family: Helvetica; font-size: 12px; margin-top:2em; margin-left:2em; }");
+		Datum_appendCString_(d, ".path { font-weight: normal; }");
+		Datum_appendCString_(d, ".note { color:#aaaaaa; }");
 		Datum_appendCString_(d, ".key { color:#000000;  }");
 		Datum_appendCString_(d, ".value { color:#888888; white-space:pre; }");
 		Datum_appendCString_(d, "a { color: #0000aa; text-decoration: none;  }");
@@ -767,7 +771,8 @@ int VertexServer_api_view(VertexServer *self)
 			{
 				if(Datum_equalsCString_(mode, "table"))
 				{
-					PNode_asHtmlRow(node, d);
+					PNode_setPid_(tmpNode, PNode_value(node));
+					PNode_asHtmlRow(tmpNode, d);
 				}
 				else 
 				{
@@ -775,7 +780,7 @@ int VertexServer_api_view(VertexServer *self)
 					Datum_appendCString_(d, "<td align=right>");
 					Datum_appendCString_(d, "<font class=key>");
 					Datum_append_(d, k);
-					Datum_appendCString_(d, "</font><br>\n");			
+					Datum_appendCString_(d, "</font><br>\n");
 					Datum_appendCString_(d, "</td>");
 					
 					Datum_appendCString_(d, "<td style=\"line-height:1.5em\">");
@@ -810,8 +815,9 @@ int VertexServer_api_view(VertexServer *self)
 	}
 	
 	Datum_appendCString_(d, "</body>\n");
+	Datum_appendCString_(d, "</html>\n");
 
-	HttpResponse_setContentType_(self->httpResponse, "text/html;charset=utf-8");
+	HttpResponse_setContentType_(self->httpResponse, "text/html; charset=utf-8");
 	return 0;
 }
 

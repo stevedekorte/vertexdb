@@ -1,11 +1,12 @@
 
 About
 
-Vertex is a high performance graph database that supports automatic garbage collection, built on libevent and tokyocabinet. It uses HTTP as it's communication protocol and JSON as it's response data format. It's BSD licensed and was written by Steve Dekorte and Rich Collins.
+Vertex is a high performance graph database that supports automatic garbage collection, built on libevent and tokyocabinet. It uses HTTP as it's communication protocol and JSON as it's response data format. It's BSD licensed and was written by Steve Dekorte and Rich Collins. 
+See docs/guide.html for API and more details.
 
 Status
 
-Currently only ready for tinkering. Still need to finish adding tests and permissions support and docs before it's ready for production use. See docs/guide.html for API and other details.
+Currently in production use and working well so far. The API is still not set in stone though. 
 
 Future
 

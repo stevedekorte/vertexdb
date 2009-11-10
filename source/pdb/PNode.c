@@ -998,7 +998,7 @@ int PNode_asHtmlRow(PNode *self, Datum *d)
 			Datum *v = PNode_value(self);
 			Datum_appendCString_(d, "<td>");
 			if(v) Datum_append_(d, v);
-			Datum_appendCString_(d, "</td>");
+			Datum_appendCString_(d, "</td><td>&nbsp;&nbsp;&nbsp;</td>");
 		}
 
 		PQuery_enumerate(q);
