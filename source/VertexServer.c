@@ -100,8 +100,6 @@ VertexServer *VertexServer_new(void)
 	CHash_setEqualFunc_(self->ops, (CHashEqualFunc *)Datum_equals_);
 	CHash_setHash1Func_(self->ops, (CHashHashFunc *)Datum_hash1);
 	CHash_setHash2Func_(self->ops, (CHashHashFunc *)Datum_hash2);
-
-	Log_init();
 			
 	return self;
 }

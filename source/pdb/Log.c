@@ -12,6 +12,19 @@
 
 static char timeString[1024];
 
+static Log *globalLog = 0x0;
+
+Log *Log_sharedLog(void)
+{
+	if(!globalLog)
+	{
+		globalLog = calloc(1, sizeof(Log));
+		globalLog->file = stderr;
+	}
+	
+	return globalLog;
+}
+
 const char *Log_TimeString(void)
 {
 	time_t t = time(NULL);
@@ -20,25 +33,21 @@ const char *Log_TimeString(void)
 	return timeString;
 }
 
-void Log_init(void)
-{
-	if(!globalLog)
-	{
-		globalLog = calloc(1, sizeof(Log));
-		globalLog->file = stderr;
-	}
-}
-
 void Log_setPath_(const char *path)
 {
-	globalLog->path = path;
+	Log_sharedLog()->path = path;
+}
+
+const char *Log_path(void)
+{
+	return Log_sharedLog()->path;
 }
 
 int Log_close(void)
 {
-	if(globalLog->file && globalLog->file != stderr)
+	if(Log_sharedLog()->file && Log_sharedLog()->file != stderr)
 	{
-		return fclose(globalLog->file);
+		return fclose(Log_sharedLog()->file);
 	}
 	else
 	{
@@ -48,7 +57,7 @@ int Log_close(void)
 
 int Log_open(void)
 {
-	const char *path = globalLog->path;	
+	const char *path = Log_sharedLog()->path;	
 	Log_close();
 	
 	if(path == 0x0) 
@@ -62,7 +71,7 @@ int Log_open(void)
 		
 		if(file)
 		{
-			globalLog->file = file;
+			Log_sharedLog()->file = file;
 			Log_Printf_("Logging to %s\n", path);
 			return 0;
 		}
