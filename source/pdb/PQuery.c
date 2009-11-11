@@ -202,6 +202,9 @@ int PQuery_isInRange(PQuery *self)
 	if(self->hasRange)
 	{
 		Datum *k = PNode_key(self->node);
+		
+		if (!k) return 0;
+		
 		int c = Datum_compare_(self->before, k);
 		
 		if (k && c < 0)
