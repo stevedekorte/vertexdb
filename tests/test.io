@@ -129,6 +129,10 @@ VDBTest := UnitTest clone do(
         KeysAssertion with("count") addParams("count=1") setExpectedBody("""["a"]""") assert
         KeysAssertion with("after") addParams("after=a") setExpectedBody("""["b","c"]""") assert
         KeysAssertion with("before") addParams("before=b") setExpectedBody("""["a"]""") assert
+		KeysAssertion with("out of range") addParams("after=a", "before=d") setExpectedBody("""["b","c"]""") assert
+		KeysAssertion with("out of lower range") addParams("after=@", "before=c") setExpectedBody("""["a","b"]""") assert
+		KeysAssertion with("out of lower and upper range") addParams("after=@", "before=d") setExpectedBody("""["a","b","c"]""") assert
+		KeysAssertion with("out of upper, upper range") addParams("after=d", "before=f") setExpectedBody("""[]""") assert
         KeysAssertion with("where") addParams("whereKey=_b", "whereValue=5") setExpectedBody("""["b","c"]""") assert
         KeysAssertion with("non-matching where") addParams("whereKey=_a", "whereValue=10") setExpectedBody("[]") assert
     )
@@ -140,6 +144,7 @@ VDBTest := UnitTest clone do(
         PairsAssertion with("count") addParams("count=1") setExpectedBody("""[["a",{"_a":"1","_b":"2","_c":"3"}]]""") assert
         PairsAssertion with("after") addParams("after=a") setExpectedBody("""[["b",{"_a":"4","_b":"5","_c":"6"}],["c",{"_a":"7","_b":"5","_c":"9"}]]""") assert
         PairsAssertion with("before") addParams("before=b") setExpectedBody("""[["a",{"_a":"1","_b":"2","_c":"3"}]]""") assert
+		PairsAssertion with("out of range") addParams("after=a", "before=d") setExpectedBody("""["b",{"_a":"4","_b":"5","_c":"6"}],["c",{"_a":"7","_b":"5","_c":"9"}]]""") assert
         PairsAssertion with("where") addParams("whereKey=_b", "whereValue=5") setExpectedBody("""[["b",{"_a":"4","_b":"5","_c":"6"}],["c",{"_a":"7","_b":"5","_c":"9"}]]""") assert
         PairsAssertion with("non-matching where") addParams("whereKey=_a", "whereValue=10") setExpectedBody("[]") assert
     )
@@ -151,6 +156,7 @@ VDBTest := UnitTest clone do(
         ValuesAssertion with("count") addParams("count=1") setExpectedBody("""[{"_a":"1","_b":"2","_c":"3"}]""") assert
         ValuesAssertion with("after") addParams("after=a") setExpectedBody("""[{"_a":"4","_b":"5","_c":"6"},{"_a":"7","_b":"5","_c":"9"}]""") assert
         ValuesAssertion with("before") addParams("before=b") setExpectedBody("""[{"_a":"1","_b":"2","_c":"3"}]""") assert
+		ValuesAssertion with("out of range") addParams("after=a", "before=d") setExpectedBody("""{"_a":"4","_b":"5","_c":"6"},{"_a":"7","_b":"5","_c":"9"}]""") assert
         ValuesAssertion with("where") addParams("whereKey=_b", "whereValue=5") setExpectedBody("""[{"_a":"4","_b":"5","_c":"6"},{"_a":"7","_b":"5","_c":"9"}]""") assert
         ValuesAssertion with("non-matching where") addParams("whereKey=_a", "whereValue=10") setExpectedBody("[]") assert
     )
@@ -182,6 +188,7 @@ VDBTest := UnitTest clone do(
         CountAssertion with("count") addParams("count=1") setExpectedBody("1") assert
         CountAssertion with("after") addParams("after=a") setExpectedBody("2") assert
         CountAssertion with("before") addParams("before=b") setExpectedBody("1") assert
+		CountAssertion with("out of range") addParams("after=a", "before=d") setExpectedBody("2") assert
         CountAssertion with("where") addParams("whereKey=_b", "whereValue=5") setExpectedBody("2") assert
         CountAssertion with("non-matching where") addParams("whereKey=_a", "whereValue=10") setExpectedBody("0") assert
     )
