@@ -88,3 +88,5 @@ addons/*/docs/docs.txt
 extras/osxvm/build
 *~
 build
+tests/db/*
+!tests/db/.gitisdumb
