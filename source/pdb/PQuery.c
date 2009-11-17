@@ -132,7 +132,10 @@ int PQuery_setup(PQuery *self)
 	
 	if(!PQuery_cursorMatches(self))
 	{
-		PQuery_moveToNextMatch(self);
+		if(!PQuery_moveToNextMatch(self))
+		{
+			self->isDone = 1;
+		}
 	}
 	
 	self->selectCount = 1;
@@ -238,12 +241,11 @@ void PQuery_enumerate(PQuery *self)
 {
 	if (self->selectCount < self->selectCountMax)
 	{
-		
 		int found = PQuery_moveToNextMatch(self);
 		
 		if (found)
 		{
-				self->selectCount ++;	
+			self->selectCount ++;	
 		}
 		else
 		{
