@@ -1157,4 +1157,74 @@ void PNode_show(PNode *self)
 	}
 }
 
+// -------------------------------------------------
+
+int PNode_amSeries(PNode *self, Datum *d)
+{	
+	PQuery *q = PNode_startQuery(self);
+	Datum *k;
+	
+	Datum_appendCString_(d, "<series>\n");
+	
+	while (k = PQuery_key(q))
+	{		
+		//if(Datum_beginsWithCString_(k, "_"))
+		{
+			Datum_appendCString_(d, "<value xid=\"");
+			Datum_append_(d, k);
+			Datum_appendCString_(d, "\">");
+			Datum_append_(d, k); // convert to more humane date?
+			Datum_appendCString_(d, "</value>\n");
+		}
+
+		PQuery_enumerate(q);
+	}
+	
+	Datum_appendCString_(d, "</series>\n");
+	return 0; 
+}
+
+
+int PNode_amGraphKey_(PNode *self, Datum *title, Datum *graphKey, Datum *d)
+{	
+	PQuery *q = PNode_startQuery(self);
+	PNode *tmpNode = PDB_allocNode(self->pdb);
+	Datum *k;
+	
+	Datum_appendCString_(d, "<graph gid=\"");
+	if(title) Datum_append_(d, title); Datum_appendCString_(d, "-");
+	Datum_append_(d, graphKey);
+	Datum_appendCString_(d, "\" title=\"");
+	Datum_append_(d, graphKey);
+	Datum_appendCString_(d, "\" balloon_text=\"{value} ");
+	if(title) Datum_append_(d, title); Datum_appendCString_(d, "-");
+	Datum_append_(d, graphKey);
+	Datum_appendCString_(d, "\" bullet=\"round");
+	Datum_appendCString_(d, "\">\n");
+	
+	while (k = PQuery_key(q))
+	{		
+		//if(Datum_beginsWithCString_(k, "_"))
+		{
+			Datum *v = PNode_value(self);
+			Datum_appendCString_(d, "<value xid=\"");
+			Datum_append_(d, k);
+			Datum_appendCString_(d, "\">");
+			if(v) 
+			{
+				PNode_setPid_(tmpNode, v);
+				v = PNode_at_(tmpNode, graphKey);
+				if (v) Datum_append_(d, v);
+			}
+			Datum_appendCString_(d, "</value>\n");
+		}
+
+		PQuery_enumerate(q);
+	}
+	
+	Datum_appendCString_(d, "</graph>\n");
+	return 0; 
+}
+
+
 

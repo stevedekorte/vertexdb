@@ -120,6 +120,8 @@ int PNode_op_values(PNode *self, Datum *d);
 int PNode_op_rm(PNode *self, Datum *d);
 int PNode_op_html(PNode *self, Datum *d);
 int PNode_asHtmlRow(PNode *self, Datum *d);
+int PNode_amSeries(PNode *self, Datum *d);
+int PNode_amGraphKey_(PNode *self, Datum *title, Datum *graphKey, Datum *d);
 
 // permissions
 Datum *PNode_op_owner(PNode *self);

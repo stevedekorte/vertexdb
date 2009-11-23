@@ -386,6 +386,58 @@ VDBTest := UnitTest clone do(
         QueueExpireToAssertion with("second") setPath("/queue/active") addParams("toPath=/test/queue/waiting") setExpectedBody("0") assert
         KeysAssertion with("second queueExpireTo") setPath("/queue/active/b") setExpectedBody("""["_a","_qexpire","_qtime"]""") assert
     )
+
+    testAmchart := method(
+        u := URL with(VDBAssertion baseUrl .. "/?action=transaction")
+        r := u post(
+"/test/queue/waiting?action=mkdir
+/test/queue/active?action=mkdir
+/test/queue/active/a?action=mkdir
+/test/queue/active/a?action=write&key=_a&value=1
+/test/queue/active/a?action=write&key=_qexpire&value=0000000000
+/test/queue/active/a?action=write&key=_qtime&value=0000000000
+/test/queue/active/b?action=mkdir
+/test/queue/active/b?action=write&key=_a&value=2
+/test/queue/active/b?action=write&key=_qexpire&value=2000000000
+/test/queue/active/b?action=write&key=_qtime&value=2000000000")
+
+        if(u statusCode != 200,
+            Exception raise("setup transaction fails in testAmchart: ", r)
+        )
+		
+		u := URL with(VDBAssertion baseUrl .. "/?action=amchart") 
+		u fetch
+		if(u statusCode != 200,
+            Exception raise("error in amchart fetch")
+		)
+    )
+
+    testView := method(
+        u := URL with(VDBAssertion baseUrl .. "/?action=transaction")
+        r := u post(
+"/test/queue/waiting?action=mkdir
+/test/queue/active?action=mkdir
+/test/queue/active/a?action=mkdir
+/test/queue/active/a?action=write&key=_a&value=1
+/test/queue/active/a?action=write&key=_qexpire&value=0000000000
+/test/queue/active/a?action=write&key=_qtime&value=0000000000
+/test/queue/active/b?action=mkdir
+/test/queue/active/b?action=write&key=_a&value=2
+/test/queue/active/b?action=write&key=_qexpire&value=2000000000
+/test/queue/active/b?action=write&key=_qtime&value=2000000000")
+
+        if(u statusCode != 200,
+            Exception raise("setup transaction fails in testView: ", r)
+        )
+
+		u := URL with(VDBAssertion baseUrl .. "/") 
+		u fetch
+		if(u statusCode != 200,
+            Exception raise("error in view fetch")
+		)
+    )
+
+
 )
 
 assert := method(v, v ifFalse(Exception raise("error")))

@@ -826,6 +826,9 @@ int VertexServer_api_view(VertexServer *self)
 #define VERTEX_SERVER_ADD_ACTION(name) CHash_at_put_(self->actions, Datum_newWithCString_(#name ""), (void *)VertexServer_api_##name);
 #define VERTEX_SERVER_ADD_OP(name) CHash_at_put_(self->ops, Datum_newWithCString_(#name ""), (void *)PNode_op_##name);
 
+int VertexServer_api_amchart(VertexServer *self);
+int VertexServer_api_ampie(VertexServer *self);
+
 void VertexServer_setupActions(VertexServer *self)
 {	
 /*
@@ -887,13 +890,14 @@ void VertexServer_setupActions(VertexServer *self)
 	VERTEX_SERVER_ADD_ACTION(chmod);
 	VERTEX_SERVER_ADD_ACTION(chown);
 
-	
 	// management
 	VERTEX_SERVER_ADD_ACTION(shutdown);
 	VERTEX_SERVER_ADD_ACTION(backup);
 	VERTEX_SERVER_ADD_ACTION(collectGarbage);
 	VERTEX_SERVER_ADD_ACTION(showStats);
 	VERTEX_SERVER_ADD_ACTION(view);
+	VERTEX_SERVER_ADD_ACTION(amchart);
+	VERTEX_SERVER_ADD_ACTION(ampie);
 	//VERTEX_SERVER_ADD_ACTION(syncSizes);
 	VERTEX_SERVER_ADD_ACTION(sync);
 	VERTEX_SERVER_ADD_ACTION(log);
