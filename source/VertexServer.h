@@ -35,6 +35,11 @@ typedef int (VertexAction)(VertexServer *);
 VertexServer *VertexServer_new(void);
 void VertexServer_free(VertexServer *self);
 
+// private
+void VertexServer_setupPQuery_(VertexServer *self, PQuery *q);
+void VertexServer_setErrorCString_(VertexServer *self, const char *s);
+void VertexServer_appendError_(VertexServer *self, Datum *d);
+
 // command line options
 void VertexServer_setPort_(VertexServer *self, int port);
 void VertexServer_setDbPath_(VertexServer *self, char *path);
