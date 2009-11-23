@@ -134,6 +134,7 @@ VDBTest := UnitTest clone do(
 		KeysAssertion with("out of lower and upper range") addParams("after=@", "before=d") setExpectedBody("""["a","b","c"]""") assert
 		KeysAssertion with("out of upper, upper range") addParams("after=d", "before=f") setExpectedBody("""[]""") assert
         KeysAssertion with("where") addParams("whereKey=_b", "whereValue=5") setExpectedBody("""["b","c"]""") assert
+		KeysAssertion with("matching range, non matching where") addParams("after=@", "before=b", "whereKey=_a", "whereValue=-1") setExpectedBody("""[]""") assert
         KeysAssertion with("non-matching where") addParams("whereKey=_a", "whereValue=10") setExpectedBody("[]") assert
     )
     
