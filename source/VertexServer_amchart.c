@@ -15,7 +15,7 @@ int VertexServer_api_amchart(VertexServer *self)
 	PNode *tmpNode = PDB_allocNode(self->pdb);
 	Datum *d = self->result;
 	Datum *title = 0x0;
-	int isFirst = 1;
+	//int isFirst = 1;
 	
 	if (PNode_moveToPathIfExists_(node, HttpRequest_uriPath(self->httpRequest)) != 0) 
 	{
