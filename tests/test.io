@@ -9,7 +9,7 @@ VDBAssertion := Object clone do(
     action ::= nil
     variant ::= "default"
     
-	port ::= "8080"
+	port ::= "9523" //DONT CHANGE THIS.  WE WOULDN'T WANT TO ACCIDENTALLY WIPE OUT THE PRODUCTION DB
 	host ::= "localhost"
 	writeln("running tests on ", host, ":", port)
     baseUrl ::= method("http://" .. host .. ":" .. port)
