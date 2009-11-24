@@ -113,7 +113,7 @@ Possible future features:
 <h2>Keys, Values and Terminology</h2>
 <ul>
 
-VertexDB's is composed of nodes which are folders of key/value pairs. Key's are stored in lexical ordering and can be any string not containing a forward slash character (as these are used as path separators). 
+VertexDB is composed of nodes which are folders of key/value pairs. Keys are stored in lexical ordering and can be any string not containing a forward slash character (as these are used as path separators). 
 <p>
 Keys beginning with an underscore tell the database that the value is a string, otherwise, the value is a pointer to another node. 
 In this way, the database's garbage collector knows how to traverse the nodes. There is a root node that corresponds to the / path that serves as the root reference of garbage collection scan. Each node also tracks it's size (number of keys it contains) so this can be returned quickly. 
@@ -159,7 +159,7 @@ sample response: null
 <ul>
 	Removes a node at the specified path. Returns an error if the path does not exist. Returns null on success.
 <pre>
-sample request: /path?action=rm
+sample request: /path?action=rm&key=foo
 sample response: null
 </pre>
 </ul>

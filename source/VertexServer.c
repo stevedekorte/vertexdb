@@ -267,12 +267,21 @@ int VertexServer_api_read(VertexServer *self)
 {
 	PNode *node = PDB_allocNode(self->pdb);
 	Datum *key = HttpRequest_queryValue_(self->httpRequest, "key");	
+	Datum *mode = HttpRequest_queryValue_(self->httpRequest, "mode");	
 	Datum *value;
 	
 	if (VertexServer_api_setCursorPathOnNode_(self, node)) return 2;
 
-	value = PNode_at_(node, key);
+	if(Datum_equalsCString_(mode, "meta"))
+	{
+		value = PNode_metaAt_(node, key);
+	}
+	else 
+	{
+		value = PNode_at_(node, key);
+	}
 
+	
 	if (value) 
 	{
 		yajl_gen_datum(self->yajl, value);
@@ -320,6 +329,10 @@ int VertexServer_api_write(VertexServer *self)
 	if(Datum_equalsCString_(mode, "append"))
 	{
 		PNode_atCat_(node, key, value);
+	}
+	else if(Datum_equalsCString_(mode, "meta"))
+	{
+		PNode_metaAt_put_(node, key, value);
 	}
 	else
 	{
