@@ -19,6 +19,8 @@ extern "C" {
 #define HTTP_OK_MESSAGE	"OK"
 
 typedef void  (HttpRequestRequestCallback)(void *);
+void Datum_encodeUri(Datum *self);
+Datum *Datum_asUriEncoded(Datum *self);
 
 typedef struct
 {
