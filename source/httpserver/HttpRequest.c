@@ -22,6 +22,21 @@ void Datum_decodeUri(Datum *self)
 	free(k);
 }
 
+void Datum_encodeUri(Datum *self)
+{
+	char *k = evhttp_encode_uri(Datum_data(self));
+	Datum_setCString_(self, k);
+	free(k);
+}
+
+Datum *Datum_asUriEncoded(Datum *self)
+{
+	char *k = evhttp_encode_uri(Datum_data(self));
+	Datum *d = Datum_poolNewWithCString_(k);
+	free(k);
+	return d;
+}
+
 HttpRequest *HttpRequest_new(void)
 {
 	HttpRequest *self = calloc(1, sizeof(HttpRequest));

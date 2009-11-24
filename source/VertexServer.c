@@ -683,6 +683,7 @@ int VertexServer_api_view(VertexServer *self)
 	Datum *d = self->result;
 	int maxCount = 200;
 	
+	
 	if (PNode_moveToPathIfExists_(node, HttpRequest_uriPath(self->httpRequest)) != 0) 
 	{
 		VertexServer_setErrorCString_(self, "path does not exist: ");
@@ -745,7 +746,7 @@ int VertexServer_api_view(VertexServer *self)
 	if (Datum_size(after) && PNode_key(node))
 	{
 		Datum_appendCString_(d, "<a href=/");
-		Datum_append_(d, HttpRequest_uriPath(self->httpRequest));
+		Datum_append_(d, Datum_asUriEncoded(HttpRequest_uriPath(self->httpRequest)));
 		Datum_appendCString_(d, "?before=");
 		Datum_append_(d, PNode_key(node));
 		Datum_appendCString_(d, ">previous</a>");
@@ -799,9 +800,9 @@ int VertexServer_api_view(VertexServer *self)
 					Datum_appendCString_(d, "<td style=\"line-height:1.5em\">");
 					Datum_appendCString_(d, "&nbsp;&nbsp;<a href=");
 					if(Datum_size(HttpRequest_uriPath(self->httpRequest)) != 0) Datum_appendCString_(d, "/");
-					Datum_append_(d, HttpRequest_uriPath(self->httpRequest));
+					Datum_append_(d, Datum_asUriEncoded(HttpRequest_uriPath(self->httpRequest)));
 					Datum_appendCString_(d, "/");
-					Datum_append_(d, k);
+					Datum_append_(d, Datum_asUriEncoded(k));
 					Datum_appendCString_(d, "> ↠ ");
 					Datum_appendLong_(d, PNode_nodeSizeAtCursor(node));
 					Datum_appendCString_(d, "</a> ");
