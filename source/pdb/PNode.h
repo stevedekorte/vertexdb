@@ -64,6 +64,10 @@ int PNode_atCat_(PNode *self, Datum *k, Datum *v);
 int PNode_removeAt_(PNode *self, Datum *k);
 void PNode_setToRoot(PNode *self);
 
+// meta
+int PNode_metaAt_put_(PNode *self, Datum *key, Datum *value);
+Datum *PNode_metaAt_(PNode *self, Datum *d);
+
 // size ops
 int PNode_setSize_(PNode *self, long s); // PRIVATE !!!
 void PNode_setPathsFromPid(PNode *self);

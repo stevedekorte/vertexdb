@@ -439,6 +439,11 @@ VDBTest := UnitTest clone do(
 		)
     )
 
+    testMeta := method(
+		URL with(VDBAssertion baseUrl .. "/?action=write&key=_type&value=Root&mode=meta") fetch
+        r := URL with(VDBAssertion baseUrl .. "/?action=read&key=_type&mode=meta") fetch
+		if(r containsSeq("Root") not, Exception raise("meta data not read"))
+    )
 
 )
 

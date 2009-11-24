@@ -59,6 +59,7 @@ void HttpRequest_parseUri_(HttpRequest *self, const char *uri)
 	
 	Datum_setSize_(self->uriPath, 0);
 	index = Datum_from_beforeChar_into_(uriDatum, 1, '?', self->uriPath);
+	Datum_decodeUri(self->uriPath);
 	
 	for (;;)
 	{
