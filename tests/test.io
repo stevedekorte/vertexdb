@@ -445,6 +445,13 @@ VDBTest := UnitTest clone do(
 		if(r containsSeq("Root") not, Exception raise("meta data not read"))
     )
 
+	testSpaceInPath := method(
+		URL with(VDBAssertion baseUrl .. "/test/spacedPath/foo%20bar?action=mkdir") fetch
+		URL with(VDBAssertion baseUrl .. "/test/spacedPath/foo%20bar?action=write&key=_baz&value=bam") fetch
+		VDBAssertion clone setVariant("space in path") setPath("/spacedPath/foo%20bar") setAction("read") addParams("key=_baz") setExpectedBody("\"bam\"") assert
+		VDBAssertion clone setVariant("space in keys") setPath("/spacedPath") setAction("select") addParams("op=keys") setExpectedBody("""["foo bar"]""") assert
+	)
+
 )
 
 assert := method(v, v ifFalse(Exception raise("error")))
