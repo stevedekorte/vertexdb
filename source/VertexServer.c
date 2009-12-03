@@ -370,6 +370,7 @@ int VertexServer_api_transaction(VertexServer *self)
 	PDB_commit(self->pdb);
 	
 	Datum_copy_(post, HttpRequest_postData(self->httpRequest));
+	Datum_clear(HttpRequest_postData(self->httpRequest));
 	
 	do
 	{
