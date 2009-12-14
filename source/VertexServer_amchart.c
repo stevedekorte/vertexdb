@@ -6,8 +6,8 @@
 int VertexServer_api_amchart(VertexServer *self)
 {
 	Datum *slot1  = HttpRequest_queryValue_(self->httpRequest, "slot1");
-	Datum *slot2  = HttpRequest_queryValue_(self->httpRequest, "slot2");
-	Datum *slot3  = HttpRequest_queryValue_(self->httpRequest, "slot3");
+	//Datum *slot2  = HttpRequest_queryValue_(self->httpRequest, "slot2");
+	//Datum *slot3  = HttpRequest_queryValue_(self->httpRequest, "slot3");
 	Datum *subpath  = HttpRequest_queryValue_(self->httpRequest, "subpath");
 	PNode *node = PDB_allocNode(self->pdb);
 	PQuery *q = PNode_query(node);
@@ -37,47 +37,40 @@ int VertexServer_api_amchart(VertexServer *self)
 	// series -----------------
 	
 	Datum_appendCString_(d, "<graphs>\n");
-
 	PNode_first(node);
 
-	
-	if(Datum_size(slot1))
+	if(Datum_size(subpath)) 
 	{
-		if(Datum_size(slot1)) PNode_amGraphKey_(node, title, slot1, d); 
-		if(Datum_size(slot2)) PNode_amGraphKey_(node, title, slot2, d); 
-		if(Datum_size(slot3)) PNode_amGraphKey_(node, title, slot3, d); 
-	}
-	else 
-	{
-		// this is just to get get the first node so we can see what keys should be in the graph
-		if(PNode_value(node))
+		Datum *k;
+		
+		while(k = PNode_key(node))
 		{
-			title = Datum_poolNew();
-			Datum_copy_(title, PNode_key(node));
 			PNode_setPid_(tmpNode, PNode_value(node));
-
-			if(Datum_size(subpath))
-			{
-				PNode_moveToPathIfExists_(tmpNode, subpath);
-			}
+			PNode_moveToPathIfExists_(tmpNode, subpath);
+			PNode_amGraphKey_(tmpNode, k, slot1, d);
+			PNode_next(node);
+		}
 			
-			// enumerate the keys and output graph for each
-			PNode_first(tmpNode);
-			
-			Datum *k;
-			while(k = PNode_key(tmpNode))
-			{
-				PNode_startQuery(node);
-				PNode_amGraphKey_(node, title, k, d); 
-				PNode_next(tmpNode);
-			}
+	}
+	else if(Datum_size(slot1))
+	{
+		char slotKey[64];
+		int slotNumber = 1;
+		
+		for (;;)
+		{
+			sprintf(slotKey, "slot%i", slotNumber);
+		
+			Datum *slotName  = HttpRequest_queryValue_(self->httpRequest, slotKey);
+			if(Datum_size(slotName) == 0) break;
+			PNode_amGraphKey_(node, title, slotName, d);
+			slotNumber ++;
 			
 		}
-		
 	}
+
 	
 	Datum_appendCString_(d, "</graphs>\n");
-
 	Datum_appendCString_(d, "</chart>\n");
 
 	HttpResponse_setContentType_(self->httpResponse, "text/xml");
