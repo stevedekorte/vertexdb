@@ -9,7 +9,7 @@ VDBAssertion := Object clone do(
     action ::= nil
     variant ::= "default"
     
-	port ::= "8080"
+	port ::= "9523" //DONT CHANGE THIS.  WE WOULDN'T WANT TO ACCIDENTALLY WIPE OUT THE PRODUCTION DB
 	host ::= "localhost"
 	writeln("running tests on ", host, ":", port)
     baseUrl ::= method("http://" .. host .. ":" .. port)
@@ -445,7 +445,6 @@ VDBTest := UnitTest clone do(
 		if(r containsSeq("Root") not, Exception raise("meta data not read"))
     )
 
-
 	testAMChart := method(
 		r := URL with(VDBAssertion baseUrl .. "/?action=amchart") fetch
 		if(r containsSeq("graph") not, Exception raise("chart error"))
@@ -456,6 +455,14 @@ VDBTest := UnitTest clone do(
 		r := URL with(VDBAssertion baseUrl .. "/?action=amchart&subpath=foo&slot1=bar") fetch
 		if(r containsSeq("graph") not, Exception raise("chart error"))
 	)
+
+	testSpaceInPath := method(
+		URL with(VDBAssertion baseUrl .. "/test/spacedPath/foo%20bar?action=mkdir") fetch
+		URL with(VDBAssertion baseUrl .. "/test/spacedPath/foo%20bar?action=write&key=_baz&value=bam") fetch
+		VDBAssertion clone setVariant("space in path") setPath("/spacedPath/foo%20bar") setAction("read") addParams("key=_baz") setExpectedBody("\"bam\"") assert
+		VDBAssertion clone setVariant("space in keys") setPath("/spacedPath") setAction("select") addParams("op=keys") setExpectedBody("""["foo bar"]""") assert
+	)
+
 )
 
 assert := method(v, v ifFalse(Exception raise("error")))
