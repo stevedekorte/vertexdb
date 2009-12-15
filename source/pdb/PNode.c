@@ -549,14 +549,14 @@ void PNode_setToRoot(PNode *self)
 	PNode_first(self);
 }
 
-int PNode_moveToPath_createIfAbsent_(PNode *self, Datum *p, int createIfAbsent)
+int PNode_moveToPath_createIfAbsent_(PNode *self, Datum *p, int createIfAbsent, int fromRoot)
 {
 	int r;
 	Datum *cp = Datum_new();
 	Datum *np = Datum_new();
 	
 	Datum_copy_(cp, p);
-	PNode_setToRoot(self);
+	if (fromRoot) PNode_setToRoot(self);
 	
 	do	
 	{
@@ -589,14 +589,19 @@ int PNode_moveToPath_createIfAbsent_(PNode *self, Datum *p, int createIfAbsent)
 	return 0;
 }
 
+int PNode_moveToSubpathIfExists_(PNode *self, Datum *p)
+{
+	return PNode_moveToPath_createIfAbsent_(self, p, 0, 0);
+}
+
 int PNode_moveToPathIfExists_(PNode *self, Datum *p)
 {
-	return PNode_moveToPath_createIfAbsent_(self, p, 0);
+	return PNode_moveToPath_createIfAbsent_(self, p, 0, 1);
 }
 
 int PNode_moveToPath_(PNode *self, Datum *p)
 {	
-	return PNode_moveToPath_createIfAbsent_(self, p, 1);
+	return PNode_moveToPath_createIfAbsent_(self, p, 1, 1);
 }
 
 int PNode_moveToPathCString_(PNode *self, const char *p)
@@ -1195,10 +1200,27 @@ int PNode_amGraphKey_(PNode *self, Datum *title, Datum *graphKey, Datum *d)
 	if(title) Datum_append_(d, title); Datum_appendCString_(d, "-");
 	Datum_append_(d, graphKey);
 	Datum_appendCString_(d, "\" title=\"");
-	Datum_append_(d, graphKey);
+	if(title) 
+	{
+		Datum_append_(d, title);
+	}
+	else 
+	{
+		Datum_append_(d, graphKey);
+	}
+
 	Datum_appendCString_(d, "\" balloon_text=\"{value} ");
-	if(title) Datum_append_(d, title); Datum_appendCString_(d, "-");
-	Datum_append_(d, graphKey);
+	
+	if(title)
+	{
+		Datum_append_(d, title); 
+	}
+	else
+	{
+		//Datum_appendCString_(d, "-");
+		Datum_append_(d, graphKey);
+	}
+	
 	Datum_appendCString_(d, "\" bullet=\"round");
 	Datum_appendCString_(d, "\">\n");
 	

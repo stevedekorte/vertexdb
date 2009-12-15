@@ -45,9 +45,17 @@ int VertexServer_api_amchart(VertexServer *self)
 		
 		while(k = PNode_key(node))
 		{
+			Datum *title = Datum_poolNew();
 			PNode_setPid_(tmpNode, PNode_value(node));
-			PNode_moveToPathIfExists_(tmpNode, subpath);
-			PNode_amGraphKey_(tmpNode, k, slot1, d);
+			PNode_moveToSubpathIfExists_(tmpNode, subpath);
+			Datum_encodeUri(k);
+			
+			Datum_copy_(title, k);
+			//Datum_appendCString_(title, "-");
+			//Datum_append_(title, slot1);
+			
+			PNode_amGraphKey_(tmpNode, title, slot1, d);
+			//printf("graph: %s\n", Datum_data(k));
 			PNode_next(node);
 		}
 			

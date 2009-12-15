@@ -100,6 +100,7 @@ int PNode_createMoveToKey_(PNode *self, Datum *key);
 int PNode_remove(PNode *self);
 //Datum *PNode_valueFromDerefKeyToPath_(PNode *self, Datum *derefPath);
 int PNode_moveToPathIfExists_(PNode *self, Datum *p);
+int PNode_moveToSubpathIfExists_(PNode *self, Datum *p);
 int PNode_moveToPath_(PNode *self, Datum *p);
 int PNode_moveToPathCString_(PNode *self, const char *p);
 //int PNode_moveToSubpathCString_(PNode *self, const char *p);
