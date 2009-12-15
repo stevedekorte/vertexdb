@@ -445,6 +445,17 @@ VDBTest := UnitTest clone do(
 		if(r containsSeq("Root") not, Exception raise("meta data not read"))
     )
 
+
+	testAMChart := method(
+		r := URL with(VDBAssertion baseUrl .. "/?action=amchart") fetch
+		if(r containsSeq("graph") not, Exception raise("chart error"))
+		
+		r := URL with(VDBAssertion baseUrl .. "/?action=amchart&slot1=bar") fetch
+		if(r containsSeq("graph") not, Exception raise("chart error"))
+		
+		r := URL with(VDBAssertion baseUrl .. "/?action=amchart&subpath=foo&slot1=bar") fetch
+		if(r containsSeq("graph") not, Exception raise("chart error"))
+	)
 )
 
 assert := method(v, v ifFalse(Exception raise("error")))
