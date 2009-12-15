@@ -301,23 +301,13 @@ int VertexServer_api_write(VertexServer *self)
 	Datum *mode  = HttpRequest_queryValue_(self->httpRequest, "mode");
 	Datum *key   = HttpRequest_queryValue_(self->httpRequest, "key");
 	Datum *value = HttpRequest_queryValue_(self->httpRequest, "value");
+	Datum *post  = HttpRequest_postData(self->httpRequest);
 	
-	/*
-	if(Datum_size(value) == 0)
+	if(Datum_size(post) != 0)
 	{
-		value = self->post;
-		//VertexServer_setErrorCString_(self, "empty keys not accepted");
-		//return -1;
+		value = post;
 	}
-	*/
-	
-	/*
-	if(Datum_size(value) == 0)
-	{
-		VertexServer_setErrorCString_(self, "empty values not accepted");
-		return -1;
-	}
-	*/
+
 
 	if (PNode_moveToPathIfExists_(node, HttpRequest_uriPath(self->httpRequest)) != 0) 
 	{
@@ -380,6 +370,7 @@ int VertexServer_api_transaction(VertexServer *self)
 	PDB_commit(self->pdb);
 	
 	Datum_copy_(post, HttpRequest_postData(self->httpRequest));
+	Datum_clear(HttpRequest_postData(self->httpRequest));
 	
 	do
 	{

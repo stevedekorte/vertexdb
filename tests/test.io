@@ -452,6 +452,16 @@ VDBTest := UnitTest clone do(
 		VDBAssertion clone setVariant("space in keys") setPath("/spacedPath") setAction("select") addParams("op=keys") setExpectedBody("""["foo bar"]""") assert
 	)
 
+	testAMChart := method(
+		r := URL with(VDBAssertion baseUrl .. "/?action=amchart") fetch
+		if(r containsSeq("graph") not, Exception raise("chart error"))
+		
+		r := URL with(VDBAssertion baseUrl .. "/?action=amchart&slot1=bar") fetch
+		if(r containsSeq("graph") not, Exception raise("chart error"))
+		
+		r := URL with(VDBAssertion baseUrl .. "/?action=amchart&subpath=foo&slot1=bar") fetch
+		if(r containsSeq("graph") not, Exception raise("chart error"))
+	)
 )
 
 assert := method(v, v ifFalse(Exception raise("error")))
