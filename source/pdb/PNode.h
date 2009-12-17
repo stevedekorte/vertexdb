@@ -40,9 +40,13 @@ typedef int (PNodeOp)(PNode *, Datum *);
 // creation and setup
 PNode *PNode_poolNew(void);
 PNode *PNode_new(void);
+void PNode_poolFreeRefs(void);
+void PNode_freePool(void);
+
 void PNode_setYajl_(PNode *self, yajl_gen y);
 void PNode_setPdb_(PNode *self, void *pdb);
 void PNode_free(PNode *self);
+void PNode_clear(PNode *self);
 
 // open/close
 void PNode_open(PNode *self);

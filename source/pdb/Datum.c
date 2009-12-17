@@ -7,9 +7,35 @@
 #include <string.h>
 #include "Pool.h"
 
+static Pool *DatumPool = 0x0;
+
+Pool *Datum_pool(void)
+{
+	if(!DatumPool) 
+	{
+		DatumPool = Pool_new();
+		Pool_setNewFunc_(DatumPool, (PoolNewFunc *)Datum_new);
+		Pool_setFreeFunc_(DatumPool, (PoolFreeFunc *)Datum_free);
+		Pool_setClearFunc_(DatumPool, (PoolClearFunc *)Datum_clear);
+		Pool_setRecycleSize_(DatumPool, 10000);
+	}
+	
+	return DatumPool;
+}
+
 Datum *Datum_poolNew(void)
 {
-	return GLOBAL_POOL_ALLOC(Datum)
+	return Pool_newItem(Datum_pool());
+}
+
+void Datum_poolFreeRefs(void)
+{
+	Pool_freeRefs(Datum_pool());
+}
+
+void Datum_freePool(void)
+{
+	Pool_free(Datum_pool());
 }
 
 Datum *Datum_poolNewWithCString_(const char *s)

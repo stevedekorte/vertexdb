@@ -12,7 +12,6 @@ extern "C" {
 #include "File.h"
 #include "Common.h"
 #include "CHash.h"
-#include "Pool.h"
 #include "Yajl_extras.h"
 #include "Store.h"
 

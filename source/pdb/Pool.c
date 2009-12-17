@@ -5,99 +5,77 @@
 #include <stdlib.h>
 #include <time.h>
 
-static Pool *globalPool = 0x0;
-
-Pool *Pool_globalPool(void)
-{
-	if(!globalPool) 
-	{
-		globalPool = Pool_new();
-	}
-	
-	return globalPool;
-}
-
-void Pool_globalPoolFreeRefs(void)
-{
-	Pool_freeRefs(Pool_globalPool());
-}
-
-void Pool_freeGlobalPool(void)
-{
-	if(globalPool)
-	{
-		Pool_free(globalPool);
-		globalPool = 0x0;
-	}
-}
-
 Pool *Pool_new(void)
 {
 	Pool *self = calloc(1, sizeof(Pool));
 	self->refs = List_new();
-	self->freeFunctions = List_new();
+	self->recycled = List_new();
 	return self;
 }
 
 void Pool_free(Pool *self)
 {
-	Pool_freeRefs(self);
+	LIST_FOREACH(self->refs, i, ref, self->freeFunc(ref););
 	List_free(self->refs);
-	List_free(self->freeFunctions);
+	
+	LIST_FOREACH(self->recycled, i, ref, self->freeFunc(ref););
+	List_free(self->recycled);
+	
 	free(self);
 }
 
 void Pool_freeRefs(Pool *self)
 {
-	LIST_FOREACH(self->refs, i, ref,
-		PoolFreeFunc *freeFunc = List_at_(self->freeFunctions, i);
-		freeFunc(ref);
-	);
-	List_removeAll(self->refs);
-	List_removeAll(self->freeFunctions);
-}
-
-void Pool_freeRefsThatHaveFreeFunc_(Pool *self, PoolFreeFunc *func)
-{
-	List *freeRefsList = List_new();
-	List *freeFuncsList = List_new();
+	PoolFreeFunc *freeFunc = self->freeFunc;
 	
-	List *keepRefsList = List_new();
-	List *keepFuncsList = List_new();
-	
-	LIST_FOREACH(self->refs, i, ref,
-		PoolFreeFunc *freeFunc = List_at_(self->freeFunctions, i);
-		if(freeFunc == func)
+	LIST_FOREACH(self->refs, i, ref, 
+		if(List_size(self->recycled) < self->recycleSize)
 		{
-			List_append_(freeRefsList, ref);
-			List_append_(freeFuncsList, func);
+			self->clearFunc(ref);
+			List_append_(self->recycled, ref);
 		}
 		else
 		{
-			List_append_(keepRefsList, ref);
-			List_append_(keepFuncsList, func);
+			freeFunc(ref);
 		}
 	);
 	
-	List_copy_(self->refs, freeRefsList);
-	List_copy_(self->freeFunctions, freeFuncsList);
-	
-	Pool_freeRefs(self);
-	
-	List_copy_(self->refs, keepRefsList);
-	List_copy_(self->freeFunctions, keepFuncsList);	
-
-	List_free(freeRefsList);
-	List_free(freeFuncsList);
-	
-	List_free(keepRefsList);
-	List_free(keepFuncsList);
+	List_removeAll(self->refs);
 }
 
-void *Pool_alllocWithNewAndFree(Pool *self, PoolNewFunc *newFunc, PoolFreeFunc *freeFunc)
+void Pool_setNewFunc_(Pool *self, PoolNewFunc *f)
 {
-	void *ref = newFunc();
+	self->newFunc = f;
+}
+
+void Pool_setFreeFunc_(Pool *self, PoolFreeFunc *f)
+{
+	self->freeFunc = f;
+}
+
+void Pool_setClearFunc_(Pool *self, PoolClearFunc *f)
+{
+	self->clearFunc = f;
+}
+
+void Pool_setRecycleSize_(Pool *self, int size)
+{
+	self->recycleSize = size;
+}
+
+void *Pool_newItem(Pool *self)
+{
+	void *ref;
+	
+	if(List_size(self->recycled))
+	{
+		ref = List_pop(self->recycled);
+	}
+	else 
+	{
+		ref = self->newFunc();
+	}
+
 	List_append_(self->refs, ref);
-	List_append_(self->freeFunctions, freeFunc);
 	return ref;
 }

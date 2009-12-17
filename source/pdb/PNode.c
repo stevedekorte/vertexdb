@@ -11,10 +11,37 @@
 
 #include "Pool.h"
 
+static Pool *PNodePool = 0x0;
+
+Pool *PNode_pool(void)
+{
+	if(!PNodePool) 
+	{
+		PNodePool = Pool_new();
+		Pool_setNewFunc_(PNodePool, (PoolNewFunc *)PNode_new);
+		Pool_setFreeFunc_(PNodePool, (PoolFreeFunc *)PNode_free);
+		Pool_setClearFunc_(PNodePool, (PoolFreeFunc *)PNode_clear);
+		//Pool_setRecycleSize_(PNodePool, 10000);
+	}
+	return PNodePool;
+}
+
 PNode *PNode_poolNew(void)
 {
-	return GLOBAL_POOL_ALLOC(PNode)
+	return Pool_newItem(PNode_pool());
 }
+
+void PNode_poolFreeRefs(void)
+{
+	Pool_freeRefs(PNode_pool());
+}
+
+void PNode_freePool(void)
+{
+	Pool_free(PNode_pool());
+}
+
+
 
 PNode *PNode_new(void)
 {
@@ -51,6 +78,24 @@ void PNode_free(PNode *self)
 	self->yajl = 0x0;
 	
 	free(self);
+}
+
+void PNode_clear(PNode *self)
+{
+	PNode_close(self);
+	Datum_clear(self->pid);
+	Datum_clear(self->pidPath);
+	Datum_clear(self->keyPath);
+	Datum_clear(self->sizePath);
+	Datum_clear(self->parentPid);
+	
+	if (self->query) 
+	{
+		PQuery_free(self->query);
+		self->query = 0x0;
+	}
+	
+	self->yajl = 0x0;
 }
 
 PQuery *PNode_query(PNode *self)
