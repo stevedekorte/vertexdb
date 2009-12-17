@@ -57,6 +57,10 @@ struct fuse_operations {
 #include "Socket.h"
 #include "PQuery.h"
 
+#include <sys/types.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+
 #define USER_ID_LENGTH 12
 //#define COMMIT_PERIODICALLY 1
 
@@ -1003,6 +1007,13 @@ void VertexServer_registerSignals(VertexServer *self)
 	signal(SIGPIPE, VertexServer_SignalHandler);
 }
 
+void VertexServer_enableCoreDumps(VertexServer *self)
+{
+	struct rlimit limit;
+	limit.rlim_cur = limit.rlim_max = RLIM_INFINITY;
+	setrlimit(RLIMIT_CORE, &limit);
+}
+
 void VertexServer_setLogPath_(VertexServer *self, const char *path)
 {
 	Log_setPath_(path);
@@ -1073,6 +1084,7 @@ int VertexServer_openLog(VertexServer *self)
 int VertexServer_run(VertexServer *self)
 {  	
 	Socket_SetDescriptorLimitToMax();
+	VertexServer_enableCoreDumps(self);
 	VertexServer_setupActions(self);
 	VertexServer_openLog(self);
 	Log_Printf("VertexServer_run\n");
