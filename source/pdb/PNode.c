@@ -11,10 +11,37 @@
 
 #include "Pool.h"
 
+static Pool *PNodePool = 0x0;
+
+Pool *PNode_pool(void)
+{
+	if(!PNodePool) 
+	{
+		PNodePool = Pool_new();
+		Pool_setNewFunc_(PNodePool, (PoolNewFunc *)PNode_new);
+		Pool_setFreeFunc_(PNodePool, (PoolFreeFunc *)PNode_free);
+		Pool_setClearFunc_(PNodePool, (PoolFreeFunc *)PNode_clear);
+		//Pool_setRecycleSize_(PNodePool, 10000);
+	}
+	return PNodePool;
+}
+
 PNode *PNode_poolNew(void)
 {
-	return GLOBAL_POOL_ALLOC(PNode)
+	return Pool_newItem(PNode_pool());
 }
+
+void PNode_poolFreeRefs(void)
+{
+	Pool_freeRefs(PNode_pool());
+}
+
+void PNode_freePool(void)
+{
+	Pool_free(PNode_pool());
+}
+
+
 
 PNode *PNode_new(void)
 {
@@ -51,6 +78,24 @@ void PNode_free(PNode *self)
 	self->yajl = 0x0;
 	
 	free(self);
+}
+
+void PNode_clear(PNode *self)
+{
+	PNode_close(self);
+	Datum_clear(self->pid);
+	Datum_clear(self->pidPath);
+	Datum_clear(self->keyPath);
+	Datum_clear(self->sizePath);
+	Datum_clear(self->parentPid);
+	
+	if (self->query) 
+	{
+		PQuery_free(self->query);
+		self->query = 0x0;
+	}
+	
+	self->yajl = 0x0;
 }
 
 PQuery *PNode_query(PNode *self)
@@ -549,14 +594,14 @@ void PNode_setToRoot(PNode *self)
 	PNode_first(self);
 }
 
-int PNode_moveToPath_createIfAbsent_(PNode *self, Datum *p, int createIfAbsent)
+int PNode_moveToPath_createIfAbsent_(PNode *self, Datum *p, int createIfAbsent, int fromRoot)
 {
 	int r;
 	Datum *cp = Datum_new();
 	Datum *np = Datum_new();
 	
 	Datum_copy_(cp, p);
-	PNode_setToRoot(self);
+	if (fromRoot) PNode_setToRoot(self);
 	
 	do	
 	{
@@ -589,14 +634,19 @@ int PNode_moveToPath_createIfAbsent_(PNode *self, Datum *p, int createIfAbsent)
 	return 0;
 }
 
+int PNode_moveToSubpathIfExists_(PNode *self, Datum *p)
+{
+	return PNode_moveToPath_createIfAbsent_(self, p, 0, 0);
+}
+
 int PNode_moveToPathIfExists_(PNode *self, Datum *p)
 {
-	return PNode_moveToPath_createIfAbsent_(self, p, 0);
+	return PNode_moveToPath_createIfAbsent_(self, p, 0, 1);
 }
 
 int PNode_moveToPath_(PNode *self, Datum *p)
 {	
-	return PNode_moveToPath_createIfAbsent_(self, p, 1);
+	return PNode_moveToPath_createIfAbsent_(self, p, 1, 1);
 }
 
 int PNode_moveToPathCString_(PNode *self, const char *p)
@@ -1195,10 +1245,27 @@ int PNode_amGraphKey_(PNode *self, Datum *title, Datum *graphKey, Datum *d)
 	if(title) Datum_append_(d, title); Datum_appendCString_(d, "-");
 	Datum_append_(d, graphKey);
 	Datum_appendCString_(d, "\" title=\"");
-	Datum_append_(d, graphKey);
+	if(title) 
+	{
+		Datum_append_(d, title);
+	}
+	else 
+	{
+		Datum_append_(d, graphKey);
+	}
+
 	Datum_appendCString_(d, "\" balloon_text=\"{value} ");
-	if(title) Datum_append_(d, title); Datum_appendCString_(d, "-");
-	Datum_append_(d, graphKey);
+	
+	if(title)
+	{
+		Datum_append_(d, title); 
+	}
+	else
+	{
+		//Datum_appendCString_(d, "-");
+		Datum_append_(d, graphKey);
+	}
+	
 	Datum_appendCString_(d, "\" bullet=\"round");
 	Datum_appendCString_(d, "\">\n");
 	

@@ -13,6 +13,7 @@
 //#include <signal.h>
 #include <unistd.h>
 #include "Pool.h"
+#include "PNode.h"
 
 void *CHash_atString_(CHash *self, const char *s)
 {
@@ -123,7 +124,8 @@ void HttpServer_handleRequest(struct evhttp_request *req, void *arg)
 	
 	evhttp_send_reply_end(self->request);
 	evbuffer_free(buf);
-	Pool_globalPoolFreeRefs();
+	Datum_poolFreeRefs();
+	PNode_poolFreeRefs();
 }
 
 void HttpServer_run(HttpServer *self)

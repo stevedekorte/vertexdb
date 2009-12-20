@@ -19,6 +19,8 @@ typedef struct
 Datum *Datum_poolNew(void);
 Datum *Datum_poolNewWithCString_(const char *s);
 Datum *Datum_poolNewWithData_size_(const char *data, size_t size);
+void Datum_poolFreeRefs(void);
+void Datum_freePool(void);
 
 Datum *Datum_new(void);
 Datum *Datum_newWithCString_(const char *s);

@@ -1,7 +1,6 @@
 #include "PDB.h"
 #include "List.h"
 #include "CHash.h"
-#include "Pool.h"
 #include "Yajl_extras.h"
 #include "HttpServer.h"
 
