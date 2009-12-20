@@ -1091,7 +1091,7 @@ Datum *PNode_metaAt_(PNode *self, Datum *d)
 		
 		if (v != 0x0)
 		{
-			Datum *value = Datum_poolNewWithData_size_(v, size);
+			Datum *value = Datum_poolNewWithData_size_(v, vSize);
 			free(v);
 			return value;
 		}
