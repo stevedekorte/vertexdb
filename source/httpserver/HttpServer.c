@@ -134,6 +134,7 @@ void HttpServer_run(HttpServer *self)
 	self->shutdown = 0;
 	
 	event_init();
+
 	self->httpd = evhttp_start(Datum_data(self->host), self->port);
 	 
 	if (!self->httpd)

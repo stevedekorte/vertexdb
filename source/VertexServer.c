@@ -407,6 +407,7 @@ int VertexServer_api_transaction(VertexServer *self)
 	}
 		
 	Datum_free(uri);
+	Datum_free(post);
 	return result;
 }
 

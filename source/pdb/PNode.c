@@ -1089,10 +1089,10 @@ Datum *PNode_metaAt_(PNode *self, Datum *d)
 		int vSize;
 		void *v = PDB_at_(self->pdb, Datum_data(slot), (int)Datum_size(slot), &vSize);
 		
-		if (v)
+		if (v != 0x0)
 		{
-			Datum *value = Datum_poolNew();
-			Datum_setData_size_(value, v, vSize);
+			Datum *value = Datum_poolNewWithData_size_(v, size);
+			free(v);
 			return value;
 		}
 	}
