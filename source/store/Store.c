@@ -92,7 +92,16 @@ int Store_open(Store *self)
 
 int Store_close(Store *self)
 {
-	return tcbdbclose(self->db);
+    int r = 0;
+    
+    if (self->db)
+    {
+        tcbdbclose(self->db);
+        tcbdbdel(self->db);
+        self->db = 0x0;
+    }
+    
+    return r;
 }
 
 int Store_backup(Store *self, const char *backupPath)

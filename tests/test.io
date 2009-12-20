@@ -466,8 +466,6 @@ VDBTest := UnitTest clone do(
 
 assert := method(v, v ifFalse(Exception raise("error")))
 
-VDBTest run
-
 CollectGarbageTest := UnitTest clone do(
     CollectGarbageAssertion := VDBAssertion clone setAction("collectGarbage") do(
 		expectedBodyPrefix ::= nil
@@ -490,4 +488,5 @@ CollectGarbageTest := UnitTest clone do(
     )
 )
 
+VDBTest run
 CollectGarbageTest run

@@ -509,6 +509,7 @@ long PDB_saveMarkedNodes(PDB *self)
 	
 	File_remove(self->dbFile);
 	File_moveTo_(out->dbFile, self->dbFile);
+	PDB_free(out);
 	
 	PDB_open(self);
 
