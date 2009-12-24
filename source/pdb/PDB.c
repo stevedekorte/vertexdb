@@ -492,11 +492,12 @@ long PDB_saveMarkedNodes(PDB *self)
 			PNode_next(inNode);
 		}
 		
-		if(savedCount % 10000 == 0) 
+		if(savedCount % 100 == 0) 
 		{
+			// Free Datum pools periodically to avoid eating too much RAM
 			Log_Printf_("    %i\n", (int)savedCount);
 			Datum_poolFreeRefs();
-			// Free Datum pools periodically to avoid eating too much RAM
+			DB_commit(out);
 		}
 	);
 	
