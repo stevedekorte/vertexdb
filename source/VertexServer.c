@@ -628,14 +628,14 @@ int VertexServer_api_backup(VertexServer *self)
 }
 
 void VertexServer_collectStep(VertexServer *self)
-{
-	if(PDB_isCollecting(self))
+{	
+	if(PDB_isCollecting(self->pdb))
 	{
 		PDB_markReachableNodesStep(self->pdb);
 	}
 	else
 	{
-		HttpServer_setIdleCallback_(self, 0x0);
+		HttpServer_setIdleCallback_(self->httpServer, (HttpServerIdleCallback *)0x0);
 	}
 }
 
@@ -643,7 +643,7 @@ int VertexServer_api_collectGarbage(VertexServer *self)
 {
 	//time_t t1 = time(NULL);
 	PDB_beginCollectGarbage(self->pdb);
-	HttpServer_setIdleCallback_(self->httpServer, VertexServer_collectStep);
+	HttpServer_setIdleCallback_(self->httpServer, (HttpServerIdleCallback *)VertexServer_collectStep);
 	//double dt = difftime(time(NULL), t1);
 	
 	/*

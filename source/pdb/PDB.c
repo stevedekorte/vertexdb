@@ -365,7 +365,7 @@ int PDB_at_put_(PDB *self, const char *k, int ksize, const char *v, int vsize)
 	{
 		if (PDB_isCollecting(self))
 		{
-			long pid = Datum_asLong(v);
+			long pid = atol(v);
 			PDB_addToMarkQueue_(self, pid);
 		}
 	}

@@ -163,7 +163,6 @@ void HttpServer_run(HttpServer *self)
 		{
 			event_loop(EVLOOP_ONCE);
 		}
-
 	}
 }
 

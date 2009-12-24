@@ -101,6 +101,8 @@ int PDB_sync(PDB *self);
 void PDB_incrementMarkCount(PDB *self);
 void PDB_markPid_(PDB *self, long pid);
 void PDB_markReachableNodesStep(PDB *self);
+void PDB_markReachableNodesStepIfNeeded(PDB *self);
+int PDB_isCollecting(PDB *self);
 
 
 #ifdef __cplusplus
