@@ -94,6 +94,7 @@ void PDB_beginCollectGarbage(PDB *self);
 long PDB_completeCollectGarbage(PDB *self);
 void PDB_cleanUpCollectGarbage(PDB *self);
 void PDB_cancelCollectGarbage(PDB *self);
+void PDB_reopenDuringCollectGarbage(PDB *self);
 
 int PDB_hasMarked_(PDB *self, long pid);
 void PDB_addToMarkQueue_(PDB *self, long pid);

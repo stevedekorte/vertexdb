@@ -67,8 +67,8 @@ PDB *PDB_new(void)
 	//self->unusedPid = Datum_new();
 	self->useBackups = 0;
 	self->store = Store_new();
-	self->marksPerStep = 100;
-	self->maxStepTime = .05;
+	self->marksPerStep = 1000;
+	self->maxStepTime = .2;
 	
 	srand(time(NULL)); // need to do because Datum_makePid64 uses rand 
 	
@@ -82,6 +82,7 @@ void PDB_setYajl_(PDB *self, yajl_gen y)
 
 void PDB_free(PDB *self)
 {	
+	PDB_cancelCollectGarbage(self);
 	PDB_close(self);
 	Store_free(self->store);
 	File_free(self->dbFile);
@@ -195,7 +196,7 @@ void PDB_close(PDB *self)
 	if(!self->isClosing)
 	{
 		self->isClosing = 1;
-		PDB_cancelCollectGarbage(self);
+		//PDB_cancelCollectGarbage(self);
 		PDB_rawCommit(self); // right thing to do?
 		//PDB_abort(self);
 		Log_Printf("PDB: closing...\n");
@@ -546,10 +547,9 @@ long PDB_saveMarkedNodes(PDB *self)
 
 void PDB_showMarkStatus(PDB *self)
 {
-	Log_Printf___("    markCount: %i markQueueSize: %i actuallyMarkedPids: %i\n", 
-		(int)self->markCount, 
-		(int)List_size(self->markQueue),
-		((int)CHash_size(self->markedPids) - (int)List_size(self->markQueue))
+	Log_Printf__("    queued: %i	 marked: %i\n", 
+		(int)List_size(self->markQueue),	
+		(int)self->markCount
 	); 
 }
 
@@ -557,10 +557,17 @@ void PDB_incrementMarkCount(PDB *self)
 {
 	self->markCount ++;
 	
-	if (self->markCount % 1000 == 0) 
+	if (self->markCount % 100 == 0) 
 	{ 
 		PDB_showMarkStatus(self);
 	}
+
+	/*
+	if (self->markCount % 10000 == 0)
+	{ 
+		PDB_reopenDuringCollectGarbage(self);
+	}
+	*/
 }
 
 void PDB_markPid_(PDB *self, long pid)
@@ -584,7 +591,7 @@ void PDB_markReachableNodesStep(PDB *self)
 	int count = 0;
 	double dt = 0;
 	
-	while ((dt < self->maxStepTime) && count < (self->marksPerStep))
+	while ((dt < self->maxStepTime) && (count < self->marksPerStep))
 	{
 		long pid = (long)List_pop(self->markQueue);
 		PDB_markPid_(self, pid);
@@ -595,17 +602,9 @@ void PDB_markReachableNodesStep(PDB *self)
 			PDB_completeCollectGarbage(self);
 			break;
 		}
+		
 		dt = Date_SecondsFrom1970ToNow() - t1;
 	}
-	
-	/*
-	if (dt > self->maxStepTime)
-	{
-		printf("dt: %f count: %i\n", (float)dt, count);
-	}
-	*/
-	
-	PDB_showMarkStatus(self);
 }
 
 int PDB_isCollecting(PDB *self)
@@ -638,8 +637,8 @@ void PDB_beginCollectGarbage(PDB *self)
 long PDB_completeCollectGarbage(PDB *self)
 {
 	long savedCount = PDB_saveMarkedNodes(self);
-	PDB_rawCommit(self);
 	Log_Printf_("PDB_completeCollectGarbage %iMB after collect:\n", (int)PDB_sizeInMB(self));
+	PDB_cleanUpCollectGarbage(self);
 	return savedCount;
 }
 
@@ -668,6 +667,24 @@ void PDB_cleanUpCollectGarbage(PDB *self)
 		self->tmpMarkNode = 0x0;
 	}
 }
+
+/*
+void PDB_reopenDuringCollectGarbage(PDB *self)
+{
+	printf("PDB_reopenDuringCollectGarbage\n");
+	
+	if(self->tmpMarkNode)
+	{
+		PNode_free(self->tmpMarkNode);
+		self->tmpMarkNode = 0x0;
+	}
+	
+	PDB_close(self);
+	PDB_open(self);
+	
+	self->tmpMarkNode = PDB_newNode(self);
+}
+*/
 
 int PDB_hasMarked_(PDB *self, long pid)
 {

@@ -7,6 +7,15 @@
 #include <sys/queue.h>
 #include <stdlib.h>  
 
+
+// for TCLIST
+#include <tcutil.h>
+#include <tcbdb.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <string.h>
+//-------------------------------------
+
 #define PNODE_ID_LENGTH 9
 
 #include "Pool.h"
@@ -692,6 +701,38 @@ int PNode_isMarked(PNode *self)
 	return PDB_hasMarked_(self->pdb, PNode_pidAsLong(self));
 }
 
+/*
+void PNode_mark2(PNode *self)
+{
+	TCBDB *bdb = ((PDB *)self->pdb)->store->db;
+	char bkstr[64];
+	sprintf(bkstr, "%s/s/", Datum_data(self->pid));
+	
+	char ekstr[64];
+	sprintf(ekstr, "%s/t/", Datum_data(self->pid));
+
+	bool binc = 1;
+	bool einc = 1;
+	int max   = -1;
+	TCLIST *results = tcbdbrange2(bdb, bkstr, binc, ekstr, einc, max);
+	int num = tclistnum(results);
+	int index;
+	
+	for(index = 0; index < num; index++)
+	{
+		const char *k = tclistval2(results, index);
+		if(k[0] != '_')
+		{
+			
+			long pid = atol(v);
+			PDB_addToMarkQueue_(self->pdb, pid);
+		}
+	}
+	
+	tclistdel(results);
+}
+*/
+
 void PNode_mark(PNode *self)
 {
 	Datum *k;
@@ -703,7 +744,6 @@ void PNode_mark(PNode *self)
 		Datum *v = PNode_value(self);
 		
 		//printf("key %s\n", Datum_data(k)); 
-		
 		//if ((!Datum_beginsWithCString_(k , "_")) && strchr(Datum_data(v), '.') == 0x0) 
 		if ((Datum_data(k)[0] != '_')) // && strchr(Datum_data(v), '.') == 0x0) // why the .? 
 		// && Datum_size(v) == PNODE_ID_LENGTH)

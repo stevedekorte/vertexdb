@@ -60,13 +60,15 @@ int Store_open(Store *self)
 		Log_Printf("tcbdbtune failed\n");
 		return -1;
 	}
+	*/
 
+/*
 	if (!tcbdbsetcache(self->db, 1024*100, 512*100))
 	{
-		Log_Printf("tcbdbsetcache failed\n");
+		//Log_Printf("tcbdbsetcache failed\n");
 		return -1;
 	}
-	*/
+*/
 	
 	if (!tcbdbsetcmpfunc(self->db, self->compareFunc, NULL))
 	{

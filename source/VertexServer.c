@@ -632,6 +632,7 @@ void VertexServer_collectStep(VertexServer *self)
 	if(PDB_isCollecting(self->pdb))
 	{
 		PDB_markReachableNodesStep(self->pdb);
+		Datum_poolFreeRefs();
 	}
 	else
 	{
@@ -641,10 +642,8 @@ void VertexServer_collectStep(VertexServer *self)
 
 int VertexServer_api_collectGarbage(VertexServer *self)
 {
-	//time_t t1 = time(NULL);
 	PDB_beginCollectGarbage(self->pdb);
 	HttpServer_setIdleCallback_(self->httpServer, (HttpServerIdleCallback *)VertexServer_collectStep);
-	//double dt = difftime(time(NULL), t1);
 	
 	/*
 	yajl_gen_map_open(self->yajl);
