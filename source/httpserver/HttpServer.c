@@ -88,6 +88,12 @@ void HttpServer_setRequestCallback_(HttpServer *self, HttpServerRequestCallback 
 	self->requestCallback = f;
 }
 
+void HttpServer_setIdleCallback_(HttpServer *self, HttpServerIdleCallback *f)
+{
+	self->idleCallback = f;
+}
+
+
 void HttpServer_handleRequest(struct evhttp_request *req, void *arg)  
 {  
 	HttpServer *self = (HttpServer *)arg;
@@ -148,7 +154,16 @@ void HttpServer_run(HttpServer *self)
 	
 	while (!self->shutdown)
 	{
-		event_loop(EVLOOP_ONCE);
+		if(self->idleCallback)
+		{
+			self->idleCallback(self->delegate);
+			event_loop(EVLOOP_NONBLOCK);
+		}
+		else 
+		{
+			event_loop(EVLOOP_ONCE);
+		}
+
 	}
 }
 

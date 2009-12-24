@@ -32,6 +32,10 @@ typedef struct
 	CHash *markedPids;
 	List *markQueue;
 	int useBackups;
+	PNode *tmpMarkNode;
+	size_t markCount;
+	size_t marksPerStep;
+	double maxStepTime;
 	
 	Datum *currentUser;
 		
@@ -67,6 +71,7 @@ int PDB_hasLastBackup(PDB *self);
 void PDB_willWrite(PDB *self); // private to PDB and PNode
 void PDB_begin(PDB *self);
 void PDB_abort(PDB *self);
+void PDB_rawCommit(PDB *self); // private
 void PDB_commit(PDB *self);
 
 // read/write ------------
@@ -80,12 +85,22 @@ size_t PDB_bytesWaitingToCommit(PDB *self);
 PNode *PDB_newNode(PDB *self); // caller responsible for freeing returned PNode
 int PDB_syncSizes(PDB *self);
 
+// helpers ---------------
+long PDB_sizeInMB(PDB *self);
+
 // garbage collection ------------
-long PDB_collectGarbage(PDB *self); // returns # of nodes kept
+
+void PDB_beginCollectGarbage(PDB *self);
+long PDB_completeCollectGarbage(PDB *self);
+void PDB_cleanUpCollectGarbage(PDB *self);
+void PDB_cancelCollectGarbage(PDB *self);
+
 int PDB_hasMarked_(PDB *self, long pid);
 void PDB_addToMarkQueue_(PDB *self, long pid);
-//void PDB_warmup(PDB *self);
 int PDB_sync(PDB *self);
+void PDB_incrementMarkCount(PDB *self);
+void PDB_markPid_(PDB *self, long pid);
+void PDB_markReachableNodesStep(PDB *self);
 
 
 #ifdef __cplusplus

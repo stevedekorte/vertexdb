@@ -695,7 +695,7 @@ int PNode_isMarked(PNode *self)
 void PNode_mark(PNode *self)
 {
 	Datum *k;
-
+	//printf("marking %i\n", (int)PNode_pidAsLong(self));
 	PNode_first(self);
 
 	while ((k = PNode_key(self)))
@@ -704,7 +704,8 @@ void PNode_mark(PNode *self)
 		
 		//printf("key %s\n", Datum_data(k)); 
 		
-		if ((!Datum_beginsWithCString_(k , "_")) && strchr(Datum_data(v), '.') == 0x0) 
+		//if ((!Datum_beginsWithCString_(k , "_")) && strchr(Datum_data(v), '.') == 0x0) 
+		if ((Datum_data(k)[0] != '_')) // && strchr(Datum_data(v), '.') == 0x0) // why the .? 
 		// && Datum_size(v) == PNODE_ID_LENGTH)
 		{
 			long pid = Datum_asLong(v);

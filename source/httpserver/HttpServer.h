@@ -8,13 +8,14 @@ extern "C" {
 #include <stdio.h>
 #include <stdint.h>
 
-#include <err.h>
 #include <event.h>
 #include <evhttp.h>
+#include <err.h>
 #include "HttpRequest.h"
 #include "HttpResponse.h"
 
 typedef void (HttpServerRequestCallback)(void *);
+typedef void (HttpServerIdleCallback)(void *);
 //typedef void  (HttpServerWriteMethod)(void *);
 
 #define HTTP_SERVERERROR 500
@@ -31,6 +32,7 @@ typedef struct
 	
 	void *delegate;
 	HttpServerRequestCallback *requestCallback;
+	HttpServerIdleCallback *idleCallback;
 	
 	int shutdown;
 	
@@ -54,6 +56,7 @@ int HttpServer_port(HttpServer *self);
 
 void HttpServer_setDelegate_(HttpServer *self, void *d);
 void HttpServer_setRequestCallback_(HttpServer *self, HttpServerRequestCallback *f);
+void HttpServer_setIdleCallback_(HttpServer *self, HttpServerIdleCallback *f);
 
 void HttpServer_run(HttpServer *self);
 void HttpServer_shutdown(HttpServer *self);

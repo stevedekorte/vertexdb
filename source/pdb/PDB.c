@@ -3,6 +3,7 @@
 #include "PQuery.h"
 #include "Log.h"
 #include "Datum.h"
+#include "Date.h"
 #include "Pointer.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -64,8 +65,10 @@ PDB *PDB_new(void)
 	self->newBackupFile = File_new();
 	self->corruptFile = File_new();
 	//self->unusedPid = Datum_new();
-	self->useBackups = 1;
+	self->useBackups = 0;
 	self->store = Store_new();
+	self->marksPerStep = 100;
+	self->maxStepTime = .05;
 	
 	srand(time(NULL)); // need to do because Datum_makePid64 uses rand 
 	
@@ -132,7 +135,7 @@ void PDB_createRootIfNeeded(PDB *self)
 	{
 		PDB_begin(self);
 		Store_write(self->store, (char *)p, strlen(p), "0", 1);
-		PDB_commit(self);
+		PDB_rawCommit(self);
 	}
 }
 	
@@ -192,12 +195,12 @@ void PDB_close(PDB *self)
 	if(!self->isClosing)
 	{
 		self->isClosing = 1;
-		PDB_commit(self); // right thing to do?
+		PDB_cancelCollectGarbage(self);
+		PDB_rawCommit(self); // right thing to do?
 		//PDB_abort(self);
 		Log_Printf("PDB: closing...\n");
 		Store_close(self->store);
 		Log_Printf("PDB: closed\n");
-		//self->store = 0x0;		
 		if (self->useBackups) File_remove(self->isOpenFile);
 		self->isClosing = 0;
 	}
@@ -232,7 +235,7 @@ int PDB_backup(PDB *self) // returns "true" if successful
 	
 	if (!self->useBackups) return 1;
 	
-	PDB_commit(self);
+	PDB_rawCommit(self);
 	PDB_setNewBackupPath(self);
 	path = Datum_data(File_path(self->newBackupFile));
 	Log_Printf_("PDB creating backup: %s\n", path);
@@ -309,7 +312,8 @@ void PDB_abort(PDB *self)
 	self->inTransaction = 0;
 }
 
-void PDB_commit(PDB *self)
+
+void PDB_rawCommit(PDB *self)
 {
 	time_t now;
 	
@@ -331,6 +335,13 @@ void PDB_commit(PDB *self)
 	self->inTransaction = 0;
 }
 
+void PDB_commit(PDB *self)
+{
+	PDB_rawCommit(self);
+	
+	PDB_markReachableNodesStepIfNeeded(self);
+}
+
 // read/write ------------
 
 void *PDB_at_(PDB *self, const char *k, int ksize, int *vsize)
@@ -347,6 +358,16 @@ int PDB_at_put_(PDB *self, const char *k, int ksize, const char *v, int vsize)
 	{
 		PDB_fatalError_(self, "write");
 		return 0;
+	}
+	
+	// if the collector is active, treat all new nodes as referenced
+	if (k[0] != '_') // then v is a pointer
+	{
+		if (PDB_isCollecting(self))
+		{
+			long pid = Datum_asLong(v);
+			PDB_addToMarkQueue_(self, pid);
+		}
 	}
 
 	self->writeByteCount += ksize;
@@ -497,14 +518,14 @@ long PDB_saveMarkedNodes(PDB *self)
 			// Free Datum pools periodically to avoid eating too much RAM
 			Log_Printf_("    %i\n", (int)savedCount);
 			Datum_poolFreeRefs();
-			DB_commit(out);
+			PDB_rawCommit(out);
 		}
 	);
 	
 	PNode_free(inNode);
 	PNode_free(outNode);
 	
-	PDB_commit(out);
+	PDB_rawCommit(out);
 	PDB_close(out);
 	PDB_close(self);
 	
@@ -523,37 +544,84 @@ long PDB_saveMarkedNodes(PDB *self)
 	return savedCount;
 }
 
-void PDB_markReachableNodes(PDB *self)
+void PDB_showMarkStatus(PDB *self)
 {
-	size_t i = 0;
-	PNode *aNode = PDB_newNode(self);
+	Log_Printf___("    markCount: %i markQueueSize: %i actuallyMarkedPids: %i\n", 
+		(int)self->markCount, 
+		(int)List_size(self->markQueue),
+		((int)CHash_size(self->markedPids) - (int)List_size(self->markQueue))
+	); 
+}
+
+void PDB_incrementMarkCount(PDB *self)
+{
+	self->markCount ++;
 	
-	PDB_addToMarkQueue_(self, 1); // root node
+	if (self->markCount % 1000 == 0) 
+	{ 
+		PDB_showMarkStatus(self);
+	}
+}
+
+void PDB_markPid_(PDB *self, long pid)
+{
+	PNode_setPidLong_(self->tmpMarkNode, pid);
+	PNode_mark(self->tmpMarkNode);
+	PDB_incrementMarkCount(self);
+}
+
+void PDB_markReachableNodesStepIfNeeded(PDB *self)
+{
+	if(PDB_isCollecting(self))
+	{
+		PDB_markReachableNodesStep(self);
+	}
+}
+
+void PDB_markReachableNodesStep(PDB *self)
+{
+	double t1 = Date_SecondsFrom1970ToNow();
+	int count = 0;
+	double dt = 0;
 	
-	Log_Printf("  PDB marking nodes...\n");
-	
-	while(List_size(self->markQueue) != 0)
+	while ((dt < self->maxStepTime) && count < (self->marksPerStep))
 	{
 		long pid = (long)List_pop(self->markQueue);
-		PNode_setPidLong_(aNode, pid);
-		PNode_mark(aNode);
-		i ++;
-		if (i % 10000 == 0) { Log_Printf_("    %i\n", (int)i); }
+		PDB_markPid_(self, pid);
+		count ++;
+		
+		if (List_size(self->markQueue) == 0)
+		{
+			PDB_completeCollectGarbage(self);
+			break;
+		}
+		dt = Date_SecondsFrom1970ToNow() - t1;
 	}
 	
-	PNode_free(aNode);
+	/*
+	if (dt > self->maxStepTime)
+	{
+		printf("dt: %f count: %i\n", (float)dt, count);
+	}
+	*/
+	
+	PDB_showMarkStatus(self);
 }
 
-long PDB_sizeInMB(PDB *self)
+int PDB_isCollecting(PDB *self)
 {
-	return (long)(Store_size(self->store)/(1024*1024));
+	return (self->markedPids != 0x0);
 }
 
-long PDB_collectGarbage(PDB *self)
+void PDB_beginCollectGarbage(PDB *self)
 {
-	long savedCount = 0;
-
-	Log_Printf_("PDB collectGarbage, %iMB before collect:\n", (int)PDB_sizeInMB(self));
+	if(PDB_isCollecting(self)) 
+	{
+		PDB_markReachableNodesStep(self);
+		return;
+	}
+	
+	Log_Printf_("PDB_beginCollectGarbage, %iMB before collect\n", (int)PDB_sizeInMB(self));
 
 	self->markedPids = CHash_new();
 	CHash_setEqualFunc_(self->markedPids, (CHashEqualFunc *)Pointer_equals_);
@@ -561,17 +629,44 @@ long PDB_collectGarbage(PDB *self)
 	CHash_setHash2Func_(self->markedPids, (CHashHashFunc *)Pointer_hash2);
 	
 	self->markQueue  = List_new();
+	self->markCount = 0;
+	self->tmpMarkNode = PDB_newNode(self);
 	
-	PDB_markReachableNodes(self);
-	savedCount = PDB_saveMarkedNodes(self);
-	
-	List_free(self->markQueue); self->markQueue = 0x0;
-	CHash_free(self->markedPids); self->markedPids = 0x0;
-	
-	PDB_commit(self);
-	Log_Printf_("  %iMB after collect:\n", (int)PDB_sizeInMB(self));
+	PDB_addToMarkQueue_(self, 1); // root node
+}
 
+long PDB_completeCollectGarbage(PDB *self)
+{
+	long savedCount = PDB_saveMarkedNodes(self);
+	PDB_rawCommit(self);
+	Log_Printf_("PDB_completeCollectGarbage %iMB after collect:\n", (int)PDB_sizeInMB(self));
 	return savedCount;
+}
+
+void PDB_cancelCollectGarbage(PDB *self)
+{	
+	PDB_cleanUpCollectGarbage(self);
+}
+
+void PDB_cleanUpCollectGarbage(PDB *self)
+{	
+	if(self->markQueue)
+	{
+		List_free(self->markQueue); 
+		self->markQueue = 0x0;
+	}
+	
+	if(self->markedPids)
+	{
+		CHash_free(self->markedPids); 
+		self->markedPids = 0x0;
+	}
+	
+	if(self->tmpMarkNode)
+	{
+		PNode_free(self->tmpMarkNode);
+		self->tmpMarkNode = 0x0;
+	}
 }
 
 int PDB_hasMarked_(PDB *self, long pid)
@@ -587,6 +682,14 @@ void PDB_addToMarkQueue_(PDB *self, long pid)
 		CHash_at_put_(self->markedPids, (void *)pid, (void *)0x1);
 	}
 }
+
+// ---------------------------------------------------------------------------
+
+long PDB_sizeInMB(PDB *self)
+{
+	return (long)(Store_size(self->store)/(1024*1024));
+}
+
 
 /*
 void PDB_removeBackups(PDB *self)

@@ -627,12 +627,26 @@ int VertexServer_api_backup(VertexServer *self)
 	//return VertexServer_VertexServer_api_collectGarbage(self);
 }
 
+void VertexServer_collectStep(VertexServer *self)
+{
+	if(PDB_isCollecting(self))
+	{
+		PDB_markReachableNodesStep(self->pdb);
+	}
+	else
+	{
+		HttpServer_setIdleCallback_(self, 0x0);
+	}
+}
+
 int VertexServer_api_collectGarbage(VertexServer *self)
 {
-	time_t t1 = time(NULL);
-	long savedCount = PDB_collectGarbage(self->pdb);
-	double dt = difftime(time(NULL), t1);
+	//time_t t1 = time(NULL);
+	PDB_beginCollectGarbage(self->pdb);
+	HttpServer_setIdleCallback_(self->httpServer, VertexServer_collectStep);
+	//double dt = difftime(time(NULL), t1);
 	
+	/*
 	yajl_gen_map_open(self->yajl);
 	yajl_gen_cstring(self->yajl, "saved");
 	yajl_gen_integer(self->yajl, savedCount);
@@ -642,6 +656,7 @@ int VertexServer_api_collectGarbage(VertexServer *self)
 	
 	Datum_appendYajl_(self->result, self->yajl);
 	Log_Printf_("gc: %s\n", Datum_data(self->result));
+	*/
 
 	return 0;
 }
