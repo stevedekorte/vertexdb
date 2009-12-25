@@ -24,6 +24,13 @@ void Pool_free(Pool *self)
 	free(self);
 }
 
+
+void Pool_freeRecycled(Pool *self)
+{
+	LIST_FOREACH(self->recycled, i, ref, self->freeFunc(ref););
+	List_removeAll(self->recycled);
+}
+
 void Pool_freeRefs(Pool *self)
 {
 	PoolFreeFunc *freeFunc = self->freeFunc;
@@ -79,3 +86,13 @@ void *Pool_newItem(Pool *self)
 	List_append_(self->refs, ref);
 	return ref;
 }
+
+void Pool_showStats(Pool *self)
+{
+	printf("pool total: %i refs: %i recycled: %i recycleSize: %i\n", 
+		(int)List_size(self->refs) + (int)List_size(self->recycled),
+		(int)List_size(self->refs), 
+		(int)List_size(self->recycled), 
+		(int)self->recycleSize);
+}
+

@@ -419,9 +419,8 @@ int PNode_doesExist(PNode *self)
 
 int PNode_createMoveToKeyString_(PNode *self, const char *k)
 {
-	Datum *key = Datum_newWithCString_(k);
+	Datum *key = Datum_poolNewWithCString_(k);
 	int r = PNode_createMoveToKey_(self, key);
-	Datum_free(key);
 	return r;
 }
 
@@ -606,8 +605,8 @@ void PNode_setToRoot(PNode *self)
 int PNode_moveToPath_createIfAbsent_(PNode *self, Datum *p, int createIfAbsent, int fromRoot)
 {
 	int r;
-	Datum *cp = Datum_new();
-	Datum *np = Datum_new();
+	Datum *cp = Datum_poolNew();
+	Datum *np = Datum_poolNew();
 	
 	Datum_copy_(cp, p);
 	if (fromRoot) PNode_setToRoot(self);
@@ -626,8 +625,6 @@ int PNode_moveToPath_createIfAbsent_(PNode *self, Datum *p, int createIfAbsent, 
 			{
 				if (PNode_moveToKey_(self, cp)) 
 				{
-					Datum_free(cp);
-					Datum_free(np);
 					return -1;
 				}
 			}
@@ -636,9 +633,6 @@ int PNode_moveToPath_createIfAbsent_(PNode *self, Datum *p, int createIfAbsent, 
 			
 		Datum_copy_(cp, np);
 	} while(r != -1);
-	
-	Datum_free(cp);
-	Datum_free(np);
 	
 	return 0;
 }
@@ -661,9 +655,8 @@ int PNode_moveToPath_(PNode *self, Datum *p)
 int PNode_moveToPathCString_(PNode *self, const char *p)
 {
 	int result;
-	Datum *np = Datum_newWithCString_(p);
+	Datum *np = Datum_poolNewWithCString_(p);
 	result = PNode_moveToPath_(self, np);
-	Datum_free(np);
 	return result;
 }
 
@@ -671,15 +664,15 @@ void PNode_create(PNode *self)
 {	
 	int size;
 	int tryCount = 0;
-	
+	char *k = 0x0;
 	do
 	{
+		if(k) free(k);
 		Datum_makePid32(self->pid);
 		//Datum_makePid64(self->pid);
 		PNode_setPathsFromPid(self);
-		
 		tryCount ++;
-	} while (PDB_at_(self->pdb, Datum_data(self->sizePath), (int)Datum_size(self->sizePath), &size));
+	} while (k = PDB_at_(self->pdb, Datum_data(self->sizePath), (int)Datum_size(self->sizePath), &size));
 	
 	if(tryCount > 3) 
 	{ 
@@ -1130,7 +1123,7 @@ Datum *PNode_metaAt_(PNode *self, Datum *d)
 		int vSize;
 		void *v = PDB_at_(self->pdb, Datum_data(slot), (int)Datum_size(slot), &vSize);
 		
-		if (v != 0x0)
+		if (v)
 		{
 			Datum *value = Datum_poolNewWithData_size_(v, vSize);
 			free(v);

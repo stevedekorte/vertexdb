@@ -68,6 +68,7 @@
 		AA9C0F6C0EB1387F00F997D7 /* libtokyocabinet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9C0F6B0EB1387F00F997D7 /* libtokyocabinet.a */; };
 		AA9C0F720EB138C100F997D7 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9C0F710EB138C100F997D7 /* libz.a */; };
 		AADD04971098204A00F8454F /* Pointer.c in Sources */ = {isa = PBXBuildFile; fileRef = AADD04951098204900F8454F /* Pointer.c */; };
+		AAF4950210E444E5005D13EF /* libMallocDebug.A.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAF4950110E444E5005D13EF /* libMallocDebug.A.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -207,6 +208,7 @@
 		AA9C0F710EB138C100F997D7 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = /opt/local/lib/libz.a; sourceTree = "<absolute>"; };
 		AADD04951098204900F8454F /* Pointer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Pointer.c; path = source/pdb/Pointer.c; sourceTree = SOURCE_ROOT; };
 		AADD04961098204A00F8454F /* Pointer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pointer.h; path = source/pdb/Pointer.h; sourceTree = SOURCE_ROOT; };
+		AAF4950110E444E5005D13EF /* libMallocDebug.A.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libMallocDebug.A.dylib; path = /usr/lib/libMallocDebug.A.dylib; sourceTree = "<absolute>"; };
 		C6A0FF2C0290799A04C91782 /* Vertex.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Vertex.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -220,6 +222,7 @@
 				AA33042C10829584007AD6CA /* libevent_extra.a in Frameworks */,
 				AA33042D10829584007AD6CA /* libevent.a in Frameworks */,
 				9F087BBA1083105900211163 /* libyajl_s.a in Frameworks */,
+				AAF4950210E444E5005D13EF /* libMallocDebug.A.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -245,6 +248,7 @@
 				AA33042B10829584007AD6CA /* libevent.a */,
 				AA9C0F710EB138C100F997D7 /* libz.a */,
 				9F087BB91083105900211163 /* libyajl_s.a */,
+				AAF4950110E444E5005D13EF /* libMallocDebug.A.dylib */,
 			);
 			name = Source;
 			sourceTree = "<group>";

@@ -7,6 +7,7 @@ extern "C" {
 #endif
 
 #include <stdio.h>
+#include "Pool.h"
 
 typedef struct
 {
@@ -16,6 +17,8 @@ typedef struct
 
 #define DATUM_STACKALLOCATED(name, string) Datum _##name; Datum *name = &_##name; name->data = (char *)string; name->size = strlen(string);
 
+int Datum_datumCount(void);
+Pool *Datum_pool(void);
 Datum *Datum_poolNew(void);
 Datum *Datum_poolNewWithCString_(const char *s);
 Datum *Datum_poolNewWithData_size_(const char *data, size_t size);

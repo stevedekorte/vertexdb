@@ -131,13 +131,19 @@ void PDB_createRootIfNeeded(PDB *self)
 {
 	int size;
 	const char *p = "1/m/size"; // 1 == root node
+	char *v = Store_read(self->store, (char *)p, strlen(p), &size);
 	
-	if(!Store_read(self->store, (char *)p, strlen(p), &size))
+	if(!v)
 	{
 		PDB_begin(self);
 		Store_write(self->store, (char *)p, strlen(p), "0", 1);
 		PDB_rawCommit(self);
 	}
+	else 
+	{
+		free(v);
+	}
+
 }
 	
 int PDB_open(PDB *self)
@@ -551,23 +557,35 @@ void PDB_showMarkStatus(PDB *self)
 		(int)List_size(self->markQueue),	
 		(int)self->markCount
 	); 
+	
+	printf("Datum ");
+	Pool_showStats(Datum_pool());
+	Pool_freeRefs(Datum_pool());
+	Pool_freeRecycled(Datum_pool());
+	printf("PNode ");
+	Pool_showStats(PNode_pool());
+	Pool_freeRefs(PNode_pool());
+	Pool_freeRecycled(PNode_pool());
+	
+	printf("CHash markedPids size: %0.2fM\n", 
+		((float)self->markedPids->size)/1000000.0);
+	printf("datumCount: %i\n", Datum_datumCount());
+	printf("\n");
 }
 
 void PDB_incrementMarkCount(PDB *self)
 {
 	self->markCount ++;
 	
-	if (self->markCount % 100 == 0) 
+	if (self->markCount % 1000 == 0) 
 	{ 
 		PDB_showMarkStatus(self);
 	}
 
-	/*
 	if (self->markCount % 10000 == 0)
 	{ 
 		PDB_reopenDuringCollectGarbage(self);
 	}
-	*/
 }
 
 void PDB_markPid_(PDB *self, long pid)
@@ -668,7 +686,6 @@ void PDB_cleanUpCollectGarbage(PDB *self)
 	}
 }
 
-/*
 void PDB_reopenDuringCollectGarbage(PDB *self)
 {
 	printf("PDB_reopenDuringCollectGarbage\n");
@@ -684,7 +701,6 @@ void PDB_reopenDuringCollectGarbage(PDB *self)
 	
 	self->tmpMarkNode = PDB_newNode(self);
 }
-*/
 
 int PDB_hasMarked_(PDB *self, long pid)
 {

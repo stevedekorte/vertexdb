@@ -25,11 +25,13 @@ typedef struct
 Pool *Pool_new(void);
 void Pool_free(Pool *self);
 void Pool_freeRefs(Pool *self);
+void Pool_freeRecycled(Pool *self);
 void Pool_setNewFunc_(Pool *self, PoolNewFunc *func);
 void Pool_setFreeFunc_(Pool *self, PoolFreeFunc *func);
 void Pool_setClearFunc_(Pool *self, PoolClearFunc *func);
 void Pool_setRecycleSize_(Pool *self, int size);
 void *Pool_newItem(Pool *self);
+void Pool_showStats(Pool *self);
 
 #ifdef __cplusplus
 }

@@ -367,8 +367,8 @@ int VertexServer_api_link(VertexServer *self)
 
 int VertexServer_api_transaction(VertexServer *self)
 {
-	Datum *uri = Datum_new();
-	Datum *post = Datum_new();
+	Datum *uri = Datum_poolNew();
+	Datum *post = Datum_poolNew();
 	int error = 0;
 	int r, result;
 	
@@ -405,9 +405,7 @@ int VertexServer_api_transaction(VertexServer *self)
 		PDB_commit(self->pdb);
 		result = 0;
 	}
-		
-	Datum_free(uri);
-	Datum_free(post);
+
 	return result;
 }
 
@@ -507,9 +505,9 @@ int VertexServer_api_queueExpireTo(VertexServer *self)
 	PNode_first(fromNode);
 	
 	{
-		Datum *qTimeKey = Datum_newWithCString_("_qtime");
+		Datum *qTimeKey = Datum_poolNewWithCString_("_qtime");
 		Datum *k;
-		Datum *qExpireKey   = Datum_newWithCString_("_qexpire");
+		Datum *qExpireKey   = Datum_poolNewWithCString_("_qexpire");
 		long now = time(NULL);
 		
 		while (k = PNode_key(fromNode))
@@ -548,9 +546,6 @@ int VertexServer_api_queueExpireTo(VertexServer *self)
 				PNode_next(fromNode);
 			}
 		}
-	
-		Datum_free(qTimeKey);
-		Datum_free(qExpireKey);
 	}
 	
 	yajl_gen_integer(self->yajl, (long)itemsExpired);
@@ -633,6 +628,7 @@ void VertexServer_collectStep(VertexServer *self)
 	{
 		PDB_markReachableNodesStep(self->pdb);
 		Datum_poolFreeRefs();
+		PNode_poolFreeRefs();
 	}
 	else
 	{

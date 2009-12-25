@@ -17,6 +17,7 @@ extern "C" {
 #include "Datum.h"
 #include "PQuery.h"
 #include "Yajl_extras.h"
+#include "Pool.h"
 
 typedef struct
 {
@@ -38,6 +39,7 @@ typedef int (PNodeOp)(PNode *, Datum *);
 
 
 // creation and setup
+Pool *PNode_pool(void);
 PNode *PNode_poolNew(void);
 PNode *PNode_new(void);
 void PNode_poolFreeRefs(void);

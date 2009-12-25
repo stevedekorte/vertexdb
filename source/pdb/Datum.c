@@ -8,6 +8,12 @@
 #include "Pool.h"
 
 static Pool *DatumPool = 0x0;
+static int datumCount = 0;
+
+int Datum_datumCount(void)
+{
+	return datumCount;
+}
 
 Pool *Datum_pool(void)
 {
@@ -56,6 +62,8 @@ Datum *Datum_new(void)
 {
 	Datum *self = calloc(1, sizeof(Datum));
 	Datum_setSize_(self, 0);
+	datumCount ++;
+	//printf("Datum_new %p\n", (void *)self);
 	return self;
 }
 
@@ -94,6 +102,7 @@ Datum *Datum_newData_size_copy_(char *data, size_t size, int copy)
 
 void Datum_free(Datum *self)
 {
+	datumCount --;
 	if (self->data) free(self->data);
 	free(self);
 }
