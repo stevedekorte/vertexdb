@@ -584,10 +584,12 @@ void PDB_incrementMarkCount(PDB *self)
 		PDB_showMarkStatus(self);
 	}
 
+	/*
 	if (self->markCount % 10000 == 0)
 	{ 
 		PDB_reopenDuringCollectGarbage(self);
 	}
+	*/
 }
 
 void PDB_markPid_(PDB *self, long pid)
