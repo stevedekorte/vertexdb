@@ -553,23 +553,25 @@ long PDB_saveMarkedNodes(PDB *self)
 
 void PDB_showMarkStatus(PDB *self)
 {
-	Log_Printf__("    queued: %i	 marked: %i\n", 
+	Log_Printf__(" collector queued: %i marked: %i\n", 
 		(int)List_size(self->markQueue),	
 		(int)self->markCount
 	); 
 	
-	printf("Datum ");
-	Pool_showStats(Datum_pool());
+	//printf("Datum ");
+	//Pool_showStats(Datum_pool());
+	/*
 	Pool_freeRefs(Datum_pool());
 	Pool_freeRecycled(Datum_pool());
 	printf("PNode ");
 	Pool_showStats(PNode_pool());
 	Pool_freeRefs(PNode_pool());
 	Pool_freeRecycled(PNode_pool());
+	*/
 	
 	printf("CHash markedPids size: %0.2fM\n", 
 		((float)self->markedPids->size)/1000000.0);
-	printf("datumCount: %i\n", Datum_datumCount());
+	//printf("datumCount: %i\n", Datum_datumCount());
 	printf("\n");
 }
 

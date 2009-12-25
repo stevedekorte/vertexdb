@@ -18,11 +18,11 @@ int Pointer_equals_(void *p1, void *p2)
 
 unsigned int Pointer_hash1(void *p)
 {
-	return MurmurHash2((const void *)&p, (int)sizeof(void *), 0);
+	return MurmurHash2((const void *)&p, (int)sizeof(void *), 0) | 0x1; // odd
 }
 
 unsigned int Pointer_hash2(void *p)
 {
-	return SuperFastHash((const char *)&p, (int)sizeof(void *));
+	return SuperFastHash((const char *)&p, (int)sizeof(void *)) << 1; // even
 }
 
