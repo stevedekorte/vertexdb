@@ -134,6 +134,7 @@ void VertexServer_setPort_(VertexServer *self, int port)
 
 void VertexServer_setErrorCString_(VertexServer *self, const char *s)
 {
+	printf("ERROR: %s\n", s);
 	HttpResponse_setContentCString_(self->httpResponse, s);
 	HttpResponse_setStatusCode_(self->httpResponse, 500);
 }
@@ -367,8 +368,8 @@ int VertexServer_api_link(VertexServer *self)
 
 int VertexServer_api_transaction(VertexServer *self)
 {
-	Datum *uri = Datum_poolNew();
-	Datum *post = Datum_poolNew();
+	Datum *uri  = Datum_new();
+	Datum *post = Datum_new();
 	int error = 0;
 	int r, result;
 	
@@ -406,6 +407,8 @@ int VertexServer_api_transaction(VertexServer *self)
 		result = 0;
 	}
 
+	Datum_free(uri);
+	Datum_free(post);
 	return result;
 }
 

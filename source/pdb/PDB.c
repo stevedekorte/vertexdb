@@ -68,7 +68,7 @@ PDB *PDB_new(void)
 	self->useBackups = 0;
 	self->store = Store_new();
 	self->marksPerStep = 1000;
-	self->maxStepTime = .2;
+	self->maxStepTime = .1;
 	
 	srand(time(NULL)); // need to do because Datum_makePid64 uses rand 
 	
@@ -520,7 +520,7 @@ long PDB_saveMarkedNodes(PDB *self)
 			PNode_next(inNode);
 		}
 		
-		if(savedCount % 100 == 0) 
+		if(savedCount % 1000 == 0) 
 		{
 			// Free Datum pools periodically to avoid eating too much RAM
 			Log_Printf_("    %i\n", (int)savedCount);
@@ -579,7 +579,7 @@ void PDB_incrementMarkCount(PDB *self)
 {
 	self->markCount ++;
 	
-	if (self->markCount % 1000 == 0) 
+	if (self->markCount % 10000 == 0) 
 	{ 
 		PDB_showMarkStatus(self);
 	}
@@ -642,7 +642,7 @@ void PDB_beginCollectGarbage(PDB *self)
 		return;
 	}
 	
-	Log_Printf_("PDB_beginCollectGarbage, %iMB before collect\n", (int)PDB_sizeInMB(self));
+	Log_Printf_("PDB: beginCollectGarbage %iMB before collect\n", (int)PDB_sizeInMB(self));
 
 	self->markedPids = CHash_new();
 	CHash_setEqualFunc_(self->markedPids, (CHashEqualFunc *)Pointer_equals_);
@@ -659,7 +659,7 @@ void PDB_beginCollectGarbage(PDB *self)
 long PDB_completeCollectGarbage(PDB *self)
 {
 	long savedCount = PDB_saveMarkedNodes(self);
-	Log_Printf_("PDB_completeCollectGarbage %iMB after collect:\n", (int)PDB_sizeInMB(self));
+	Log_Printf_("PDB: completeCollectGarbage %iMB after collect\n", (int)PDB_sizeInMB(self));
 	PDB_cleanUpCollectGarbage(self);
 	return savedCount;
 }
