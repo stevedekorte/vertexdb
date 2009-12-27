@@ -164,14 +164,17 @@ void PCollector_showStatus(PCollector *self)
 	);
 }
 
-void PCollector_markNode_(PCollector *self, PNode *node)
+void PCollector_markPid_(PCollector *self, long pid)
 {
-	Datum *k;
-	PNode_first(node);
+	PNode_setPidLong_(self->inNode, pid);
+	PNode_setPidLong_(self->outNode, pid);
 
-	while ((k = PNode_key(node)))
+	Datum *k;
+	PNode_first(self->inNode);
+
+	while ((k = PNode_key(self->inNode)))
 	{
-		Datum *v = PNode_value(node);
+		Datum *v = PNode_value(self->inNode);
 		if (Datum_data(k)[0] != '_')
 		{
 			long pid = Datum_asLong(v);
@@ -181,22 +184,17 @@ void PCollector_markNode_(PCollector *self, PNode *node)
 				PCollector_addToSaveQueue_(self, pid);
 			}
 		}
-		
-		PNode_next(node);
+		PNode_atPut_(self->outNode, k, v);
+		PNode_next(self->inNode);
 		Datum_poolFreeRefs();
 	}
-}
 
-void PCollector_markPid_(PCollector *self, long pid)
-{
-	PNode_setPidLong_(self->inNode, pid);
-	PCollector_markNode_(self, self->inNode);
 
 	self->markCount ++;
-	if (self->markCount % 1000 == 0) 
+	if (self->markCount % 100 == 0) 
 	{ 
 		PDB_commit(self->out);
-		PCollector_showStatus(self);
+		if (self->markCount % 1000 == 0) PCollector_showStatus(self);
 	}
 }
 

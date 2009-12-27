@@ -62,7 +62,7 @@ PDB *PDB_new(void)
 	PDB *self = calloc(1, sizeof(PDB));
 	self->store = Store_new();
 	self->dbFile = File_new();
-	
+	self->hardSync = 1;
 	srand(time(NULL)); // need to do because Datum_makePid64 uses rand 
 	
 	return self;
@@ -170,7 +170,7 @@ void PDB_createRootIfNeeded(PDB *self)
 int PDB_open(PDB *self)
 {
 	Store_setCompareFunction_(self->store, pathCompare);
-	Store_setHardSync_(self->store, 1); //self->hardSync);
+	Store_setHardSync_(self->store, self->hardSync);
 	
 	if (Datum_isEmpty(File_path(self->dbFile)))
 	{
