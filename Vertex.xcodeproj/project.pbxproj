@@ -68,8 +68,7 @@
 		AA9C0F6C0EB1387F00F997D7 /* libtokyocabinet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9C0F6B0EB1387F00F997D7 /* libtokyocabinet.a */; };
 		AA9C0F720EB138C100F997D7 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9C0F710EB138C100F997D7 /* libz.a */; };
 		AADD04971098204A00F8454F /* Pointer.c in Sources */ = {isa = PBXBuildFile; fileRef = AADD04951098204900F8454F /* Pointer.c */; };
-		AAF4950210E444E5005D13EF /* libMallocDebug.A.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAF4950110E444E5005D13EF /* libMallocDebug.A.dylib */; };
-		AAF495AA10E47EFC005D13EF /* THash.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF495A810E47EFC005D13EF /* THash.c */; };
+		AAF4963810E6EF0D005D13EF /* PCollector.c in Sources */ = {isa = PBXBuildFile; fileRef = AAF4963610E6EF0D005D13EF /* PCollector.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -209,9 +208,8 @@
 		AA9C0F710EB138C100F997D7 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = /opt/local/lib/libz.a; sourceTree = "<absolute>"; };
 		AADD04951098204900F8454F /* Pointer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Pointer.c; path = source/pdb/Pointer.c; sourceTree = SOURCE_ROOT; };
 		AADD04961098204A00F8454F /* Pointer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pointer.h; path = source/pdb/Pointer.h; sourceTree = SOURCE_ROOT; };
-		AAF4950110E444E5005D13EF /* libMallocDebug.A.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libMallocDebug.A.dylib; path = /usr/lib/libMallocDebug.A.dylib; sourceTree = "<absolute>"; };
-		AAF495A810E47EFC005D13EF /* THash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = THash.c; sourceTree = "<group>"; };
-		AAF495A910E47EFC005D13EF /* THash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THash.h; sourceTree = "<group>"; };
+		AAF4963610E6EF0D005D13EF /* PCollector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = PCollector.c; path = source/pdb/PCollector.c; sourceTree = SOURCE_ROOT; };
+		AAF4963710E6EF0D005D13EF /* PCollector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PCollector.h; path = source/pdb/PCollector.h; sourceTree = SOURCE_ROOT; };
 		C6A0FF2C0290799A04C91782 /* Vertex.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Vertex.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -225,7 +223,6 @@
 				AA33042C10829584007AD6CA /* libevent_extra.a in Frameworks */,
 				AA33042D10829584007AD6CA /* libevent.a in Frameworks */,
 				9F087BBA1083105900211163 /* libyajl_s.a in Frameworks */,
-				AAF4950210E444E5005D13EF /* libMallocDebug.A.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -251,7 +248,6 @@
 				AA33042B10829584007AD6CA /* libevent.a */,
 				AA9C0F710EB138C100F997D7 /* libz.a */,
 				9F087BB91083105900211163 /* libyajl_s.a */,
-				AAF4950110E444E5005D13EF /* libMallocDebug.A.dylib */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -281,8 +277,6 @@
 		AA11D280109FF7520032D6B9 /* store */ = {
 			isa = PBXGroup;
 			children = (
-				AAF495A810E47EFC005D13EF /* THash.c */,
-				AAF495A910E47EFC005D13EF /* THash.h */,
 				AA11D281109FF7520032D6B9 /* Store.c */,
 				AA11D282109FF7520032D6B9 /* Store.h */,
 				AA11D283109FF7520032D6B9 /* StoreCursor.c */,
@@ -430,6 +424,8 @@
 		AA955BF91082CE100044CD9F /* pdb */ = {
 			isa = PBXGroup;
 			children = (
+				AAF4963610E6EF0D005D13EF /* PCollector.c */,
+				AAF4963710E6EF0D005D13EF /* PCollector.h */,
 				AADD04951098204900F8454F /* Pointer.c */,
 				AADD04961098204A00F8454F /* Pointer.h */,
 				AA955E801085614E0044CD9F /* Yajl_extras.c */,
@@ -559,7 +555,7 @@
 				AA11D285109FF7520032D6B9 /* Store.c in Sources */,
 				AA11D286109FF7520032D6B9 /* StoreCursor.c in Sources */,
 				AA60CA3910B7955400B0C6BA /* VertexServer_amchart.c in Sources */,
-				AAF495AA10E47EFC005D13EF /* THash.c in Sources */,
+				AAF4963810E6EF0D005D13EF /* PCollector.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

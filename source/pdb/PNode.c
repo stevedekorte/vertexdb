@@ -457,12 +457,11 @@ int PNode_createMoveToKey_(PNode *self, Datum *key)
 	}
 	else
 	{
-		PNode *n = PDB_newNode(self->pdb);
+		PNode *n = PDB_allocNode(self->pdb);
 		PNode_create(n);
 		PNode_atPut_(self, key, PNode_pid(n));
 		Datum_copy_(self->parentPid, self->pid);
 		PNode_setPid_(self, PNode_pid(n));
-		PNode_free(n);
 	}
 	
 	return 0;
@@ -689,11 +688,6 @@ long PNode_pidAsLong(PNode *self)
 	return Datum_asLong(self->pid);
 }
 
-int PNode_isMarked(PNode *self)
-{
-	return PDB_hasMarked_(self->pdb, PNode_pidAsLong(self));
-}
-
 /*
 void PNode_mark2(PNode *self)
 {
@@ -726,41 +720,6 @@ void PNode_mark2(PNode *self)
 }
 */
 
-void PNode_mark(PNode *self)
-{
-	Datum *k;
-	//printf("marking %i\n", (int)PNode_pidAsLong(self));
-	PNode_first(self);
-
-	while ((k = PNode_key(self)))
-	{
-		Datum *v = PNode_value(self);
-		
-		//printf("key %s\n", Datum_data(k)); 
-		//if ((!Datum_beginsWithCString_(k , "_")) && strchr(Datum_data(v), '.') == 0x0) 
-		if ((Datum_data(k)[0] != '_')) // && strchr(Datum_data(v), '.') == 0x0) // why the .? 
-		// && Datum_size(v) == PNODE_ID_LENGTH)
-		{
-			long pid = Datum_asLong(v);
-
-			if (pid)
-			{
-				if (!PDB_hasMarked_(self->pdb, pid))
-				{
-					/*
-					printf("%s %s\t%i\n", 
-						Datum_data(PNode_pid(self)), 
-						Datum_data(k), 
-						(int)pid);
-					*/
-					PDB_addToMarkQueue_(self->pdb, pid);
-				}
-			}
-		}
-		
-		PNode_next(self);
-	}
-}
 
 int PNode_takePidFromCursor(PNode *self) // returns 0 on success
 {

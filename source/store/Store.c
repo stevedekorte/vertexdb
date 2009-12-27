@@ -62,13 +62,11 @@ int Store_open(Store *self)
 	}
 	*/
 
-/*
-	if (!tcbdbsetcache(self->db, 1024*100, 512*100))
+	if (!tcbdbsetcache(self->db, 0, 512*4096))
 	{
 		//Log_Printf("tcbdbsetcache failed\n");
 		return -1;
 	}
-*/
 	
 	if (!tcbdbsetcmpfunc(self->db, self->compareFunc, NULL))
 	{
@@ -102,6 +100,7 @@ int Store_close(Store *self)
 		tcbdbclose(self->db);
 		tcbdbdel(self->db);
 		self->db = 0x0;
+		self->inTransaction = 0;
 	}
 	
 	return r;
@@ -164,12 +163,24 @@ int Store_sync(Store *self)
 	return 1;
 }
 
+int Store_inTransaction(Store *self)
+{
+	return self->inTransaction;
+}
+
 int Store_begin(Store *self)
 {
+	if(self->inTransaction) 
+	{
+		return 0;
+	}
+	
 	if (!tcbdbtranbegin(self->db))
 	{
 		return 0;
 	}
+	
+	self->inTransaction = 1;
 	
 	return 1;
 }
@@ -180,6 +191,8 @@ int Store_abort(Store *self)
 	{
 		return 0;
 	}
+	
+	self->inTransaction = 0;
 
 	return 1;
 }
@@ -190,6 +203,8 @@ int Store_commit(Store *self)
 	{
 		return 0;
 	}
+	
+	self->inTransaction = 0;
 	
 	return 1;
 }

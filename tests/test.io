@@ -471,10 +471,12 @@ CollectGarbageTest := UnitTest clone do(
 		expectedBodyPrefix ::= nil
 		
     	assertBody := method(
-    		if(actualBody beginsWithSeq(expectedBodyPrefix) not,
+    /*
+		if(actualBody beginsWithSeq(expectedBodyPrefix) not,
 	            m := Sequence with(action, " action failed for \"", variant, "\" variant: \n", url url, "\nexpectedBodyPrefix ", expectedBodyPrefix, "\nactualBody         ", actualBody, "\n")
 				raise(m)
 	        )
+	*/
     	)
     )
     testCollectGarbage := method(

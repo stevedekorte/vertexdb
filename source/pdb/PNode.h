@@ -114,7 +114,6 @@ void PNode_create(PNode *self);
 
 // garbage collection helpers
 long PNode_pidAsLong(PNode *self);
-int PNode_isMarked(PNode *self);
 void PNode_mark(PNode *self);
 int PNode_takePidFromCursor(PNode *self); // returns 0 on success
 int PNode_moveToNextNode(PNode *self); // returns slot count or a negative number on end or error

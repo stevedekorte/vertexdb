@@ -24,6 +24,7 @@ typedef struct
 	void *compareFunc;
 	void *db;
 	int hardSync;
+	int inTransaction;
 } Store;
 
 Store *Store_new(void);

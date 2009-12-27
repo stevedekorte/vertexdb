@@ -561,51 +561,15 @@ int VertexServer_backup(VertexServer *self)
 {
 	time_t now = time(NULL);
 	int result;
-	
-	Log_Printf_("backup at %i bytes written... ", (int)PDB_bytesWaitingToCommit(self->pdb));
-	
+		
 	PDB_commit(self->pdb);
-	
 	result = PDB_backup(self->pdb);
 
 	Log_Printf__("backup %s and took %i seconds\n", 
 		result ? "failed" : "successful", (int)difftime(time(NULL), now));
-				
+
 	return result;
 }
-
-/*
-void VertexServer_backupIfNeeded(VertexServer *self)
-{
-	if (self->requestCount % 10000 == 0) // so we don't call time() on every request
-	{
-		time_t now = time(NULL);
-		double dt = difftime(now, self->lastBackupTime);
-		
-		//Log_Printf_("%i seconds since last backup\n", (int)dt);
-		
-		if (dt > 60*60*12) // 12 hours
-		{
-			Log_Printf("starting timed backup\n");
-			VertexServer_backup(self);
-		}
-	}
-}
-*/
-
-/*
-void VertexServer_commitIfNeeded(VertexServer *self)
-{
-	size_t writeByteCount = PDB_bytesWaitingToCommit(self->pdb);
-
-	if (writeByteCount > 1024*1024*10)
-	{
-		PDB_commit(self->pdb);
-		Log_Printf_("commit at %i bytes written\n", 
-			(int)writeByteCount);
-	}
-}
-*/
 
 int VertexServer_api_backup(VertexServer *self)
 {
@@ -621,15 +585,13 @@ int VertexServer_api_backup(VertexServer *self)
 	}
 
 	return result;
-	// move to this once backups are integrated with gc
-	//return VertexServer_VertexServer_api_collectGarbage(self);
 }
 
 void VertexServer_collectStep(VertexServer *self)
 {	
 	if(PDB_isCollecting(self->pdb))
 	{
-		PDB_markReachableNodesStep(self->pdb);
+		PDB_collectStep(self->pdb);
 		Datum_poolFreeRefs();
 		PNode_poolFreeRefs();
 	}
@@ -664,6 +626,7 @@ int VertexServer_api_showStats(VertexServer *self)
 	return 0;
 }
 
+/*
 int VertexServer_api_syncSizes(VertexServer *self)
 {
 	PDB_syncSizes(self->pdb);
@@ -675,6 +638,7 @@ int VertexServer_api_sync(VertexServer *self)
 	PDB_sync(self->pdb);
 	return 0;
 }
+*/
 
 int VertexServer_api_log(VertexServer *self)
 {
@@ -924,7 +888,7 @@ void VertexServer_setupActions(VertexServer *self)
 	VERTEX_SERVER_ADD_ACTION(amchart);
 	VERTEX_SERVER_ADD_ACTION(ampie);
 	//VERTEX_SERVER_ADD_ACTION(syncSizes);
-	VERTEX_SERVER_ADD_ACTION(sync);
+	//VERTEX_SERVER_ADD_ACTION(sync);
 	VERTEX_SERVER_ADD_ACTION(log);
 	
 	// select ops
