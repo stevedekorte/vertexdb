@@ -15,6 +15,7 @@ PCollector *PCollector_new(void)
 	PCollector *self = calloc(1, sizeof(PCollector));
 	self->out = PDB_new();
 	PDB_setUseBackups_(self->out, 0);
+	PDB_setHardSync_(self->out, 0);
 	PDB_setPathCString_(self->out, "/tmp/db.tc"); // hack - change to a uniqueID
 		
 	self->savedPids = CHash_new();
@@ -132,6 +133,8 @@ void PCollector_step(PCollector *self)
 
 long PCollector_complete(PCollector *self)
 {
+	CHash_clear(self->savedPids);
+	
 	PNode_free(self->inNode);
 	self->inNode = 0x0;
 	PDB_close(self->in);
@@ -154,14 +157,11 @@ long PCollector_complete(PCollector *self)
 
 void PCollector_showStatus(PCollector *self)
 {
-	Log_Printf__(" collector queued: %i marked: %i\n", 
+	Log_Printf___(" collector queued:%i saved:%i savedPids:%0.2fM\n", 
 		(int)List_size(self->saveQueue),	
-		(int)self->markCount
-	); 
-	
-	printf("CHash savedPids size: %0.2fM\n", 
-		((float)self->savedPids->size)/1000000.0);
-	printf("\n");
+		(int)self->markCount, 
+		((float)self->savedPids->size)/1000000.0
+	);
 }
 
 void PCollector_markNode_(PCollector *self, PNode *node)
@@ -183,7 +183,7 @@ void PCollector_markNode_(PCollector *self, PNode *node)
 		}
 		
 		PNode_next(node);
-		//Datum_freePool();
+		Datum_poolFreeRefs();
 	}
 }
 

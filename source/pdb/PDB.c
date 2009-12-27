@@ -445,7 +445,7 @@ void PDB_beginCollectGarbage(PDB *self)
 
 int PDB_isCollecting(PDB *self)
 {
-	return self->collector != 0x0 && PCollector_isCollecting(self->collector);
+	return self->collector && PCollector_isCollecting(self->collector);
 }
 
 void PDB_collectStep(PDB *self)
@@ -468,7 +468,7 @@ void PDB_remove(PDB *self)
 
 void PDB_moveTo_(PDB *self, PDB *other)
 {
-	File_remove(self->dbFile);
+	File_remove(other->dbFile);
 	File_moveTo_(self->dbFile, other->dbFile);
 }
 

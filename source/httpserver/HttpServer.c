@@ -100,6 +100,8 @@ void HttpServer_handleRequest(struct evhttp_request *req, void *arg)
 	const char *uri = evhttp_request_uri(req);
 	struct evbuffer *buf = evbuffer_new();
 	
+	self->gotRequest = 1;
+	
 	self->request = req;
 	self->httpRequest->request = req;
 	self->httpResponse->request = req;
@@ -156,8 +158,14 @@ void HttpServer_run(HttpServer *self)
 	{
 		if(self->idleCallback)
 		{
-			self->idleCallback(self->delegate);
+			self->gotRequest = 0;
+			
 			event_loop(EVLOOP_NONBLOCK);
+			
+			if (!self->gotRequest && self->idleCallback)
+			{
+				self->idleCallback(self->delegate);
+			}
 		}
 		else 
 		{

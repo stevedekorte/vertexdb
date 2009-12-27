@@ -38,6 +38,7 @@ typedef struct
 	
 	HttpRequest *httpRequest;
 	HttpResponse *httpResponse;
+	int gotRequest;
 } HttpServer;
 
 void *CHash_atString_(CHash *self, const char *s);
