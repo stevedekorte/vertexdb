@@ -62,11 +62,13 @@ int Store_open(Store *self)
 	}
 	*/
 
+	/*
 	if (!tcbdbsetcache(self->db, 0, 512*4096))
 	{
 		//Log_Printf("tcbdbsetcache failed\n");
 		return -1;
 	}
+	*/
 	
 	if (!tcbdbsetcmpfunc(self->db, self->compareFunc, NULL))
 	{

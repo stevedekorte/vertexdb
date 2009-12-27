@@ -185,17 +185,19 @@ void PCollector_markPid_(PCollector *self, long pid)
 			}
 		}
 		PNode_atPut_(self->outNode, k, v);
+		//PDB_commit(self->out);
 		PNode_next(self->inNode);
 		Datum_poolFreeRefs();
 	}
 
 
 	self->markCount ++;
-	if (self->markCount % 100 == 0) 
+	PDB_commit(self->out);
+	//if (self->markCount % 10 == 0) 
 	{ 
-		PDB_commit(self->out);
-		if (self->markCount % 1000 == 0) PCollector_showStatus(self);
+		//PDB_commit(self->out);
 	}
+	if (self->markCount % 1000 == 0) PCollector_showStatus(self);
 }
 
 int PCollector_isCollecting(PCollector *self)
