@@ -102,7 +102,13 @@ void PCollector_begin(PCollector *self)
 	PDB_open(self->out);	
 	self->outNode = PDB_newNode(self->out);
 		
-	Log_Printf_("PCollector: beginCollectGarbage %iMB before collect\n", (int)PDB_sizeInMB(self->in));
+	Log_Printf__("PCollector: beginCollectGarbage %iMB %i records before collect\n", 
+		(int)PDB_sizeInMB(self->in),
+		(int)PDB_numberOfKeys(self->in)
+	);
+
+	self->beginKeyCount = PDB_numberOfKeys(self->in);
+	self->beginTime = time(NULL);
 	
 	PCollector_addToSaveQueue_(self, 1); // root node
 }
@@ -149,8 +155,14 @@ long PCollector_complete(PCollector *self)
 	//File_remove(self->dbFile);
 	//File_moveTo_(out->dbFile, self->dbFile);
 		
-	Log_Printf_("PCollector: completeCollectGarbage %iMB after collect\n", (int)PDB_sizeInMB(self->in));
-
+	Log_Printf__("PCollector: completeCollectGarbage %iMB and %i records after collect\n", 
+		(int)PDB_sizeInMB(self->in),
+		(int)PDB_numberOfKeys(self->in)
+	);
+	
+	Log_Printf_("PCollector: collected %i keys\n",  (int)(self->beginKeyCount-PDB_numberOfKeys(self->in)));
+	Log_Printf_("PCollector: took %i minutes\n",  (int)difftime(time(NULL), self->beginTime)/60);
+	
 	self->isCollecting = 0;
 	return 0;
 }

@@ -52,7 +52,8 @@ int Store_begin(Store *self);
 int Store_abort(Store *self);
 int Store_commit(Store *self);
 
-int Store_size(Store *self);
+uint64_t Store_size(Store *self);
+uint64_t Store_numberOfKeys(Store *self);
 
 //StoreCursor *Store_newCursor(Store *self);
 

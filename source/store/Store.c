@@ -211,9 +211,14 @@ int Store_commit(Store *self)
 	return 1;
 }
 
-int Store_size(Store *self)
+uint64_t Store_size(Store *self)
 {
-	return (long)(tcbdbfsiz(self->db));
+	return tcbdbfsiz(self->db);
+}
+
+uint64_t Store_numberOfKeys(Store *self)
+{
+	return tcbdbrnum(self->db);
 }
 
 /*

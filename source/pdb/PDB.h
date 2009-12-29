@@ -78,6 +78,7 @@ int PDB_removeAt_(PDB *self, const char *k, int ksize);
 
 // helpers ------------
 long PDB_sizeInMB(PDB *self);
+uint64_t PDB_numberOfKeys(PDB *self);
 int PDB_syncSizes(PDB *self);
 
 void PDB_beginCollectGarbage(PDB *self);

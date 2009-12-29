@@ -22,6 +22,9 @@ typedef struct
 	size_t markCount;
 	double maxStepTime;
 	
+	time_t beginTime;
+	uint64_t beginKeyCount;
+	
 	int isCollecting;
 } PCollector;
 

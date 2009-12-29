@@ -211,12 +211,6 @@ int PDB_open(PDB *self)
 	return 0;
 }
 
-int PDB_backup(PDB *self)
-{
-	return 0;
-}
-
-
 void PDB_close(PDB *self)
 {
 	if(!self->isClosing)
@@ -435,8 +429,11 @@ int PDB_syncSizes(PDB *self)
 
 void PDB_beginCollectGarbage(PDB *self)
 {	
-	if(!self->collector)
+	if(!PDB_isCollecting(self))
 	{
+		Log_Printf("PDB backing up before collect\n");
+		PDB_backup(self);
+		
 		self->collector = PCollector_new();
 		PCollector_setIn_(self->collector, self);
 		PCollector_begin(self->collector);
@@ -460,6 +457,11 @@ long PDB_sizeInMB(PDB *self)
 	return (long)(Store_size(self->store)/(1024*1024));
 }
 
+uint64_t PDB_numberOfKeys(PDB *self)
+{
+	return Store_numberOfKeys(self->store);
+}
+
 void PDB_remove(PDB *self)
 {
 	PDB_close(self);
@@ -470,5 +472,26 @@ void PDB_moveTo_(PDB *self, PDB *other)
 {
 	File_remove(other->dbFile);
 	File_moveTo_(self->dbFile, other->dbFile);
+}
+
+int PDB_backup(PDB *self)
+{
+	time_t rawtime;
+	struct tm *timeinfo;
+	char dateString[100];
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+	strftime(dateString, 100, "_%Y_%m_%d_%H_%M_%S", timeinfo);
+	
+	File *backupFile = File_new();
+	File_setPath_(backupFile, File_path(self->dbFile));	
+	File_appendToPathCString_(backupFile, dateString);
+	
+	Log_Printf("PDB backup started...\n");
+	PDB_close(self);
+	File_copyTo_(self->dbFile, backupFile);
+	Log_Printf("PDB backup complete\n");
+	PDB_open(self);
+	return 0;
 }
 
