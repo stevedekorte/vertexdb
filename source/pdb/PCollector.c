@@ -68,6 +68,7 @@ void PCollector_setIn_(PCollector *self, void *pdb)
 
 void PCollector_free(PCollector *self)
 {	
+	if(self->in) PDB_setDelegate_(self->in, 0x0);
 	PDB_free(self->out);
 	CHash_free(self->savedPids);
 	List_free(self->saveQueue);
@@ -94,6 +95,7 @@ void PCollector_begin(PCollector *self)
 	}
 	
 	self->isCollecting = 1;
+	PDB_setDelegate_(self->in, self);
 
 	// in db already open
 	self->inNode = PDB_newNode(self->in);
@@ -151,6 +153,7 @@ long PCollector_complete(PCollector *self)
 	
 	PDB_moveTo_(self->out, self->in);
 	PDB_open(self->in);
+	PDB_setDelegate_(self->in, 0x0);
 	
 	//File_remove(self->dbFile);
 	//File_moveTo_(out->dbFile, self->dbFile);

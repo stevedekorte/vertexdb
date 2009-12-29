@@ -221,34 +221,3 @@ uint64_t Store_numberOfKeys(Store *self)
 	return tcbdbrnum(self->db);
 }
 
-/*
-StoreCursor *Store_newCursor(Store *self)
-{
-
-}
-*/
-	/*
-	if(!tcbdbsync(self->db))
-	{
-		PDB_fatalError_(self, "tcbdbsync");
-	}
-	*/
-	
-	/*
-	Log_Printf___("commit took %i seconds, %i records, %iMB\n", 
-		(int)difftime(time(NULL), now),
-		(int)tcbdbrnum(self->db), 
-		(int)(tcbdbfsiz(self->db)/(1024*1024)));
-	*/
-	
-/*
-void PDB_warmup(PDB *self)
-{
-	// touch all the indexes to pull them into memory
-	BDBCUR *c = tcbdbcurnew(self->db);
-	tcbdbcurfirst(c);
-	while(tcbdbcurnext(c)) {}
-	tcbdbcurdel(c);
-}
-*/
-

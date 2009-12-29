@@ -321,7 +321,7 @@ int PDB_at_put_(PDB *self, const char *k, int ksize, const char *v, int vsize)
 		return 0;
 	}
 	
-	if(self->putCallback)
+	if(self->delegate && self->putCallback)
 	{
 		self->putCallback(self->delegate, k, ksize, v, vsize);
 	}
@@ -339,7 +339,7 @@ int PDB_at_cat_(PDB *self, const char *k, int ksize, const char *v, int vsize)
 		return 0;
 	}
 	
-	if(self->catCallback)
+	if(self->delegate && self->catCallback)
 	{
 		self->catCallback(self->delegate, k, ksize, v, vsize);
 	}
@@ -358,7 +358,7 @@ int PDB_removeAt_(PDB *self, const char *k, int ksize)
 		return 0;
 	}
 
-	if(self->removeCallback)
+	if(self->delegate && self->removeCallback)
 	{
 		self->removeCallback(self->delegate, k, ksize);
 	}
