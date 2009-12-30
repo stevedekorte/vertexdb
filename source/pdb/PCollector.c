@@ -33,8 +33,10 @@ PCollector *PCollector_new(void)
 void PCollector_putCallback(void *arg, const char *k, int ksize, const char *v, int vsize)
 {
 	PCollector *self = arg;
+	
 	if(PCollector_shouldUpdateKey_(self, k, ksize))
 	{
+		printf("putCallback %s\n", k);
 		PDB_at_put_(self->out, k, ksize, v, vsize);
 	}
 }
@@ -44,6 +46,7 @@ void PCollector_catCallback(void *arg, const char *k, int ksize, const char *v, 
 	PCollector *self = arg;
 	if(PCollector_shouldUpdateKey_(self, k, ksize))
 	{
+		printf("catCallback %s\n", k);
 		PDB_at_cat_(self->out, k, ksize, v, vsize);
 	}
 }
@@ -53,6 +56,7 @@ void PCollector_removeCallback(void *arg, const char *k, int ksize)
 	PCollector *self = arg;
 	if(PCollector_shouldUpdateKey_(self, k, ksize))
 	{
+		printf("removeCallback %s\n", k);
 		PDB_removeAt_(self->out, k, ksize);
 	}
 }
@@ -81,6 +85,7 @@ int PCollector_shouldUpdateKey_(PCollector *self, const char *k, int ksize)
 	char pidString[128];
 	memcpy(pidString, k, slash - k);
 	long pid = atol(pidString);
+	
 	return PCollector_hasSaved_(self, pid);
 }
 
