@@ -481,13 +481,43 @@ CollectGarbageTest := UnitTest clone do(
     )
     testCollectGarbage := method(
 		URL with(VDBAssertion baseUrl .. "/?action=select&op=rm") fetch
-        URL with(VDBAssertion baseUrl .. "/?action=collectGarbage") fetch
+		URL with(VDBAssertion baseUrl .. "/?action=collectGarbage") fetch
         URL with(VDBAssertion baseUrl .. "/a/b?action=mkdir") fetch
         URL with(VDBAssertion baseUrl .. "/a/c?action=mkdir") fetch
         URL with(VDBAssertion baseUrl .. "/a/d?action=mkdir") fetch
         URL with(VDBAssertion baseUrl .. "/a?action=select&op=rm") fetch
         CollectGarbageAssertion setBasePath("/") setExpectedBodyPrefix("""{"saved":2,"seconds":""") assert
     )
+
+	testWriteDuringCollection := method(
+		URL with(VDBAssertion baseUrl .. "/?action=select&op=rm") fetch
+		URL with(VDBAssertion baseUrl .. "/test/gc?action=mkdir") fetch
+		
+		nodes := List clone
+		1000 repeat(i,
+			nodes append("/test/gc/" .. i .. "?action=mkdir")
+			nodes append("/test/gc/" .. i .. "?action=write&key=_a&value=b")
+		)
+		
+		url := URL with(VDBAssertion baseUrl .. "/?action=transaction")
+        url post(nodes join("\n"))
+
+		URL with(VDBAssertion baseUrl .. "/?action=collectGarbage") fetch
+        if(File with("/tmp/db.tc") exists not,
+        	Exception raise("Expected /tmp/db.tc to exist.  Perhaps collect finished already?")
+        )
+
+		url := URL with(VDBAssertion baseUrl .. "/?action=transaction")
+		url post("/test/gc/9999999999?action=mkdir\n/test/gc/9999999999?action=write&key=_b&value=c")
+
+		while(File with("/tmp/db.tc") exists,
+			System sleep(.1)
+		)
+		
+		if(URL with(VDBAssertion baseUrl .. "/test/gc/9999999999?action=read&key=_b") fetch != "\"c\"",
+			Exception raise("Expected /test/gc/9999999999 to contain slot _b with value c after GC")
+		)
+	)
 )
 
 VDBTest run
