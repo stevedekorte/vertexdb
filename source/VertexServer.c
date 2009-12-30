@@ -309,8 +309,6 @@ int VertexServer_api_write(VertexServer *self)
 	Datum *value = HttpRequest_queryValue_(self->httpRequest, "value");
 	Datum *post  = HttpRequest_postData(self->httpRequest);
 	
-	printf("VertexServer_api_write key = '%s' value = '%s'\n", Datum_data(key), Datum_data(value));
-	
 	if(Datum_size(post) != 0)
 	{
 		value = post;

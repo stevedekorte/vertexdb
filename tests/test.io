@@ -494,7 +494,7 @@ CollectGarbageTest := UnitTest clone do(
 		URL with(VDBAssertion baseUrl .. "/test/gc?action=mkdir") fetch
 		
 		nodes := List clone
-		1000 repeat(i,
+		10000 repeat(i,
 			nodes append("/test/gc/" .. i .. "?action=mkdir")
 			nodes append("/test/gc/" .. i .. "?action=write&key=_a&value=b")
 		)

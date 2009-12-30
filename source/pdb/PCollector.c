@@ -36,9 +36,23 @@ void PCollector_putCallback(void *arg, const char *k, int ksize, const char *v, 
 	
 	if(PCollector_shouldUpdateKey_(self, k, ksize))
 	{
-		printf("putCallback %s\n", k);
 		PDB_at_put_(self->out, k, ksize, v, vsize);
+		
+		// if the slot is to a pointer, make sure the node it points to will get marked
+		char *key = strstr(k, "/s/");
+		
+		if(key)
+		{
+			if(strlen(key) < 4) return; // shouldn't happen, but just to be safe
+			key += strlen("/s/"); // move to the slotName
+			
+			if(key[0] != '_') // slotName is for a pointer, so mark it
+			{
+				PCollector_addToSaveQueue_(self, atol(v));
+			}
+		}
 	}
+
 }
 
 void PCollector_catCallback(void *arg, const char *k, int ksize, const char *v, int vsize)
@@ -46,7 +60,6 @@ void PCollector_catCallback(void *arg, const char *k, int ksize, const char *v, 
 	PCollector *self = arg;
 	if(PCollector_shouldUpdateKey_(self, k, ksize))
 	{
-		printf("catCallback %s\n", k);
 		PDB_at_cat_(self->out, k, ksize, v, vsize);
 	}
 }
@@ -56,7 +69,6 @@ void PCollector_removeCallback(void *arg, const char *k, int ksize)
 	PCollector *self = arg;
 	if(PCollector_shouldUpdateKey_(self, k, ksize))
 	{
-		printf("removeCallback %s\n", k);
 		PDB_removeAt_(self->out, k, ksize);
 	}
 }
@@ -81,12 +93,15 @@ void PCollector_free(PCollector *self)
 
 int PCollector_shouldUpdateKey_(PCollector *self, const char *k, int ksize)
 {
-	const char *slash = strrchr(k, '/');
+	const char *slash = strchr(k, '/');
+	
 	char pidString[128];
 	memcpy(pidString, k, slash - k);
 	long pid = atol(pidString);
 	
-	return PCollector_hasSaved_(self, pid);
+	int hasSaved = PCollector_hasSaved_(self, pid);
+	//printf("hasSaved %s %i\n", pidString, hasSaved);
+	return hasSaved; //PCollector_hasSaved_(self, pid);
 }
 
 // --------------------------------------------
@@ -186,6 +201,8 @@ void PCollector_showStatus(PCollector *self)
 
 void PCollector_markPid_(PCollector *self, long pid)
 {
+	assert(CHash_at_(self->savedPids, (void *)pid) == (void *)0x1);
+
 	PNode_setPidLong_(self->inNode, pid);
 	PNode_setPidLong_(self->outNode, pid);
 
