@@ -151,12 +151,14 @@ void PCollector_step(PCollector *self)
 		
 		if (List_size(self->saveQueue) == 0)
 		{
+			//PDB_commit(self->out);
 			PCollector_complete(self);
 			break;
 		}
 		
 		dt = Date_SecondsFrom1970ToNow() - t1;
 	}
+	//PDB_commit(self->out);
 }
 
 long PCollector_complete(PCollector *self)
@@ -229,12 +231,16 @@ void PCollector_markPid_(PCollector *self, long pid)
 
 
 	self->markCount ++;
-	PDB_commit(self->out);
+	//PDB_commit(self->out);
 	//if (self->markCount % 10 == 0) 
 	{ 
 		//PDB_commit(self->out);
 	}
-	if (self->markCount % 1000 == 0) PCollector_showStatus(self);
+	if (self->markCount % 10000 == 0) 
+	{
+		PDB_commit(self->out);
+		PCollector_showStatus(self);
+	}
 }
 
 int PCollector_isCollecting(PCollector *self)
