@@ -265,7 +265,7 @@ void PDB_willWrite(PDB *self)
 
 void PDB_begin(PDB *self)
 {
-	if(PDB_ensureDdIsOpen_(self, "begin"))
+	if(!PDB_ensureDdIsOpen_(self, "begin"))
 	{
 		return;
 	}
@@ -286,7 +286,7 @@ void PDB_begin(PDB *self)
 
 void PDB_abort(PDB *self)
 {
-	if(PDB_ensureDdIsOpen_(self, "abort"))
+	if(!PDB_ensureDdIsOpen_(self, "abort"))
 	{
 		return;
 	}
@@ -333,7 +333,7 @@ void PDB_commit(PDB *self)
 
 void *PDB_at_(PDB *self, const char *k, int ksize, int *vsize)
 {
-	if(PDB_ensureDdIsOpen_(self, "at_"))
+	if(!PDB_ensureDdIsOpen_(self, "at_"))
 	{
 		return 0x0;
 	}
@@ -344,7 +344,7 @@ void *PDB_at_(PDB *self, const char *k, int ksize, int *vsize)
 
 int PDB_at_put_(PDB *self, const char *k, int ksize, const char *v, int vsize)
 {
-	if(PDB_ensureDdIsOpen_(self, "at_put_"))
+	if(!PDB_ensureDdIsOpen_(self, "at_put_"))
 	{
 		return 0;
 	}
@@ -367,7 +367,7 @@ int PDB_at_put_(PDB *self, const char *k, int ksize, const char *v, int vsize)
 
 int PDB_at_cat_(PDB *self, const char *k, int ksize, const char *v, int vsize)
 {
-	if(PDB_ensureDdIsOpen_(self, "at_cat_"))
+	if(!PDB_ensureDdIsOpen_(self, "at_cat_"))
 	{
 		return 0;
 	}
@@ -391,7 +391,7 @@ int PDB_at_cat_(PDB *self, const char *k, int ksize, const char *v, int vsize)
 
 int PDB_removeAt_(PDB *self, const char *k, int ksize)
 {
-	if(PDB_ensureDdIsOpen_(self, "removeaAt"))
+	if(!PDB_ensureDdIsOpen_(self, "removeaAt"))
 	{
 		return 0;
 	}
@@ -416,7 +416,7 @@ int PDB_removeAt_(PDB *self, const char *k, int ksize)
 
 int PDB_sync(PDB *self)
 {
-	if(PDB_ensureDdIsOpen_(self, "sync"))
+	if(!PDB_ensureDdIsOpen_(self, "sync"))
 	{
 		return 0;
 	}
