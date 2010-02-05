@@ -60,7 +60,6 @@ void File_appendToPathCString_(File *self, const char *path)
 	Datum_appendCString_(self->path, path);
 }
 
-
 void File_fatalError_(File *self, char *s)
 {
 	//Log_Printf__("File error: %s\n", s);

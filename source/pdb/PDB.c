@@ -233,9 +233,25 @@ void PDB_setUseBackups_(PDB *self, int aBool)
 	//self->useBackups = aBool;
 }
 
+int PDB_ensureDdIsOpen_(PDB *self, char *s)
+{
+	if (!Store_isOpen(self->store))
+	{
+		Log_Printf_("PDB warning: %s failed - db is not open\n", s);
+		return 0;
+	}
+	
+	return 1;
+}
+
+void PDB_nonFatalError_(PDB *self, char *s)
+{
+	Log_Printf__("PDB error: %s failed: %s\n", s, Store_error(self->store));
+}
+
 void PDB_fatalError_(PDB *self, char *s)
 {
-	Log_Printf__("%s failed: %s\n", s, Store_error(self->store));
+	Log_Printf__("PDB fatal error: %s failed: %s - exiting\n", s, Store_error(self->store));
 	PDB_close(self);
 	exit(-1);
 }
@@ -249,6 +265,11 @@ void PDB_willWrite(PDB *self)
 
 void PDB_begin(PDB *self)
 {
+	if(PDB_ensureDdIsOpen_(self, "begin"))
+	{
+		return;
+	}
+	
 	if(self->inTransaction) return;
 	
 	#ifdef PDB_USE_TX
@@ -265,6 +286,11 @@ void PDB_begin(PDB *self)
 
 void PDB_abort(PDB *self)
 {
+	if(PDB_ensureDdIsOpen_(self, "abort"))
+	{
+		return;
+	}
+	
 	if (!self->inTransaction) return;
 
 	#ifdef PDB_USE_TX
@@ -307,12 +333,22 @@ void PDB_commit(PDB *self)
 
 void *PDB_at_(PDB *self, const char *k, int ksize, int *vsize)
 {
+	if(PDB_ensureDdIsOpen_(self, "at_"))
+	{
+		return 0x0;
+	}
+	
 	void *v = Store_read(self->store, k, ksize, vsize);
 	return v;
 }
 
 int PDB_at_put_(PDB *self, const char *k, int ksize, const char *v, int vsize)
 {
+	if(PDB_ensureDdIsOpen_(self, "at_put_"))
+	{
+		return 0;
+	}
+	
 	PDB_willWrite(self);
 	
 	if(!Store_write(self->store, k, ksize, v, vsize))
@@ -331,6 +367,11 @@ int PDB_at_put_(PDB *self, const char *k, int ksize, const char *v, int vsize)
 
 int PDB_at_cat_(PDB *self, const char *k, int ksize, const char *v, int vsize)
 {
+	if(PDB_ensureDdIsOpen_(self, "at_cat_"))
+	{
+		return 0;
+	}
+	
 	PDB_willWrite(self);
 	
 	if(!Store_append(self->store, k, ksize, v, vsize))
@@ -350,11 +391,16 @@ int PDB_at_cat_(PDB *self, const char *k, int ksize, const char *v, int vsize)
 
 int PDB_removeAt_(PDB *self, const char *k, int ksize)
 {
+	if(PDB_ensureDdIsOpen_(self, "removeaAt"))
+	{
+		return 0;
+	}
+	
 	PDB_willWrite(self);
 
 	if(!Store_remove(self->store, k, ksize))
 	{
-		PDB_fatalError_(self, "remove");
+		PDB_nonFatalError_(self, "remove");
 		return 0;
 	}
 
@@ -370,6 +416,11 @@ int PDB_removeAt_(PDB *self, const char *k, int ksize)
 
 int PDB_sync(PDB *self)
 {
+	if(PDB_ensureDdIsOpen_(self, "sync"))
+	{
+		return 0;
+	}
+	
 	PDB_commit(self);
 	
 	if(!Store_sync(self->store))

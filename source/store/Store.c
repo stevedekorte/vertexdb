@@ -93,6 +93,11 @@ int Store_open(Store *self)
 	return 1;
 }
 
+int Store_isOpen(Store *self)
+{
+	return self->db != 0x0;
+}
+
 int Store_close(Store *self)
 {
 	int r = 0;

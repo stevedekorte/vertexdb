@@ -37,6 +37,7 @@ void Store_setPath_(Store *self, const char *p);
 const char *Store_path(Store *self);
 
 int Store_open(Store *self);
+int Store_isOpen(Store *self);
 int Store_close(Store *self);
 int Store_backup(Store *self, const char *backupPath);
 
