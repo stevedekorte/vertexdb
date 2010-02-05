@@ -521,7 +521,8 @@ CollectGarbageTest := UnitTest clone do(
 )
 
 writeln("starting Vertex on port 9523")
-System system("build/Debug/Vertex -port 9523 &")
+System system("rm /tmp/test.tc")
+System system("build/Debug/Vertex -port 9523 -db /tmp/test.tc &")
 writeln("waiting 5 seconds for db to start")
 System wait(5)
 
@@ -532,3 +533,4 @@ CollectGarbageTest run
 
 writeln("shutting down Vertex on port 9523")
 URL with("http://localhost:9523?action=shutdown") fetch
+System system("rm /tmp/test.tc")
