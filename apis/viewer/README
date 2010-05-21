@@ -1,0 +1,11 @@
+This is simple sinatra application for viewing vertexDB
+for installing you need ruby 1.8.7, rubygems
+then run
+
+    $ sudo gem install sinatra yajl
+
+to run viewer
+
+    $ ruby app.rb
+
+applivation will be avalible at http://localhost:4567/
