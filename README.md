@@ -10,7 +10,7 @@ Currently in production use and working well so far. The API is still not set in
 # Usage
 Compiling on Mac OS X
 
-    port install yajl tokyocabinet libevent tokyocabinet libzip
+    sudo port install yajl tokyocabinet libevent tokyocabinet libzip
     git clone http://github.com/paxa/vertexdb.git
     cd vertexdb
     ./bin/compile

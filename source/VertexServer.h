@@ -41,6 +41,7 @@ void VertexServer_appendError_(VertexServer *self, Datum *d);
 
 // command line options
 void VertexServer_setPort_(VertexServer *self, int port);
+void VertexServer_setHost_(VertexServer *self, char *host);
 void VertexServer_setDbPath_(VertexServer *self, char *path);
 void VertexServer_setLogPath_(VertexServer *self, const char *path);
 void VertexServer_setPidPath_(VertexServer *self, const char *path);
