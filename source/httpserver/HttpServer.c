@@ -147,7 +147,7 @@ void HttpServer_run(HttpServer *self)
 	 
 	if (!self->httpd)
 	{
-		Log_Printf_("evhttp_start failed - is another copy running on port %i or wrong -host ip ?\n", self->port);
+		Log_Printf__("evhttp_start failed - is another copy running on port %i or wrong -host ip %s ?\n", self->port, Datum_data(self->host));
 		exit(-1);
 	}
 	
