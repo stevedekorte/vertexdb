@@ -132,6 +132,11 @@ void VertexServer_setPort_(VertexServer *self, int port)
 	HttpServer_setPort_(self->httpServer, port);
 }
 
+void VertexServer_setHost_(VertexServer *self, char *host)
+{
+	HttpServer_setHost_(self->httpServer, host);
+}
+
 void VertexServer_setErrorCString_(VertexServer *self, const char *s)
 {
 	printf("ERROR: %s\n", s);
@@ -1068,7 +1073,7 @@ int VertexServer_run(VertexServer *self)
 	VertexServer_enableCoreDumps(self);
 	VertexServer_setupActions(self);
 	VertexServer_openLog(self);
-	Log_Printf("VertexServer_run\n");
+	Log_Printf__("VertexServer_run on http://%s:%i \n", Datum_data(self->httpServer->host), self->httpServer->port);
 	
 	if (self->isDaemon)
 	{

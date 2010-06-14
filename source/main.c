@@ -21,6 +21,12 @@ int main(int argc, char **argv)
 			VertexServer_setPort_(server, atoi(argv[a]));
 			a ++;
 		}
+		else if (strcmp(argv[a], "-host") == 0)
+		{
+			a ++;
+			VertexServer_setHost_(server, argv[a]);
+			a ++;
+		}
 		else if (strcmp(argv[a], "-daemon") == 0)
 		{
 			a ++;

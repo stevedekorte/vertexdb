@@ -399,6 +399,7 @@ Datum *PNode_key(PNode *self)
 Datum *PNode_value(PNode *self)
 {
 	int size;
+	Datum *empty;
 	char *v = StoreCursor_value(self->storeCursor, &size);
 	
 	if (v) 
@@ -407,8 +408,7 @@ Datum *PNode_value(PNode *self)
 		free(v);
 		return value;
 	}
-	
-	return 0x0;
+	return empty;
 }
 
 int PNode_doesExist(PNode *self)
