@@ -1,7 +1,8 @@
-<html>
-<head>
-<title>Vertex Database</title>
-<style>
+
+<!-- saved from url=(0068)http://www.dekorte.com/projects/opensource/vertexdb/docs/manual.html -->
+<HTML><HEAD><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<TITLE>Vertex Database</TITLE>
+<STYLE>
 td { font-size: .9em; font-family: sans; }
 h1 { font-size: 1.2em; font-weight: bold; font-family: sans; line-height: 2em; }
 h2 { font-size: 1em; font-weight: bold; font-family: sans; line-height: 1.4em; }
@@ -12,289 +13,274 @@ hr { height: 1px;  background: black; border: 0; margin: 0em 0em 0em 0em; }
 th { text-align: left; font-size: 1em; font-weight: normal; font-family: sans; line-height: 1.4em; color: #666666;}
 pre { text-align: left; font-size: .9em; font-weight: normal; font-family: courier; color: #666666;}
 
-</style>
-</head>
-<body>
+</STYLE>
+</HEAD><BODY>
 
-<center>
-<br><br>
-<table border=0 style="width:40em">
-<tr><td>
+<CENTER>
+<BR><BR>
+<TABLE border="0" style="width:40em">
+<TBODY><TR><TD>
 
-<h3>&copy Steve Dekorte and Rich Collins 2009 <br> 
+<H3>© Steve Dekorte and Rich Collins 2009 <BR> 
 	Creative Commons Attribution License 3.0
 	<!-- License: http://creativecommons.org/licenses/by/3.0/ -->
-	</h3>
+	</H3>
 
-<hr style="background:#aaa;">
-<hr>
+<HR style="background:#aaa;">
+<HR>
 
-<p style="height:1.25em">
+<P style="height:1.25em">
 
-<h1>The Vertex Database</h1> 
-<br>
+</P><H1>The Vertex Database</H1> 
+<BR>
 
-<h1>Introduction</h1>
+<H1>Introduction</H1>
 
-<ul>
+<UL>
 
 VertexDB is a high performance graph database server that supports automatic garbage collection. It uses the HTTP protocol for requests and JSON for it's response data format and the API is inspired by the FUSE filesystem API plus a few extra methods for queries and queues.
-<br>
-<br>
+<BR>
+<BR>
 
-<h2>Performance</h2>
+<H2>Performance</H2>
 
 Requests per second are typically network i/o bound and should be in the thousands on OSX, and possibly tens of thousands on Linux (on a typical PC of circa 2008).
-<br>
-<br>
+<BR>
+<BR>
 
-<h2>Integrity</h2>
+<H2>Integrity</H2>
 
 On startup, VertexDB makes a backup of the database (if it exists). When shut down properly, it creates a file that marks the database as being safely stored. When started, if this file is not found, the database file is replaced by it's old copy. There is also an admin backup request that can be sent to the database to store a backup at any time.
 <!--
 VertexDB uses TokyoCabinet in a mode where transactions are only to OS buffers and writes are cached and pushed to disk after they accumulated in order to allow the OS to minimize disk head movements for the writes.
 -->
-<br>
-<br>
+<BR>
+<BR>
 
-<h2>Security</h2>
+<H2>Security</H2>
 
 The current way to secure the server is by running it on an isolated network. HTTP auth support will be added in the future.
-<br>
-<br>
+<BR>
+<BR>
 
 
-<h2>Applications</h2>
+<H2>Applications</H2>
 
 Graph databases aren't ideal for all uses, but can be more suitable than other models for dealing with changing or informal schemas and data that is more naturally represented as a graph. It's atomic queue APIs can also make vertexdb useful as a high performance persistent queueing server.
-<br>
-<br>
+<BR>
+<BR>
 
-<h2>Implementation</h2>
+<H2>Implementation</H2>
 
 The current implementation is in C and built on top of:
-<p>
-<ul> 
-<li> TokyoCabinet, a b-tree key/value disk store
-<li> libevent, for asynchronous sockets and HTTP 
-<li> Yajl, for JSON generation
-</ul>
-<br>
-<p>
+<P>
+</P><UL> 
+<LI> TokyoCabinet, a b-tree key/value disk store
+</LI><LI> libevent, for asynchronous sockets and HTTP 
+</LI><LI> Yajl, for JSON generation
+</LI></UL>
+<BR>
+<P>
 VertexDB uses a single OS thread and handles all requests serially, but uses async sockets so no request is blocked on socket i/o (though it can still block on disk i/o). 
-<p>
+</P><P>
 Requests should be generally designed such that responses don't spend too much time blocking on disk i/o or using too much memory in queued response buffers. This can be done by "paging" requests by limiting their results count and repeatedly using a query that selects the next set of matches.
-<br>
-<br>
+<BR>
+<BR>
 
-<h2>Future</h2>
+</P><H2>Future</H2>
 
 Possible future features:
-<p>
-<ul>
-	<li> FUSE interface
-	<li> distributed redundant servers
-	<li> incremental garbage collection
-	<li> distributed synced in-memory transactions
-	<li> automatic index creation
-	<li> a NodeJS implementation which uses JS for queries?
-</ul>
-<br>
-<br>
+<P>
+</P><UL>
+	<LI> FUSE interface
+	</LI><LI> distributed redundant servers
+	</LI><LI> incremental garbage collection
+	</LI><LI> distributed synced in-memory transactions
+	</LI><LI> automatic index creation
+	</LI><LI> a NodeJS implementation which uses JS for queries?
+</LI></UL>
+<BR>
+<BR>
 
-</ul>
+</UL>
 
 
 
-<h1>Basics</h1>
+<H1>Basics</H1>
 
-<ul>
+<UL>
 
-<h2>Keys, Values and Terminology</h2>
-<ul>
+<H2>Keys, Values and Terminology</H2>
+<UL>
 
 VertexDB is composed of nodes which are folders of key/value pairs. Keys are stored in lexical ordering and can be any string not containing a forward slash character (as these are used as path separators). 
-<p>
+<P>
 Keys beginning with an underscore tell the database that the value is a string, otherwise, the value is a pointer to another node. 
 In this way, the database's garbage collector knows how to traverse the nodes. There is a root node that corresponds to the / path that serves as the root reference of garbage collection scan. Each node also tracks it's size (number of keys it contains) so this can be returned quickly. 
-</ul>
-<br>
+</P></UL>
+<BR>
 
-<h2>Requests</h2>
-<ul>
+<H2>Requests</H2>
+<UL>
 The HTTP protocol is used for requests. The path part of the query specifies a path in the database's graph of nodes and the query parameters are used to specify actions on that path (read, write, search, etc). 
-</ul>
-<br>
+</UL>
+<BR>
 
-<h2>Responses</h2>
-<ul>
+<H2>Responses</H2>
+<UL>
 Responses are sent in JSON format in the HTTP content. On error, a HTTP response status of 500 is sent with the HTTP content containing the error message in JSON format. 
-</ul>
-<br>
+</UL>
+<BR>
 
-<h2>URLs</h2>
-<ul>
+<H2>URLs</H2>
+<UL>
 For brevity, the "http://host:port" parts of the request URLs fields below are left out and the word "path" is used to mean any forward slash delimited path. 
-</ul>
-<br>
+</UL>
+<BR>
 
-</ul>
-<br>
+</UL>
+<BR>
 
 
-<h1>Node Operations</h1>
+<H1>Node Operations</H1>
 
-<ul>		
-<p class=api1>mkdir</p>
-<ul>
+<UL>		
+<P class="api1">mkdir</P>
+<UL>
 	Creates a node at the specified path. If the path already exists, no operation is performed. Returns null on success.
-<pre>
-sample request: /path?action=mkdir
+<PRE>sample request: /path?action=mkdir
 sample response: null
-</pre>
-</ul>
-<br>
+</PRE>
+</UL>
+<BR>
 
-<p class=api1>rm</p>
-<ul>
+<P class="api1">rm</P>
+<UL>
 	Removes a node at the specified path. Returns an error if the path does not exist. Returns null on success.
-<pre>
-sample request: /path?action=rm&key=foo
+<PRE>sample request: /path?action=rm&amp;key=foo
 sample response: null
-</pre>
-</ul>
-<br>
+</PRE>
+</UL>
+<BR>
 
-<p class=api1>size</p>
-<ul>
+<P class="api1">size</P>
+<UL>
 	Returns the number of slots at the node in the specified path. Returns an error if the path doesn't exist.
-<pre>
-sample request: /path?action=size
+<PRE>sample request: /path?action=size
 sample response: 423
-</pre>
-</ul>
-<br>
+</PRE>
+</UL>
+<BR>
 
-<p class=api1>link</p>
-<ul>
+<P class="api1">link</P>
+<UL>
 	Links a node at a source path to a key on a node at the destination path. Returns an error if the path doesn't exist.
-<pre>
-sample request: /sourcePath/?action=link&key=k&toPath=destinationPath
+<PRE>sample request: /sourcePath/?action=link&amp;key=k&amp;toPath=destinationPath
 sample response: 423
-</pre>
-</ul>
-<br>
+</PRE>
+</UL>
+<BR>
 
-</ul>
-<br>
+</UL>
+<BR>
 
-<h1>Value Operations</h1>
+<H1>Value Operations</H1>
 
-<ul>
-<p class=api1>read</p>
-<ul>
+<UL>
+<P class="api1">read</P>
+<UL>
 	Read a value at a given path. Returns the value on success.	
-<pre>
-sample request: /path?action=read 
+<PRE>sample request: /path?action=read 
 sample response: "foo"
-</pre>
-</ul>
-<br>
+</PRE>
+</UL>
+<BR>
 
-<p class=api1>write</p> 
-<ul>
+<P class="api1">write</P> 
+<UL>
 	Sets or appends a value at a specified path. Returns null on success.
-<p class=api2>set</p>
-<pre>
-sample request: /path?key=k&action=write&mode=set
+<P class="api2">set</P>
+<PRE>sample request: /path?key=k&amp;action=write&amp;mode=set
 with post: foo
 sample response: null
-</pre>
+</PRE>
 
-<p class=api2>append</p>
-<pre>
-sample request: /path?action=write&mode=append
+<P class="api2">append</P>
+<PRE>sample request: /path?action=write&amp;mode=append
 with post: bar
 sample response: null
-</pre>
-</ul>
-<br>
+</PRE>
+</UL>
+<BR>
 
-</ul>
-<br>
+</UL>
+<BR>
 
-<h1>Select Operations</h1>
+<H1>Select Operations</H1>
 
-<ul>
+<UL>
 
-<p class=api1>select</p>
+<P class="api1">select</P>
 
-<ul>
+<UL>
 optional parameters:
-<ul>
-<pre>
-before=key
+<UL>
+<PRE>before=key
 after=key
 count=max
-whereKey=k&whereValue=v
-</pre>
-</ul>
+whereKey=k&amp;whereValue=v
+</PRE>
+</UL>
 
 
-<p class=api2>op=pairs</p>
-<ul>
-<pre>
-sample request: /path?action=select&op=pairs
+<P class="api2">op=pairs</P>
+<UL>
+<PRE>sample request: /path?action=select&amp;op=pairs
 sample response: [["a","1"], ["b","2"], ["c","3"]]
-</pre>
-</ul>
+</PRE>
+</UL>
 
-<p class=api2>op=keys</p>
-<ul>
+<P class="api2">op=keys</P>
+<UL>
 Returns a list of keys whose nodes match the query.
-<pre>
-sample request: /path?action=select&op=keys
+<PRE>sample request: /path?action=select&amp;op=keys
 sample response: ["keyA", "keyB", "keyC"]
-</pre>
-</ul>
+</PRE>
+</UL>
 
-<p class=api2>op=values</p>
-<ul>
+<P class="api2">op=values</P>
+<UL>
 Returns a list of values matching the query.
-<pre>
-sample request: /path?action=select&op=values
+<PRE>sample request: /path?action=select&amp;op=values
 sample response: ["value1", "value2", "value3"]
-</pre>
-</ul>
+</PRE>
+</UL>
 
-<p class=api2>op=object</p>
-<ul>
+<P class="api2">op=object</P>
+<UL>
 Returns a list of the matching objects in JSON dict.
-<pre>
-sample request: /path?action=select&op=object
+<PRE>sample request: /path?action=select&amp;op=object
 sample response: {"a":"1"; "b":"2"; "c":"3" } ???
-</pre>
-</ul>
+</PRE>
+</UL>
 	
-<p class=api2>op=counts</p>
-<ul>
-<pre>
-sample request: /path?action=select&op=counts
+<P class="api2">op=counts</P>
+<UL>
+<PRE>sample request: /path?action=select&amp;op=counts
 sample response: ???
-</pre>
-</ul>
+</PRE>
+</UL>
 
-<p class=api2>op=rm</p>
-<ul>
+<P class="api2">op=rm</P>
+<UL>
 Removes keys matching selection. Returns the number of removed keys on success.
-<pre>
-sample request: /path?action=select&op=rm
+<PRE>sample request: /path?action=select&amp;op=rm
 sample response: ???
-</pre>
-</ul>
+</PRE>
+</UL>
 
-</ul>
-</ul>
+</UL>
+</UL>
 
 
 <!--
@@ -306,70 +292,66 @@ sample response: ???
 </ul>
 -->
 
-</ul>
-<br>
+
+<BR>
 
 
-<h1>Queue Operations</h1>
+<H1>Queue Operations</H1>
 
-<ul>
+<UL>
 
-<p class=api1>queuePopTo</p>
-<ul>
+<P class="api1">queuePopTo</P>
+<UL>
 Atomically moves the first sub-node found at the source path into the destination path (using the same key it was under in the source path). 
 Returns the key that the node was under. 
-<p>
-<pre>
-sample request: /sourcePath/?action=queuePopTo&toPath=/destinationPath
+<P>
+</P><PRE>sample request: /sourcePath/?action=queuePopTo&amp;toPath=/destinationPath
 sample response: akey123
-</pre>
+</PRE>
 
-<p>
+<P>
 optional parameters: 
-<p>
-<pre>
-whereKey=k&whereValue=v 
+</P><P>
+</P><PRE>whereKey=k&amp;whereValue=v 
 ttl=numberOfSeconds
-</pre>
+</PRE>
 
 The ttl attribute is a time-to-live value as a number of seconds. 
 When the server pops the node to the new location, it computes the expiration date and creates a _qexpire and _qtime slots on the node which are used by the server when queueExpireTo requests are sent. Expirations on a node are only performed when the queueExpireTo request is sent to it.
 
 
-</ul>
-<br>
+</UL>
+<BR>
 	
-<p class=api1>queueExpireTo</p>
-<ul>
+<P class="api1">queueExpireTo</P>
+<UL>
 Expires items in the queue by looking at their _expire attribute and moves expired items to the specified path.
 The _qexpire and _qtime keys are removed after the node is moved.
 Returns the number of items expired.
-<pre>
-sample request: /sourcePath/?action=queueExpireTo&toPath=/destinationPath
+<PRE>sample request: /sourcePath/?action=queueExpireTo&amp;toPath=/destinationPath
 sample response: 42
-</pre>
-</ul>
+</PRE>
+</UL>
 
-</ul>
-<br>
+</UL>
+<BR>
 
 
-<h1>Transactions</h1>
+<H1>Transactions</H1>
 
-<ul>
+<UL>
 
-<p class=api1>transaction</p>
-<ul>
+<P class="api1">transaction</P>
+<UL>
 Allows a set of actions to be done in a single request. Returns null on success.
-<pre>
-sample request: /frompath/?action=transaction
+<PRE>sample request: /frompath/?action=transaction
 with post: [list of request urls]
 sample response: null
-</pre>
-</ul>
+</PRE>
+</UL>
 
-</ul>
-<br>
+</UL>
+<BR>
 
 <!--
 <p class=api1>users</p>
@@ -412,10 +394,11 @@ sample request: /path?action=stats
 <hr style="background:#aaa; width:20em;">
 <hr style="background:#888; width:20em;">
 -->
-<br>
+<BR>
 
-<br><br><br>
-</td>
-</tr>
-</table>
-</center>
+<BR><BR><BR>
+</TD>
+</TR>
+</TBODY></TABLE>
+</CENTER>
+</BODY></HTML>

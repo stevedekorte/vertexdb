@@ -257,6 +257,23 @@ int VertexServer_api_select(VertexServer *self)
 	return -1;
 }
 
+int VertexServer_api_find(VertexServer *self)
+{
+	
+	PNode *node = PDB_allocNode(self->pdb);
+	PQuery *q = PNode_query(node);
+	VertexServer_setupPQuery_(self, q);
+	Datum *nodeId;
+	
+	if (VertexServer_api_setCursorPathOnNode_(self, node)) return 2;
+	
+	nodeId = HttpRequest_queryValue_(self->httpRequest, "id");
+	
+	PNode_setPid_(node, nodeId);
+	return PNode_op_object(node, self->result);	
+	return -1;
+}
+
 int VertexServer_api_show(VertexServer *self)
 {
 	PNode *node = PDB_allocNode(self->pdb);
@@ -858,6 +875,7 @@ void VertexServer_setupActions(VertexServer *self)
 	
 	// read
 	VERTEX_SERVER_ADD_ACTION(select);
+	VERTEX_SERVER_ADD_ACTION(find);
 	VERTEX_SERVER_ADD_ACTION(read);
 	VERTEX_SERVER_ADD_ACTION(size);
 
