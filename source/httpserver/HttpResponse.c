@@ -17,12 +17,14 @@ HttpResponse *HttpResponse_new(void)
 {
 	HttpResponse *self = calloc(1, sizeof(HttpResponse));
 	self->content = Datum_new();
+	self->callback = Datum_new();
 	return self;
 }
 
 void HttpResponse_free(HttpResponse *self)
 {
 	Datum_free(self->content);
+	Datum_free(self->callback);
 	free(self);
 }
 
@@ -40,6 +42,10 @@ void HttpResponse_setHeader_to_(HttpResponse *self, const char *k, const char *v
 void HttpResponse_setCookie_(HttpResponse *self, Datum *cookie)  
 {
 	HttpResponse_setHeader_to_(self, "Content-Type", Datum_data(cookie));
+}
+
+void HttpResponse_setCallback_(HttpResponse *self, Datum *c) {
+	Datum_copy_(self->callback, c);
 }
 
 void HttpResponse_setContent_(HttpResponse *self, Datum *d)

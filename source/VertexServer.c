@@ -38,6 +38,15 @@ struct fuse_operations {
 };
 */
 
+/*
+ error codes:
+ 1 - invalid action
+ 2 - invalid op for select action
+ 3 - path node not found
+ 4 - 
+
+*/
+
 #include "VertexServer.h"
 #include "Log.h"
 #include <sys/types.h>
@@ -140,7 +149,7 @@ void VertexServer_setHost_(VertexServer *self, char *host)
 void VertexServer_setErrorCString_(VertexServer *self, const char *s)
 {
 	printf("ERROR: %s\n", s);
-	HttpResponse_setContentCString_(self->httpResponse, s);
+	Datum_setCString_(self->result, s);
 	HttpResponse_setStatusCode_(self->httpResponse, 500);
 }
 
@@ -166,7 +175,7 @@ int VertexServer_api_setCursorPathOnNode_(VertexServer *self, PNode *node)
 	
 	if (r)
 	{
-		VertexServer_setErrorCString_(self, "path does not exist: ");
+		VertexServer_setErrorCString_(self, "{'error': [3, 'path does not exist']}");
 		VertexServer_appendError_(self, HttpRequest_uriPath(self->httpRequest));
 	}
 	
@@ -252,7 +261,7 @@ int VertexServer_api_select(VertexServer *self)
 		}
 	}
 
-	VertexServer_setErrorCString_(self, "invalid node op");
+	VertexServer_setErrorCString_(self, "{'error': [2, 'invalid node op']}");
 	
 	return -1;
 }
@@ -339,7 +348,7 @@ int VertexServer_api_write(VertexServer *self)
 
 	if (PNode_moveToPathIfExists_(node, HttpRequest_uriPath(self->httpRequest)) != 0) 
 	{
-		VertexServer_setErrorCString_(self, "write path does not exist: ");
+		VertexServer_setErrorCString_(self, "{'error': [4, 'write path does not exist']}");
 		VertexServer_appendError_(self, HttpRequest_uriPath(self->httpRequest));
 		return -1;
 	}	
@@ -371,14 +380,14 @@ int VertexServer_api_link(VertexServer *self)
 
 	if (PNode_moveToPathIfExists_(toNode, toPath) != 0) 
 	{
-		VertexServer_setErrorCString_(self, "to path does not exist: ");
+		VertexServer_setErrorCString_(self, "{'error': [5, 'to path does not exist']}");
 		VertexServer_appendError_(self, toPath);
 		return -1;
 	}
 		
 	if (PNode_moveToPathIfExists_(fromNode, fromPath) != 0) 
 	{
-		VertexServer_setErrorCString_(self, "from path does not exist: ");
+		VertexServer_setErrorCString_(self, "{'error': [6, 'from path does not exist']}");
 		VertexServer_appendError_(self, fromPath);
 		return -1;
 	}	
@@ -407,7 +416,7 @@ int VertexServer_api_transaction(VertexServer *self)
 
 		if (Datum_size(uri) == 0) 
 		{
-			VertexServer_setErrorCString_(self, "empty line in transaction");
+			VertexServer_setErrorCString_(self, "{'error': [7, 'empty line in transaction']}");
 			error = 1;
 			break;
 		}
@@ -683,7 +692,7 @@ int VertexServer_api_view(VertexServer *self)
 	
 	if (PNode_moveToPathIfExists_(node, HttpRequest_uriPath(self->httpRequest)) != 0) 
 	{
-		VertexServer_setErrorCString_(self, "path does not exist: ");
+		VertexServer_setErrorCString_(self, "{'error': [3, 'path does not exist']}");
 		VertexServer_appendError_(self, HttpRequest_uriPath(self->httpRequest));
 		return -1;
 	}
@@ -927,8 +936,7 @@ void VertexServer_setupActions(VertexServer *self)
 
 int VertexServer_process(VertexServer *self)
 {	
-	Datum *actionName = (Datum *)HttpRequest_queryValue_(self->httpRequest, "action");
-
+	Datum *actionName = (Datum *)HttpRequest_queryValue_(self->httpRequest, "action");	
 	//if(self->debug) { Log_Printf_("REQUEST ERROR: %s\n", HttpRequest_uri(self->httpRequest)); }
 
 	if (Datum_size(actionName))
@@ -945,7 +953,7 @@ int VertexServer_process(VertexServer *self)
 		return VertexServer_api_view(self);
 	}
 	
-	VertexServer_setErrorCString_(self, "invalid action");
+	VertexServer_setErrorCString_(self, "{'error': [1, 'invalid action']}");
 
 	return -1;
 }
@@ -955,11 +963,14 @@ void VertexServer_requestHandler(void *arg)
 	VertexServer *self = (VertexServer *)arg;
 	VertexServer_setupYajl(self); 
 	
+	HttpResponse_setCallback_(self->httpResponse, HttpRequest_queryValue_(self->httpRequest, "callback"));
+	
 	HttpResponse_setContentType_(self->httpResponse, "application/json;charset=utf-8");
 
 	int result = VertexServer_process(self);
-	Datum *content = HttpResponse_content(self->httpResponse);
 	
+	Datum *content = HttpResponse_content(self->httpResponse);
+				
 	if (result == 0)
 	{
 		if (!Datum_size(content)) 
@@ -972,13 +983,13 @@ void VertexServer_requestHandler(void *arg)
 	{
 		if (!Datum_size(content)) 
 		{
-			Datum_setCString_(content, "\"unknown error\"");
+			Datum_setCString_(content, "{'error': [0, 'unknown error']}");
 		}
 		Datum_nullTerminate(content); 
 		
-		yajl_gen_clear(self->yajl);
-		yajl_gen_datum(self->yajl, content);
-		Datum_setYajl_(content, self->yajl);
+		//yajl_gen_clear(self->yajl);
+		//yajl_gen_datum(self->yajl, content);
+		//Datum_setYajl_(content, self->yajl);
 				
 		if(self->debug) { Log_Printf_("REQUEST ERROR: %s\n", Datum_data(content)); }
 	}

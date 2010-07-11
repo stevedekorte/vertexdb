@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>docs/manual.haml</string>
+	<string>source/VertexServer.c</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -34,20 +34,6 @@
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
-		</dict>
-		<key>docs/manual.haml</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>6</integer>
-				<key>line</key>
-				<integer>309</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>335</integer>
 		</dict>
 		<key>source/Socket.c</key>
 		<dict>
@@ -82,14 +68,30 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>1</integer>
+				<integer>25</integer>
 				<key>line</key>
-				<integer>262</integer>
+				<integer>259</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>189</integer>
+			<integer>232</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>21</integer>
+				<key>line</key>
+				<integer>259</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>25</integer>
+				<key>line</key>
+				<integer>259</integer>
+			</dict>
 		</dict>
 		<key>source/basekit/README.md</key>
 		<dict>
@@ -362,7 +364,6 @@
 		<string>README.md</string>
 		<string>source/main.c</string>
 		<string>source/VertexServer.c</string>
-		<string>docs/manual.haml</string>
 		<string>source/pdb/PNode.c</string>
 		<string>source/pdb/PQuery.c</string>
 		<string>source/httpserver/HttpServer.c</string>

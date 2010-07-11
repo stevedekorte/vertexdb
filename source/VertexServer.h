@@ -14,7 +14,6 @@ typedef struct
 	HttpRequest *httpRequest;
 	HttpResponse *httpResponse;
 	Datum *result; // used for composing the response string
-
 	// the global json generator
 	yajl_gen yajl;
 	
