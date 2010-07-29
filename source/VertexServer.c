@@ -155,7 +155,7 @@ void VertexServer_setErrorCString_(VertexServer *self, const char *s)
 
 void VertexServer_appendError_(VertexServer *self, Datum *d)
 {
-	HttpResponse_appendContent_(self->httpResponse, d);
+	//HttpResponse_appendContent_(self->httpResponse, d);
 }
 
 
@@ -175,7 +175,7 @@ int VertexServer_api_setCursorPathOnNode_(VertexServer *self, PNode *node)
 	
 	if (r)
 	{
-		VertexServer_setErrorCString_(self, "{'error': [3, 'path does not exist']}");
+		VertexServer_setErrorCString_(self, "{\"error\": [3, \"path does not exist\"]}");
 		VertexServer_appendError_(self, HttpRequest_uriPath(self->httpRequest));
 	}
 	
@@ -261,7 +261,7 @@ int VertexServer_api_select(VertexServer *self)
 		}
 	}
 
-	VertexServer_setErrorCString_(self, "{'error': [2, 'invalid node op']}");
+	VertexServer_setErrorCString_(self, "{\"error\": [2, \"invalid node op\"]}");
 	
 	return -1;
 }
@@ -348,7 +348,7 @@ int VertexServer_api_write(VertexServer *self)
 
 	if (PNode_moveToPathIfExists_(node, HttpRequest_uriPath(self->httpRequest)) != 0) 
 	{
-		VertexServer_setErrorCString_(self, "{'error': [4, 'write path does not exist']}");
+		VertexServer_setErrorCString_(self, "{\"error\": [4, \"write path does not exist\"]}");
 		VertexServer_appendError_(self, HttpRequest_uriPath(self->httpRequest));
 		return -1;
 	}	
@@ -380,14 +380,14 @@ int VertexServer_api_link(VertexServer *self)
 
 	if (PNode_moveToPathIfExists_(toNode, toPath) != 0) 
 	{
-		VertexServer_setErrorCString_(self, "{'error': [5, 'to path does not exist']}");
+		VertexServer_setErrorCString_(self, "{\"error\": [5, \"to path does not exist\"]}");
 		VertexServer_appendError_(self, toPath);
 		return -1;
 	}
 		
 	if (PNode_moveToPathIfExists_(fromNode, fromPath) != 0) 
 	{
-		VertexServer_setErrorCString_(self, "{'error': [6, 'from path does not exist']}");
+		VertexServer_setErrorCString_(self, "{\"error\": [6, \"from path does not exist\"]}");
 		VertexServer_appendError_(self, fromPath);
 		return -1;
 	}	
