@@ -90,3 +90,8 @@ extras/osxvm/build
 build
 tests/db/*
 !tests/db/.gitisdumb
+CMakeFiles
+CMakeCache.txt
+cmake_install.cmake
+install_manifest.txt
+Makefile

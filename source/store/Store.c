@@ -125,7 +125,6 @@ const char *Store_error(Store *self)
 
 char *Store_read(Store *self, const char *k, size_t ksize, int *vsize)
 {
-	printf("Store_read %s\n", k);
 	void *v = tcbdbget(self->db, k, ksize, vsize);
 	return v;
 }

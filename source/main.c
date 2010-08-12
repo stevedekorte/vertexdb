@@ -6,7 +6,7 @@ int main(int argc, char **argv)
 	int a = 1;
 	
 	VertexServer *server = VertexServer_new();
-	
+	VertexServer_setHardSync_(server, 0);
 	while (a < argc)
 	{
 		if (strcmp(argv[a], "-db") == 0)
