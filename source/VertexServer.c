@@ -418,7 +418,7 @@ int VertexServer_api_transaction(VertexServer *self)
 
 		if (Datum_size(uri) == 0) 
 		{
-			VertexServer_setErrorCString_(self, "{'error': [7, 'empty line in transaction']}");
+			VertexServer_setErrorCString_(self, "{\"error\": [7, \"empty line in transaction\"]}");
 			error = 1;
 			break;
 		}
@@ -694,7 +694,7 @@ int VertexServer_api_view(VertexServer *self)
 	
 	if (PNode_moveToPathIfExists_(node, HttpRequest_uriPath(self->httpRequest)) != 0) 
 	{
-		VertexServer_setErrorCString_(self, "{'error': [3, 'path does not exist']}");
+		VertexServer_setErrorCString_(self, "{\"error\": [3, \"path does not exist\"]}");
 		VertexServer_appendError_(self, HttpRequest_uriPath(self->httpRequest));
 		return -1;
 	}
@@ -955,7 +955,7 @@ int VertexServer_process(VertexServer *self)
 		return VertexServer_api_view(self);
 	}
 	
-	VertexServer_setErrorCString_(self, "{'error': [1, 'invalid action']}");
+	VertexServer_setErrorCString_(self, "{\"error\": [1, \"invalid action\"]}");
 
 	return -1;
 }
@@ -985,7 +985,7 @@ void VertexServer_requestHandler(void *arg)
 	{
 		if (!Datum_size(content)) 
 		{
-			Datum_setCString_(content, "{'error': [0, 'unknown error']}");
+			Datum_setCString_(content, "{\"error\": [0, \"unknown error\"]}");
 		}
 		Datum_nullTerminate(content); 
 		
