@@ -57,9 +57,11 @@ struct fuse_operations {
 #include <limits.h>
 #include <signal.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "Date.h"
@@ -1054,8 +1056,35 @@ void VertexServer_setHardSync_(VertexServer *self, int aBool)
 	PDB_setHardSync_(self->pdb, aBool);
 }
 
+// reads pid file and kills already started process
+void VertexServer_killPidFile(VertexServer *self)
+{
+  int oldPid;
+	char line[80];
+	
+	
+	FILE *pidFile = fopen(self->pidPath, "r");
+	
+	if (pidFile && fgets(line, 80, pidFile) != NULL) {
+    oldPid = atoi(line);
+    if (oldPid == 0) return;
+    
+    Log_Printf_("Killing started server pid: %d\n", oldPid);
+    
+    while (kill(oldPid, SIGTERM) != -1) {
+      printf(".");
+      sleep(1);
+    }
+    printf("\n");
+  }
+
+  fclose(pidFile);
+}
+
+// create or clean pid file and write there new pid
 void VertexServer_writePidFile(VertexServer *self)
 {
+  
 	FILE *pidFile = fopen(self->pidPath, "w");
 	
 	if (!pidFile)
@@ -1095,9 +1124,57 @@ int VertexServer_openLog(VertexServer *self)
 	Log_open();
 	return 0;
 }
+// taken from there http://github.com/dustin/memcached/blob/master/daemon.c
+int daemonize(VertexServer *self, int nochdir, int noclose)
+{
+    int fd;
+
+    switch (fork()) {
+    case -1:
+        return (-1);
+    case 0:
+        break;
+    default:
+        _exit(EXIT_SUCCESS);
+    }
+
+    if (setsid() == -1)
+        return (-1);
+
+    if (nochdir == 0) {
+        if(chdir("/") != 0) {
+            perror("chdir");
+            return (-1);
+        }
+    }
+
+    if (noclose == 0 && (fd = open("/dev/null", O_RDWR, 0)) != -1) {
+        if(dup2(fd, STDIN_FILENO) < 0) {
+            perror("dup2 stdin");
+            return (-1);
+        }
+        if(dup2(fd, STDOUT_FILENO) < 0) {
+            perror("dup2 stdout");
+            return (-1);
+        }
+        if(dup2(fd, STDERR_FILENO) < 0) {
+            perror("dup2 stderr");
+            return (-1);
+        }
+
+        if (fd > STDERR_FILENO) {
+            if(close(fd) < 0) {
+                perror("close");
+                return (-1);
+            }
+        }
+    }
+    VertexServer_writePidFile(self);
+    return (0);
+}
 
 int VertexServer_run(VertexServer *self)
-{  	
+{  
 	Socket_SetDescriptorLimitToMax();
 	VertexServer_enableCoreDumps(self);
 	VertexServer_setupActions(self);
@@ -1105,26 +1182,17 @@ int VertexServer_run(VertexServer *self)
 	Log_Printf__("VertexServer_run on http://%s:%i \n", Datum_data(self->httpServer->host), self->httpServer->port);
 	
 	if (self->isDaemon)
-	{
+	{ 
 		Log_Printf("Running as Daemon\n");
-		daemon(0, 0);
-		
-		if (self->pidPath)
-		{
-			VertexServer_writePidFile(self);
-		}
-		else
-		{
-			Log_Printf("-pid is required when running as daemon\n");
-			exit(-1);
-		}
+    VertexServer_killPidFile(self);
+    daemonize(self, 0, 1);
 	}
 	
 	VertexServer_registerSignals(self);
 		
 	if (PDB_open(self->pdb)) 
 	{ 
-		Log_Printf("unable to open database file\n");
+		Log_Printf("Unable to open database file\n");
 		return -1; 
 	}
 
@@ -1135,7 +1203,7 @@ int VertexServer_run(VertexServer *self)
 	
 	VertexServer_removePidFile(self);
 	
-	Log_Printf("shutdown\n\n");
+	Log_Printf("Shutdown\n\n");
 	Log_close();
 	return 0;  
 }

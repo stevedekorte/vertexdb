@@ -11,9 +11,9 @@ Currently in production use and working well so far. The API is still not set in
 Compiling on Mac OS X
 
     sudo port install yajl tokyocabinet libevent tokyocabinet libzip
-    git clone http://github.com/paxa/vertexdb.git
-    cd vertexdb
-    ./bin/compile
+    cmake .
+    make
+    sudo make install
 
 If all was fine, in build/vertexdb will be bin file
 
@@ -23,13 +23,15 @@ Running
 
 Possible options:
 
-* **-db *file*** - database file
-* **-port *port*** - port of http api server
-* **-host *ip*** - listening host
-* **-daemon** - run as daemon
-* **-log *file*** - write strerr to log file
-* **-debug** - be more verbose
-* **-hardsync** - hard syncronization
+    --database <file> -db <file> Database file
+    --port <num>      -p <num>   TCP port number to listen on (default: 8080)
+    --host <ip>       -H <ip>    Network interface to listen (default: 127.0.0.1)
+    --daemon          -d         Run as a daemon
+    --log <file>                 Log file location
+    --pid <file>                 Pid file location
+    --debug                      Be more verbose
+    --hardsync                   Run with hard syncronization
+    --help            -h         Show this help
 
 # Future
 

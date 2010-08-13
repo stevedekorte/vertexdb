@@ -1,13 +1,11 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(vertexdb C)
+project(vertexdb)
 
 add_subdirectory(source/basekit)
 add_definitions(-O0 -g)
 
-SET(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/modules/")
-
-include_directories(source source/pdb source/httpserver source/basekit/source source/store source/basekit/source/simd_cph/include)
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/modules/")
 
 file(GLOB MAIN_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/source/*.c")
 file(GLOB PDB_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/source/pdb/*.c")
@@ -18,7 +16,7 @@ file(GLOB BASEKIT_SIMD_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/source/basekit/source/s
 
 set(SRCS ${MAIN_SRCS} ${PDB_SRCS} ${BASEKIT_SRCS} ${STORE_SRCS} ${HTTPSERVER_SRCS} ${BASEKIT_SIMD_SRCS})
 
-add_executable (vertexdb ${SRCS})
+add_executable(vertexdb ${SRCS})
 
 # Initializing libEvent
 find_package(Event)
@@ -27,13 +25,16 @@ include_directories(${EVENT_INCLUDE_DIR})
 
 # Initializing TokyoCabinet
 find_package(TokyoCabinet)
-TARGET_LINK_LIBRARIES(vertexdb ${TOKYOCABINET_LIBRARY})
+target_link_libraries(vertexdb ${TOKYOCABINET_LIBRARY})
 include_directories(${TOKYOCABINET_INCLUDE_DIR})
 
 # Initializing YAJL
 find_package(yajl)
-TARGET_LINK_LIBRARIES(vertexdb ${YAJL_LIBRARY})
+target_link_libraries(vertexdb ${YAJL_LIBRARY})
 include_directories(${YAJL_INCLUDE_DIR})
+
+
+include_directories(source source/pdb source/httpserver source/basekit/source source/store source/basekit/source/simd_cph/include)
 
 # installing vertextdb binary
 install(TARGETS vertexdb DESTINATION bin)
