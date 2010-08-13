@@ -19,7 +19,11 @@ If all was fine, in build/vertexdb will be bin file
 
 Running
 
-    ./vertexdb -db blog1.db
+    vertexdb -db blog1.db
+    
+or as daemon
+
+    sudo vertexdb -db /opt/database -d --pid /var/run/vertex.pid
 
 Possible options:
 
@@ -36,3 +40,7 @@ Possible options:
 # Future
 
 May add support for more complex queries and dynamic/automatic index creation based on observed queries.
+
+# Dynamic languages support
+
+* ruby - comming soon (or ask in pm)
