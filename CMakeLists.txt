@@ -29,10 +29,14 @@ target_link_libraries(vertexdb ${TOKYOCABINET_LIBRARY})
 include_directories(${TOKYOCABINET_INCLUDE_DIR})
 
 # Initializing YAJL
-find_package(yajl)
+find_package(Yajl)
 target_link_libraries(vertexdb ${YAJL_LIBRARY})
 include_directories(${YAJL_INCLUDE_DIR})
 
+# Add libdl
+find_library( DL_LIB NAMES ${CMAKE_DL_LIBS} )
+target_link_libraries(vertexdb ${CMAKE_DL_LIBS})
+MESSAGE( STATUS "using dl library: ${DL_LIB}" )
 
 include_directories(source source/pdb source/httpserver source/basekit/source source/store source/basekit/source/simd_cph/include)
 

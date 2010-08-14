@@ -30,27 +30,24 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /opt/local/bin/cmake
+CMAKE_COMMAND = /usr/bin/cmake
 
 # The command to remove a file.
-RM = /opt/local/bin/cmake -E remove -f
-
-# The program to use to edit the cache.
-CMAKE_EDIT_COMMAND = /opt/local/bin/ccmake
+RM = /usr/bin/cmake -E remove -f
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/pavel/Sites/vertexdb
+CMAKE_SOURCE_DIR = /root/vertexdb
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/pavel/Sites/vertexdb
+CMAKE_BINARY_DIR = /root/vertexdb
 
 #=============================================================================
 # Targets provided globally by CMake.
 
 # Special rule for the target edit_cache
 edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/opt/local/bin/ccmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running interactive CMake command-line interface..."
+	/usr/bin/cmake -i .
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -60,19 +57,19 @@ edit_cache/fast: edit_cache
 # Special rule for the target install
 install: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
-	/opt/local/bin/cmake -P cmake_install.cmake
+	/usr/bin/cmake -P cmake_install.cmake
 .PHONY : install
 
 # Special rule for the target install
 install/fast: preinstall/fast
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
-	/opt/local/bin/cmake -P cmake_install.cmake
+	/usr/bin/cmake -P cmake_install.cmake
 .PHONY : install/fast
 
 # Special rule for the target install/local
 install/local: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/opt/local/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
 .PHONY : install/local
 
 # Special rule for the target install/local
@@ -82,7 +79,7 @@ install/local/fast: install/local
 # Special rule for the target install/strip
 install/strip: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
-	/opt/local/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
 .PHONY : install/strip
 
 # Special rule for the target install/strip
@@ -101,7 +98,7 @@ list_install_components/fast: list_install_components
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/opt/local/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -110,14 +107,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /Users/pavel/Sites/vertexdb && $(CMAKE_COMMAND) -E cmake_progress_start /Users/pavel/Sites/vertexdb/CMakeFiles /Users/pavel/Sites/vertexdb/source/basekit/CMakeFiles/progress.marks
-	cd /Users/pavel/Sites/vertexdb && $(MAKE) -f CMakeFiles/Makefile2 source/basekit/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/pavel/Sites/vertexdb/CMakeFiles 0
+	cd /root/vertexdb && $(CMAKE_COMMAND) -E cmake_progress_start /root/vertexdb/CMakeFiles /root/vertexdb/source/basekit/CMakeFiles/progress.marks
+	cd /root/vertexdb && $(MAKE) -f CMakeFiles/Makefile2 source/basekit/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/vertexdb/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /Users/pavel/Sites/vertexdb && $(MAKE) -f CMakeFiles/Makefile2 source/basekit/clean
+	cd /root/vertexdb && $(MAKE) -f CMakeFiles/Makefile2 source/basekit/clean
 .PHONY : clean
 
 # The main clean target
@@ -126,17 +123,17 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /Users/pavel/Sites/vertexdb && $(MAKE) -f CMakeFiles/Makefile2 source/basekit/preinstall
+	cd /root/vertexdb && $(MAKE) -f CMakeFiles/Makefile2 source/basekit/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /Users/pavel/Sites/vertexdb && $(MAKE) -f CMakeFiles/Makefile2 source/basekit/preinstall
+	cd /root/vertexdb && $(MAKE) -f CMakeFiles/Makefile2 source/basekit/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /Users/pavel/Sites/vertexdb && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /root/vertexdb && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Help Target
@@ -162,6 +159,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /Users/pavel/Sites/vertexdb && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /root/vertexdb && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 
