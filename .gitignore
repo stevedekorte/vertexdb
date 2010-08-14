@@ -96,3 +96,4 @@ cmake_install.cmake
 install_manifest.txt
 Makefile
 vartexdb
+source/basekit/Makefile
