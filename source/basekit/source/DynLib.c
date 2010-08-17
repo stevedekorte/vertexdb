@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <dlfcn.h>
 
 #if defined(__WIN32__) || defined(WIN32) || defined(_WIN32) || defined(_MSC_VER)
 #include <windows.h>

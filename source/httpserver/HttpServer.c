@@ -118,8 +118,12 @@ void HttpServer_handleRequest(struct evhttp_request *req, void *arg)
 		HttpRequest_parseUri_(self->httpRequest, uri);
 		self->requestCallback(self->delegate);
 
-		evbuffer_add_printf(buf, "%s", Datum_data(HttpResponse_content(self->httpResponse)));
-
+		if (Datum_size(self->httpResponse->callback)) {
+			evbuffer_add_printf(buf, "%s(%s)", Datum_data(self->httpResponse->callback), Datum_data(HttpResponse_content(self->httpResponse)));
+		} else {
+			evbuffer_add_printf(buf, "%s", Datum_data(HttpResponse_content(self->httpResponse)));
+		}
+		
 		if (HttpResponse_statusCode(self->httpResponse) == 200)
 		{
 			evhttp_send_reply(self->request, HTTP_OK, HTTP_OK_MESSAGE, buf);

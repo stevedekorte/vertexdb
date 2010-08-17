@@ -38,6 +38,15 @@ struct fuse_operations {
 };
 */
 
+/*
+ error codes:
+ 1 - invalid action
+ 2 - invalid op for select action
+ 3 - path node not found
+ 4 - 
+
+*/
+
 #include "VertexServer.h"
 #include "Log.h"
 #include <sys/types.h>
@@ -48,9 +57,11 @@ struct fuse_operations {
 #include <limits.h>
 #include <signal.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "Date.h"
@@ -140,13 +151,13 @@ void VertexServer_setHost_(VertexServer *self, char *host)
 void VertexServer_setErrorCString_(VertexServer *self, const char *s)
 {
 	printf("ERROR: %s\n", s);
-	HttpResponse_setContentCString_(self->httpResponse, s);
+	Datum_setCString_(self->result, s);
 	HttpResponse_setStatusCode_(self->httpResponse, 500);
 }
 
 void VertexServer_appendError_(VertexServer *self, Datum *d)
 {
-	HttpResponse_appendContent_(self->httpResponse, d);
+	//HttpResponse_appendContent_(self->httpResponse, d);
 }
 
 
@@ -166,7 +177,7 @@ int VertexServer_api_setCursorPathOnNode_(VertexServer *self, PNode *node)
 	
 	if (r)
 	{
-		VertexServer_setErrorCString_(self, "path does not exist: ");
+		VertexServer_setErrorCString_(self, "{\"error\": [3, \"path does not exist\"]}");
 		VertexServer_appendError_(self, HttpRequest_uriPath(self->httpRequest));
 	}
 	
@@ -252,8 +263,25 @@ int VertexServer_api_select(VertexServer *self)
 		}
 	}
 
-	VertexServer_setErrorCString_(self, "invalid node op");
+	VertexServer_setErrorCString_(self, "{\"error\": [2, \"invalid node op\"]}");
 	
+	return -1;
+}
+
+int VertexServer_api_find(VertexServer *self)
+{
+	
+	PNode *node = PDB_allocNode(self->pdb);
+	PQuery *q = PNode_query(node);
+	VertexServer_setupPQuery_(self, q);
+	Datum *nodeId;
+	
+	if (VertexServer_api_setCursorPathOnNode_(self, node)) return 2;
+	
+	nodeId = HttpRequest_queryValue_(self->httpRequest, "id");
+	
+	PNode_setPid_(node, nodeId);
+	return PNode_op_object(node, self->result);	
 	return -1;
 }
 
@@ -322,7 +350,7 @@ int VertexServer_api_write(VertexServer *self)
 
 	if (PNode_moveToPathIfExists_(node, HttpRequest_uriPath(self->httpRequest)) != 0) 
 	{
-		VertexServer_setErrorCString_(self, "write path does not exist: ");
+		VertexServer_setErrorCString_(self, "{\"error\": [4, \"write path does not exist\"]}");
 		VertexServer_appendError_(self, HttpRequest_uriPath(self->httpRequest));
 		return -1;
 	}	
@@ -354,14 +382,14 @@ int VertexServer_api_link(VertexServer *self)
 
 	if (PNode_moveToPathIfExists_(toNode, toPath) != 0) 
 	{
-		VertexServer_setErrorCString_(self, "to path does not exist: ");
+		VertexServer_setErrorCString_(self, "{\"error\": [5, \"to path does not exist\"]}");
 		VertexServer_appendError_(self, toPath);
 		return -1;
 	}
 		
 	if (PNode_moveToPathIfExists_(fromNode, fromPath) != 0) 
 	{
-		VertexServer_setErrorCString_(self, "from path does not exist: ");
+		VertexServer_setErrorCString_(self, "{\"error\": [6, \"from path does not exist\"]}");
 		VertexServer_appendError_(self, fromPath);
 		return -1;
 	}	
@@ -390,7 +418,7 @@ int VertexServer_api_transaction(VertexServer *self)
 
 		if (Datum_size(uri) == 0) 
 		{
-			VertexServer_setErrorCString_(self, "empty line in transaction");
+			VertexServer_setErrorCString_(self, "{\"error\": [7, \"empty line in transaction\"]}");
 			error = 1;
 			break;
 		}
@@ -666,7 +694,7 @@ int VertexServer_api_view(VertexServer *self)
 	
 	if (PNode_moveToPathIfExists_(node, HttpRequest_uriPath(self->httpRequest)) != 0) 
 	{
-		VertexServer_setErrorCString_(self, "path does not exist: ");
+		VertexServer_setErrorCString_(self, "{\"error\": [3, \"path does not exist\"]}");
 		VertexServer_appendError_(self, HttpRequest_uriPath(self->httpRequest));
 		return -1;
 	}
@@ -858,6 +886,7 @@ void VertexServer_setupActions(VertexServer *self)
 	
 	// read
 	VERTEX_SERVER_ADD_ACTION(select);
+	VERTEX_SERVER_ADD_ACTION(find);
 	VERTEX_SERVER_ADD_ACTION(read);
 	VERTEX_SERVER_ADD_ACTION(size);
 
@@ -909,8 +938,7 @@ void VertexServer_setupActions(VertexServer *self)
 
 int VertexServer_process(VertexServer *self)
 {	
-	Datum *actionName = (Datum *)HttpRequest_queryValue_(self->httpRequest, "action");
-
+	Datum *actionName = (Datum *)HttpRequest_queryValue_(self->httpRequest, "action");	
 	//if(self->debug) { Log_Printf_("REQUEST ERROR: %s\n", HttpRequest_uri(self->httpRequest)); }
 
 	if (Datum_size(actionName))
@@ -927,7 +955,7 @@ int VertexServer_process(VertexServer *self)
 		return VertexServer_api_view(self);
 	}
 	
-	VertexServer_setErrorCString_(self, "invalid action");
+	VertexServer_setErrorCString_(self, "{\"error\": [1, \"invalid action\"]}");
 
 	return -1;
 }
@@ -937,11 +965,14 @@ void VertexServer_requestHandler(void *arg)
 	VertexServer *self = (VertexServer *)arg;
 	VertexServer_setupYajl(self); 
 	
+	HttpResponse_setCallback_(self->httpResponse, HttpRequest_queryValue_(self->httpRequest, "callback"));
+	
 	HttpResponse_setContentType_(self->httpResponse, "application/json;charset=utf-8");
 
 	int result = VertexServer_process(self);
-	Datum *content = HttpResponse_content(self->httpResponse);
 	
+	Datum *content = HttpResponse_content(self->httpResponse);
+				
 	if (result == 0)
 	{
 		if (!Datum_size(content)) 
@@ -954,13 +985,13 @@ void VertexServer_requestHandler(void *arg)
 	{
 		if (!Datum_size(content)) 
 		{
-			Datum_setCString_(content, "\"unknown error\"");
+			Datum_setCString_(content, "{\"error\": [0, \"unknown error\"]}");
 		}
 		Datum_nullTerminate(content); 
 		
-		yajl_gen_clear(self->yajl);
-		yajl_gen_datum(self->yajl, content);
-		Datum_setYajl_(content, self->yajl);
+		//yajl_gen_clear(self->yajl);
+		//yajl_gen_datum(self->yajl, content);
+		//Datum_setYajl_(content, self->yajl);
 				
 		if(self->debug) { Log_Printf_("REQUEST ERROR: %s\n", Datum_data(content)); }
 	}
@@ -1025,8 +1056,35 @@ void VertexServer_setHardSync_(VertexServer *self, int aBool)
 	PDB_setHardSync_(self->pdb, aBool);
 }
 
+// reads pid file and kills already started process
+void VertexServer_killPidFile(VertexServer *self)
+{
+  int oldPid;
+	char line[80];
+	
+	
+	FILE *pidFile = fopen(self->pidPath, "r");
+	
+	if (pidFile && fgets(line, 80, pidFile) != NULL) {
+    oldPid = atoi(line);
+    if (oldPid == 0) return;
+    
+    Log_Printf_("Killing started server pid: %d\n", oldPid);
+    
+    while (kill(oldPid, SIGTERM) != -1) {
+      printf(".");
+      sleep(1);
+    }
+    printf("\n");
+  }
+
+  fclose(pidFile);
+}
+
+// create or clean pid file and write there new pid
 void VertexServer_writePidFile(VertexServer *self)
 {
+  
 	FILE *pidFile = fopen(self->pidPath, "w");
 	
 	if (!pidFile)
@@ -1066,9 +1124,57 @@ int VertexServer_openLog(VertexServer *self)
 	Log_open();
 	return 0;
 }
+// taken from there http://github.com/dustin/memcached/blob/master/daemon.c
+int daemonize(VertexServer *self, int nochdir, int noclose)
+{
+    int fd;
+
+    switch (fork()) {
+    case -1:
+        return (-1);
+    case 0:
+        break;
+    default:
+        _exit(EXIT_SUCCESS);
+    }
+
+    if (setsid() == -1)
+        return (-1);
+
+    if (nochdir == 0) {
+        if(chdir("/") != 0) {
+            perror("chdir");
+            return (-1);
+        }
+    }
+
+    if (noclose == 0 && (fd = open("/dev/null", O_RDWR, 0)) != -1) {
+        if(dup2(fd, STDIN_FILENO) < 0) {
+            perror("dup2 stdin");
+            return (-1);
+        }
+        if(dup2(fd, STDOUT_FILENO) < 0) {
+            perror("dup2 stdout");
+            return (-1);
+        }
+        if(dup2(fd, STDERR_FILENO) < 0) {
+            perror("dup2 stderr");
+            return (-1);
+        }
+
+        if (fd > STDERR_FILENO) {
+            if(close(fd) < 0) {
+                perror("close");
+                return (-1);
+            }
+        }
+    }
+    VertexServer_writePidFile(self);
+    return (0);
+}
 
 int VertexServer_run(VertexServer *self)
-{  	
+{  
 	Socket_SetDescriptorLimitToMax();
 	VertexServer_enableCoreDumps(self);
 	VertexServer_setupActions(self);
@@ -1076,26 +1182,17 @@ int VertexServer_run(VertexServer *self)
 	Log_Printf__("VertexServer_run on http://%s:%i \n", Datum_data(self->httpServer->host), self->httpServer->port);
 	
 	if (self->isDaemon)
-	{
+	{ 
 		Log_Printf("Running as Daemon\n");
-		daemon(0, 0);
-		
-		if (self->pidPath)
-		{
-			VertexServer_writePidFile(self);
-		}
-		else
-		{
-			Log_Printf("-pid is required when running as daemon\n");
-			exit(-1);
-		}
+    VertexServer_killPidFile(self);
+    daemonize(self, 0, 1);
 	}
 	
 	VertexServer_registerSignals(self);
 		
 	if (PDB_open(self->pdb)) 
 	{ 
-		Log_Printf("unable to open database file\n");
+		Log_Printf("Unable to open database file\n");
 		return -1; 
 	}
 
@@ -1106,7 +1203,7 @@ int VertexServer_run(VertexServer *self)
 	
 	VertexServer_removePidFile(self);
 	
-	Log_Printf("shutdown\n\n");
+	Log_Printf("Shutdown\n\n");
 	Log_close();
 	return 0;  
 }
