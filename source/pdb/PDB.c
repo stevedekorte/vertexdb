@@ -1,4 +1,3 @@
-
 #include "PDB.h"
 #include "PQuery.h"
 #include "Log.h"
