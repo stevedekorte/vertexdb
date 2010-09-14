@@ -347,13 +347,12 @@ int VertexServer_api_write(VertexServer *self)
 		value = post;
 	}
 
-
 	if (PNode_moveToPathIfExists_(node, HttpRequest_uriPath(self->httpRequest)) != 0) 
 	{
 		VertexServer_setErrorCString_(self, "{\"error\": [4, \"write path does not exist\"]}");
 		VertexServer_appendError_(self, HttpRequest_uriPath(self->httpRequest));
 		return -1;
-	}	
+	}
 	
 	if(Datum_equalsCString_(mode, "append"))
 	{
@@ -369,6 +368,45 @@ int VertexServer_api_write(VertexServer *self)
 	}
 	
 	return 0;
+}
+
+/*
+ * Increases value on 1
+ *  For example /node/times is 10 now
+ *  GET /node?action=increase&key=times
+ *  returns 11 and /node/times become 11
+ * 
+ * I write it for inserting a huge of record at one moment
+ * Set 0 then target-node does not exists
+*/
+int VertexServer_api_increase(VertexServer *self)
+{
+  PNode *node = PDB_allocNode(self->pdb);
+  Datum *key  = HttpRequest_queryValue_(self->httpRequest, "key");
+  Datum *value;
+  
+  if (PNode_moveToPathIfExists_(node, HttpRequest_uriPath(self->httpRequest)) != 0) 
+  {
+    VertexServer_setErrorCString_(self, "{\"error\": [4, \"write path does not exist\"]}");
+    VertexServer_appendError_(self, HttpRequest_uriPath(self->httpRequest));
+    return -1;
+  }
+  value = PNode_at_(node, key);
+  // set 0 or increase
+  if (value) {
+    Datum_fromLong_(value, Datum_asLong(value) + 1);
+  } else {
+    value = Datum_poolNewWithCString_("0");
+  }
+  
+  // write
+  PNode_atPut_(node, key, value);
+  
+  // display
+  yajl_gen_datum(self->yajl, value);
+  Datum_appendYajl_(self->result, self->yajl);
+	
+  return 0;
 }
 
 int VertexServer_api_link(VertexServer *self)
@@ -897,6 +935,7 @@ void VertexServer_setupActions(VertexServer *self)
 	VERTEX_SERVER_ADD_ACTION(write);
 	VERTEX_SERVER_ADD_ACTION(mkdir);
 	VERTEX_SERVER_ADD_ACTION(link);
+	VERTEX_SERVER_ADD_ACTION(increase);
 	// rename
 	
 	// queues

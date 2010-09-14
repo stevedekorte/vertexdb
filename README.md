@@ -10,7 +10,9 @@ Currently in production use and working well so far. The API is still not set in
 # Usage
 Compiling on Mac OS X
 
-    sudo port install yajl tokyocabinet libevent tokyocabinet libzip
+    sudo port install yajl tokyocabinet libevent libzip
+    # or if you are using homebrew
+    brew install yajl tokyo-cabinet libevent
     cmake .
     make
     sudo make install
