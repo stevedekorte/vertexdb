@@ -1,0 +1,52 @@
+#!/usr/bin/env ruby
+
+require "rubygems"
+require "net/http"
+
+$port = ARGV.shift
+
+DOMAIN = '127.0.0.1'
+
+def show_help
+  puts <<-TT
+VertexDB maintaning tool
+------------------------
+Usage: vertexdb_admin <port> <command> [<options>]
+Avaliable commands:
+    backup
+    clear
+    collect_garbage
+  TT
+end
+
+def send_request uri
+  res = ""
+  puts "-- SENDING #{uri}"
+  $connection.get(uri) {|r| res += r }
+  puts ">>> " + res
+end
+
+if ARGV.index('--help') || ARGV.index('-h') || ARGV.size == 0
+  show_help
+  exit
+end
+
+$connection = Net::HTTP.start(DOMAIN, $port)
+puts "== connected to #{DOMAIN}:#{$port}"
+
+case ARGV.shift
+when 'backup'
+  send_request '/?action=backup'
+  puts "== backup made"
+  
+when 'clear'
+  send_request '/?action=select&op=rm'
+  puts "== root nodes removed"
+  
+when 'collect_garbage'
+  send_request '/?action=collectGarbage'
+  puts "== garbage collected"
+else
+  puts "Undefined command"
+  puts "See vertexdb_admin --help"
+end
