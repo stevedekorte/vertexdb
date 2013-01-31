@@ -2,6 +2,7 @@
 #include "List.h"
 #include "CHash.h"
 #include "Yajl_extras.h"
+#include "yajl/yajl_common.h"
 #include "HttpServer.h"
 
 typedef struct

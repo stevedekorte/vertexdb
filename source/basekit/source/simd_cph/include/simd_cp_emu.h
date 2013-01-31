@@ -78,7 +78,7 @@ THE AUTHOR'S WRITTEN PERMISSION, WITH THE FOLLOWING EXCEPTIONS:
 #ifdef _MSC_VER
 #pragma message("using SIMD Emulation")
 #else
-#warning "using SIMD Emulation"
+//#warning "using SIMD Emulation"
 #endif
 
    /* v0 = v1 {mask} v2, where mask controlls which packed values are copied */

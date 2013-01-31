@@ -671,7 +671,7 @@ void PNode_create(PNode *self)
 		//Datum_makePid64(self->pid);
 		PNode_setPathsFromPid(self);
 		tryCount ++;
-	} while (k = PDB_at_(self->pdb, Datum_data(self->sizePath), (int)Datum_size(self->sizePath), &size));
+	} while ((k = PDB_at_(self->pdb, Datum_data(self->sizePath), (int)Datum_size(self->sizePath), &size)));
 	
 	if(tryCount > 3) 
 	{ 
@@ -798,7 +798,7 @@ int PNode_op_object(PNode *self, Datum *d)
 	
 	yajl_gen_map_open(self->yajl);
 	
-	while (k = PQuery_key(q))
+	while ((k = PQuery_key(q)))
 	{
 		yajl_gen_datum(self->yajl, k);
 		yajl_gen_datum(self->yajl, PNode_value(self));
@@ -818,7 +818,7 @@ int PNode_op_sizes(PNode *self, Datum *d)
 	
 	yajl_gen_map_open(self->yajl);
 	
-	while (k = PQuery_key(q))
+	while ((k = PQuery_key(q)))
 	{
 		if(!Datum_beginsWithCString_(k, "_"))
 		{			
@@ -842,7 +842,7 @@ int PNode_op_count(PNode *self, Datum *d)
 	Datum *k;
 	long count = 0;
 		
-	while (k = PQuery_key(q))
+	while ((k = PQuery_key(q)))
 	{
 		count ++;
 		PQuery_enumerate(q);
@@ -861,7 +861,7 @@ int PNode_op_keys(PNode *self, Datum *d)
 	
 	yajl_gen_array_open(self->yajl);
 	
-	while (k = PQuery_key(q))
+	while ((k = PQuery_key(q)))
 	{
 		yajl_gen_datum(self->yajl, k);
 		PQuery_enumerate(q);
@@ -880,7 +880,7 @@ int PNode_op_pairs(PNode *self, Datum *d)
 	
 	yajl_gen_array_open(self->yajl);
 	
-	while (k = PQuery_key(q))
+	while ((k = PQuery_key(q)))
 	{		
 		yajl_gen_array_open(self->yajl);
 
@@ -948,7 +948,7 @@ int PNode_op_values(PNode *self, Datum *d)
 	
 	yajl_gen_array_open(self->yajl);
 	
-	while (k = PQuery_key(q))
+	while ((k = PQuery_key(q)))
 	{		
 		if(!Datum_beginsWithCString_(k, "_"))
 		{
@@ -1002,7 +1002,7 @@ int PNode_op_rm(PNode *self, Datum *d)
 	
 	if(!q) PNode_first(self);
 	
-	while (k = PQuery_key(q))
+	while ((k = PQuery_key(q)))
 	{
 		PDB_willWrite(self->pdb);
 		if(!StoreCursor_remove(self->storeCursor)) break;
@@ -1034,7 +1034,7 @@ int PNode_asHtmlRow(PNode *self, Datum *d)
 	
 	Datum_appendCString_(d, "<tr>");
 	
-	while (k = PQuery_key(q))
+	while ((k = PQuery_key(q)))
 	{		
 		if(Datum_beginsWithCString_(k, "_"))
 		{
@@ -1209,7 +1209,7 @@ int PNode_amSeries(PNode *self, Datum *d)
 	
 	Datum_appendCString_(d, "<series>\n");
 	
-	while (k = PQuery_key(q))
+	while ((k = PQuery_key(q)))
 	{		
 		//if(Datum_beginsWithCString_(k, "_"))
 		{
@@ -1262,7 +1262,7 @@ int PNode_amGraphKey_(PNode *self, Datum *title, Datum *graphKey, Datum *d)
 	Datum_appendCString_(d, "\" bullet=\"round");
 	Datum_appendCString_(d, "\">\n");
 	
-	while (k = PQuery_key(q))
+	while ((k = PQuery_key(q)))
 	{		
 		//if(Datum_beginsWithCString_(k, "_"))
 		{

@@ -781,9 +781,9 @@ void UArray_at_putPointer_(UArray *self, size_t pos, void *v)
 				UArray_changed(self);
 			}
 			return;
+		default:
+			UArray_error_(self, "UArray_at_putPointer_ not supported with this type");
 	}
-
-	UArray_error_(self, "UArray_at_putPointer_ not supported with this type");
 }
 
 void UArray_appendLong_(UArray *self, long v)
@@ -1218,6 +1218,7 @@ int UArray_isSignedType(const UArray *self)
 		case CTYPE_int64_t:   return 1;
 		case CTYPE_float32_t: return 1;
 		case CTYPE_float64_t: return 1;
+		default: return 0;
 	}
 	return 0;
 }

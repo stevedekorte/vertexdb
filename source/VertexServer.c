@@ -83,8 +83,9 @@ void VertexServer_setupYajl(VertexServer *self)
 {
 	if(self->yajl) 	yajl_gen_free(self->yajl);
 
-	yajl_gen_config config = { 0, "" };
-	self->yajl = yajl_gen_alloc(&config, NULL);
+	//yajl_gen_config config = { 0, "" };
+	//self->yajl = yajl_gen_alloc(&config, NULL);
+	self->yajl = yajl_gen_alloc(NULL);
 	PDB_setYajl_(self->pdb, self->yajl);
 }
 
@@ -584,7 +585,7 @@ int VertexServer_api_queueExpireTo(VertexServer *self)
 		Datum *qExpireKey   = Datum_poolNewWithCString_("_qexpire");
 		long now = time(NULL);
 		
-		while (k = PNode_key(fromNode))
+		while ((k = PNode_key(fromNode)))
 		{
 			Datum *pid = PNode_value(fromNode);
 			Datum *qExpireValue;

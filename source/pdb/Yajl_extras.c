@@ -15,7 +15,7 @@ void yajl_gen_datum(yajl_gen self, Datum *d)
 void Datum_appendYajl_(Datum *self, yajl_gen y)
 {
 	const unsigned char *jsonBuffer;
-	unsigned int jsonBufferLength;
+	size_t jsonBufferLength;
 		
 	yajl_gen_get_buf(y, &jsonBuffer, &jsonBufferLength);
 	
@@ -26,7 +26,7 @@ void Datum_appendYajl_(Datum *self, yajl_gen y)
 void Datum_setYajl_(Datum *self, yajl_gen y)
 {
 	const unsigned char *jsonBuffer;
-	unsigned int jsonBufferLength;
+	size_t jsonBufferLength;
 		
 	yajl_gen_get_buf(y, &jsonBuffer, &jsonBufferLength);
 	

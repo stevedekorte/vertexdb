@@ -43,7 +43,7 @@ int VertexServer_api_amchart(VertexServer *self)
 	{
 		Datum *k;
 		
-		while(k = PNode_key(node))
+		while((k = PNode_key(node)))
 		{
 			Datum *title = Datum_poolNew();
 			PNode_setPid_(tmpNode, PNode_value(node));
@@ -110,7 +110,7 @@ int VertexServer_api_ampie(VertexServer *self)
 	//PNode_startQuery(node);
 	
 	PNode_first(node);
-	while(k = PNode_key(node))
+	while((k = PNode_key(node)))
 	{
 		PNode_setPid_(tmpNode, PNode_value(node));
 		Datum *v = PNode_at_(tmpNode, slot1);

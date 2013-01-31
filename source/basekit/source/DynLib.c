@@ -1,6 +1,6 @@
 /*
-//metadoc DynLib license BSD revised
-/*metadoc DynLib history
+	metadoc DynLib license BSD revised
+	metadoc DynLib history
 	based on DllHandle.c, contributed by Daniel A. Koepke
 	Reorg, Steve Dekorte, 2003-08-30
 	Window fix, Chuck Adams, 2004-02-06
