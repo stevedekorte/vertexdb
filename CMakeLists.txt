@@ -38,6 +38,9 @@ find_library( DL_LIB NAMES ${CMAKE_DL_LIBS} )
 target_link_libraries(vertexdb ${CMAKE_DL_LIBS})
 MESSAGE( STATUS "using dl library: ${DL_LIB}" )
 
+target_link_libraries(vertexdb m)
+MESSAGE( STATUS "using m library from the standard glibc")
+
 include_directories(source source/pdb source/httpserver source/basekit/source source/store source/basekit/source/simd_cph/include)
 
 # installing vertextdb binary
