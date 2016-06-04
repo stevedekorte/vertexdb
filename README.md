@@ -64,7 +64,7 @@ docker run -d -p 8080:80 --name myVertexdb vertexdb # running on PORT 8080 (On M
 or get a Image of vertex directly from the Docker Hub
 
 ```
-docker run -d  -p 8080:80 -e OPTS="" --name myVertexdb vertexdb 
+docker run -d  -p 8080:80 -e OPTS="" --name myVertexdb earvin/vertexdb 
 ```
 
 OPTS could be 
