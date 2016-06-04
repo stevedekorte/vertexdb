@@ -46,3 +46,29 @@ May add support for more complex queries and dynamic/automatic index creation ba
 # Dynamic languages support
 
 * ruby - comming soon (or ask in pm)
+
+
+# Docker Support
+
+If you have [Docker](https://www.docker.com/) installed
+
+You can 
+
+build a Docker image and run it in a container 
+
+```
+docker build -t vertexdb . # build
+docker run -d -p 8080:80 --name myVertexdb vertexdb # running on PORT 8080 (On MAC, the IP address of the container is given via Kitematic)
+```
+
+or get a Image of vertex directly from the Docker Hub
+
+```
+docker run -d  -p 8080:80 -e OPTS="" --name myVertexdb earvin/vertexdb 
+```
+
+OPTS could be 
+
+- "--hardsync", 
+- "--debug",
+- both or ""
